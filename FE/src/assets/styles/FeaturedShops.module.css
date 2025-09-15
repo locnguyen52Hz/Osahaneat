@@ -1,0 +1,99 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Layout chính cho danh sách item */
+.items {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 cột mặc định */
+  gap: 20px;
+  width: 100%;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  background-color: #fff;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.shopImgPadding {
+  padding: 1rem;
+  border-radius: 5px;
+}
+
+.shopDesc {
+  margin-left: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+}
+
+.shopDesc div {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.shopAvatar {
+  height: 60px;
+  width: 60px;
+  min-width: 60px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .items {
+    grid-template-columns: repeat(1, 1fr); /* Giảm còn 1 cột */
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+
+
+  .shopDesc {
+    margin-left: 10px;
+  }
+
+  .shopAvatar {
+    height: 50px;
+    width: 50px;
+    min-width: 50px;
+  }
+}
+
+/* Mobile nhỏ */
+@media (max-width: 480px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .item {
+    padding: 8px;
+  }
+
+  .shopAvatar {
+    height: 45px;
+    width: 45px;
+    min-width: 45px;
+  }
+}

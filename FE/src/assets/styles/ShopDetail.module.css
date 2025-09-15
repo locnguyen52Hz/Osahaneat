@@ -1,0 +1,51 @@
+.bannerImg {
+    object-fit: cover;
+    width: 100%;
+    max-height: 40vh;
+    /* Chiều cao theo % màn hình, dễ responsive */
+    /* min-height: 300px; */
+    /* Đảm bảo không quá thấp trên màn hình nhỏ */
+}
+
+.containerBanner {
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
+    margin-top: -1.5rem;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background-color: white;
+    padding: 1rem;
+    position: relative;
+    bottom: 57px;
+    margin: 0 auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+
+.shopName {
+    margin-bottom: 10px;
+}
+
+.avatar {
+    max-width: 90px;
+    padding: 10px;
+}
+
+.description {
+    margin-top: 20px;
+}
+
+.textMb {
+    margin-bottom: 6px;
+}
+
+.navCategories {}
+
+.category {}
+

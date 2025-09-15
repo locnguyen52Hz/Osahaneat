@@ -1,0 +1,151 @@
+.navBarWrapper,
+.navLeft,
+.navRight {
+  display: flex;
+  align-items: center;
+  height: 70px;
+  padding: 8px 16px;
+  justify-content: space-between;
+  background: #fff;
+  transition: all 0.3s ease-in-out;
+}
+
+.navBarWrapper{
+  grid-column: span 4 / span 4;
+}
+
+.navLeft {
+  column-gap: 20px;
+}
+
+.navRight {
+  column-gap: 12px;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+}
+
+.navItem:hover {
+  color: #c60021;
+}
+
+.inputGroup {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f6f6f8;
+}
+
+.inputGroup input {
+  width: 20rem;
+  height: 40px;
+  padding: 0 12px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+}
+
+.inputGroup button {
+  padding: 0 14px;
+  border: none;
+  background: #224abe;
+  color: #fff;
+  cursor: pointer;
+  transition:  0.2s ease-in-out;
+}
+
+.inputGroup button:hover {
+  background: #1a3791;
+}
+
+/* Cart button */
+.cartButton {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #c60021;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition:  0.2s ease-in-out;
+}
+
+.cartButton:hover {
+  background: #a5001a;
+}
+
+.inputGroup {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f6f6f8;
+}
+
+.inputGroup input {
+  width: 20rem;
+  height: 40px;
+  padding: 0 12px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+}
+
+.searchBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;           /* cố định kích thước nút */
+  height: 40px;
+  border: none;
+  background: #224abe;
+  color: #fff;
+  cursor: pointer;
+  transition:  0.2s ease-in-out;
+}
+
+.searchBtn:hover {
+  background: #1a3791;
+}
+
+.searchIcon {
+  font-size: 18px;       /* đảm bảo icon hiện đúng cỡ */
+  line-height: 1;
+}
+
+
+/* Responsive */
+@media (max-width: 992px) {
+  .inputGroup input {
+    width: 14rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .navBarWrapper {
+    flex-direction: column;
+    height: auto;
+    padding: 10px;
+    row-gap: 10px;
+  }
+
+  .navLeft,
+  .navRight {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .inputGroup input {
+    width: 100%;
+  }
+}

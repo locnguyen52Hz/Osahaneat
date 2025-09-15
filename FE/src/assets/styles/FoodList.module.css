@@ -1,0 +1,33 @@
+.foodList {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    /* 4 cột mặc định */
+    column-gap: 20px;
+    row-gap: 30px;
+    width: 100%;
+}
+
+
+
+@media (max-width: 1024px) {
+    .foodList {
+        grid-template-columns: repeat(3, 1fr);
+        /* 3 cột */
+    }
+}
+
+/* Responsive cho mobile */
+@media (max-width: 768px) {
+    .foodList {
+        grid-template-columns: repeat(2, 1fr);
+        /* 2 cột */
+    }
+}
+
+/* Mobile nhỏ */
+@media (max-width: 480px) {
+    .foodList {
+        grid-template-columns: 1fr;
+        /* 1 cột */
+    }
+}

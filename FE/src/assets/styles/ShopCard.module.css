@@ -1,0 +1,64 @@
+.card {
+    display: flex;
+    align-items: center;
+    gap: 16px; /* khoảng cách tự nhiên giữa avatar và phần mô tả */
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(173, 21, 21, 0.12);
+}
+
+.shopAvatarPadding {
+    padding: 0.5rem;
+    border-radius: 8px;
+    background-color: #f8f8f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.shopAvatar {
+    height: 60px;
+    width: 60px;
+    min-width: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #eee;
+}
+
+.shopDesc {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.textMb {
+    margin-bottom: 6px;
+}
+
+.shopName {
+    font-weight: bold;
+    font-size: 1rem;
+    color: #333;
+}
+
+.shopRating {
+    font-size: 0.9rem;
+    color: #ff9900;
+}
+
+.shopDistance {
+    font-size: 0.85rem;
+    color: #777;
+}
+
+/* Responsive */
+

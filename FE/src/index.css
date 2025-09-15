@@ -1,0 +1,18 @@
+::-webkit-scrollbar {
+  width: 3px; /* Độ dày của thanh cuộn dọc */
+  height: 8px; /* Độ dày của thanh cuộn ngang */
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Phần "nút" di chuyển */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+/* Khi hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

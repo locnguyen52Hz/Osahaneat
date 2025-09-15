@@ -1,0 +1,15 @@
+.selectBox {
+    display: flex;
+    align-items: center;
+}
+
+
+.selectBox select{
+    border: none;
+    outline: none;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: rgb(252, 252, 252);
+    border-radius: 8px;
+
+}

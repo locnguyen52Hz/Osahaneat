@@ -1,0 +1,66 @@
+/* Overlay nền tối */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.disabled{
+  pointer-events: none;
+}
+
+/* Modal trượt từ bên phải */
+.modalContent {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 400px;
+  max-width: 100%;
+  height: 100%;
+  background: #fff;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
+  padding: 20px 20px 0 20px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+
+.slideIn{
+  animation: slideIn .3s forwards ease;
+}
+
+
+.slideOut{
+  animation: slideOut .3s forwards ease;
+}
+
+.closeBtn{
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  z-index: 9999;
+  cursor: pointer;
+}
+
+/* Animation trượt */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+

@@ -1,0 +1,216 @@
+.cartContent {
+    position: relative;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    /* hoặc 100% của modal/parent */
+    overflow: hidden;
+}
+
+.header {
+    height: auto;
+    padding-bottom: 12px;
+}
+
+.header h3 {
+    padding-bottom: 1rem;
+    width: 100%;
+    font-size: 20px;
+    text-align: center;
+}
+
+.shopName {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+
+}
+
+.address {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-top: 1px solid #e3e6f0;
+    border-bottom: 1px solid #e3e6f0;
+    line-height: 1.5rem;
+    margin: 10px 0;
+}
+
+.edit {
+    margin-left: auto;
+    text-align: right;
+    cursor: pointer;
+
+}
+
+.edit:hover {
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+}
+
+.cartDetail {
+    flex: 1;
+    
+    display: flex;
+    flex-direction: column;
+    height: 40vh;
+
+}
+
+.foodList::-webkit-scrollbar {
+    width: 3px;
+    /* Độ dày của thanh cuộn dọc */
+}
+
+
+.foodList::-webkit-scrollbar-track {
+    background: none;
+}
+
+.foodList::-webkit-scrollbar-thumb {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+/* Khi hover */
+.foodList::-webkit-scrollbar-thumb:hover {
+    background: #999292;
+}
+
+.foodList {
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    scroll-behavior: smooth;
+    position: relative;
+    flex: 1;
+}
+
+
+.foodItem {
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+}
+
+
+.foodImgWrapper {}
+
+.img {
+    width: 90px;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    aspect-ratio: 4 / 3;
+}
+
+.btnDetele {
+    margin-left: auto;
+    cursor: pointer;
+    width: 35px;
+    height: 35px;
+    border: none;
+    background-color: #edf0fc;
+    border-radius: 5px;
+    color: #e74a3b;
+}
+
+.btnDetele:hover {
+    background-color: #d8dbe9;
+
+}
+
+.footer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* bỏ position: sticky */
+    /* giữ chiều cao cố định nếu muốn */
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    background-color: white;
+    /* nếu cần */
+}
+
+.btnOrder {
+    width: 100%;
+}
+
+.quantityController {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+
+
+}
+
+.quantityController button {
+    border: none;
+    cursor: pointer;
+    width: 30px;
+    height: 20px;
+    color: #e74a3b;
+}
+
+.quantityController>button:active {
+    background-color: #ddd;
+    transform: scale(0.95);
+}
+
+.quantityController button:hover {
+    background-color: #d8dbe9;
+}
+
+.price {
+    flex: 1;
+    justify-items: center;
+}
+
+.price>p {
+    color: #6e707e;
+}
+.note{
+   margin-top: auto;
+}
+
+@media (max-width: 480px) {
+    .foodItem {
+        column-gap: 6px;
+    }
+
+    .img {
+        width: 60px;
+        height: 60px;
+        border-radius: 6px;
+    }
+
+    .quantityController button {
+        width: 24px;
+        height: 18px;
+        font-size: 12px;
+    }
+
+    .quantityController h3 {
+        font-size: 13px;
+    }
+
+    .price h2 {
+        font-size: 14px;
+    }
+
+    .price p {
+        font-size: 12px;
+    }
+
+    .btnDetele {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+}

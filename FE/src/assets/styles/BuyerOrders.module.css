@@ -1,0 +1,77 @@
+/* BuyerOrders.module.css */
+.container {
+    width: 100%;
+}
+
+.cardList {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.cardOrder {
+    background-color: white;
+    box-shadow: 0 0.125rem 0.25rem 0 rgba(58, 59, 69, 0.2) !important;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 16px;
+    border-radius: 9px;
+}
+
+.filter {
+    margin-bottom: 1rem;
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.cardHeader >p{
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.cardBody {
+    display: flex;
+    align-items: center;
+    column-gap: 20px;
+}
+
+.cardBody button {
+    margin-left: auto;
+}
+
+.cardBody i {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f6f6f8;
+    border-radius: 8px;
+}
+
+
+.distance {}
+
+.cardFooter {}
+
+.orderDetailBtn {
+
+    background-color: #d32f2f;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+}
+
+.orderDetailBtn:hover {
+    background-color: #b71c1c;
+}

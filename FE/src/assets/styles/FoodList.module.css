@@ -7,6 +7,35 @@
     width: 100%;
 }
 
+.insertBox {
+    font-size: 250px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    color: #dbdce6;
+    cursor: pointer;
+    animation: fadeInUp 0.5s ease forwards;
+    text-align: center;
+    border-radius: 12px;
+}
+
+.insertBox:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    color: #919194;
+
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+        /* co nhẹ nhưng không dịch chuyển layout */
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
 
 
 @media (max-width: 1024px) {

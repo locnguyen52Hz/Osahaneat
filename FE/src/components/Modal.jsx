@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import style from "../assets/styles/Modal.module.css";
-import {MODAL_ANIMATION_DURATION} from '../constants'
+import { MODAL_ANIMATION_DURATION } from "../constants";
 
 function Modal({ isOpen, onClose, closeAllModal, children, zIndex, type }) {
   const [closing, setClosing] = useState(false);
@@ -32,29 +32,45 @@ function Modal({ isOpen, onClose, closeAllModal, children, zIndex, type }) {
     return () => clearTimeout(timeoutId);
   };
 
+  const handleCloseAll = (e) => {
+    e?.stopPropagation?.();
+
+    // Nếu modal đang trong trạng thái đóng, bỏ qua
+    if (closing) return;
+
+    setClosing(true);
+
+    // Hẹn giờ gọi onClose sau 300ms (thời gian animation)
+    const timeoutId = setTimeout(() => {
+      closeAllModal();
+    }, 300);
+
+    // Dọn dẹp timeout khi component unmount
+    return () => clearTimeout(timeoutId);
+  };
+
   if (!isOpen) return null;
 
   return ReactDOM.createPortal(
     <div className={`${style.modalOverlay} `} style={{ zIndex }}>
-      <div
-        className={`${style.modalContent} ${
-          closing ? style.slideOut : style.slideIn
-        }`}
-        style={{ zIndex: zIndex + 1 }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div>
-          {type === "mycart" && (
-            <i className="bi bi-backspace" onClick={handleClose}></i>
-          )}
-
-          <i
-            className={`bi bi-x-square ${style.closeBtn}`}
-            onClick={closeAllModal}
-          ></i>
+      {type === "slide" && (
+        <div
+          className={`${style.modalContent} ${
+            closing ? style.slideOut : style.slideIn
+          }`}
+          style={{ zIndex: zIndex + 1 }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div>
+            <i
+              className={`bi bi-x-square ${style.closeBtn}`}
+              onClick={handleClose}
+            ></i>
+          </div>
+          {children}
         </div>
-        {children}
-      </div>
+      )}
+      {type === "popup" && <div className={style.popup}>{children}</div>}
     </div>,
     document.body
   );

@@ -1,6 +1,5 @@
 package com.example.restaurant.management.Payload.Request;
 
-import com.example.restaurant.management.Entity.Category;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
@@ -11,7 +10,7 @@ public class FoodRequest {
     @NotBlank(message = "Food name ko để trống")
     @Pattern(regexp = "^[\\p{L}\\p{M}]+(?: [\\p{L}\\p{M}]+)*$",message = "Tên chỉ được chứa chữ cái, không có chữ số, mỗi từ cách nhau đúng một khoảng trắng và không có khoảng trắng ở đầu/cuối")
     @Length(min = 3, max = 100, message = "Độ dài từ 3-100 ký tự")
-    private String foodName;
+    private String name;
 
     @NotBlank(message = "description ko để trống")
     @Pattern(regexp = "^[\\p{L}\\p{M}\\d]+(?: [\\p{L}\\p{M}\\d]+)*$", message = "Không dùng ký tự đặc biệt")
@@ -22,28 +21,45 @@ public class FoodRequest {
     @Pattern(regexp = "^\\d+(\\.\\d+)?$\n",message = "Chỉ nhận chữ số")
     private double price;
 
-    @NotBlank(message = "file ko để trống")
-    @Pattern(regexp = "(?i)^.+\\\\.(jpg|jpeg|png|gif|bmp|webp)$",message = "định dạng file ko hợp lệ")
     private MultipartFile image;
 
-    @NotBlank(message = "Chưa chọn categoryID")
-    private int categoryID;
+    private Integer shopId;
 
 
-    public int getCategoryID() {
-        return categoryID;
+    private Integer foodId;
+
+    public Integer getFoodId() {
+        return foodId;
     }
 
-    public void setCategoryID(int categoryID) {
-        this.categoryID = categoryID;
+    public void setFoodId(Integer foodId) {
+        this.foodId = foodId;
     }
 
-    public String getFoodName() {
-        return foodName;
+    private Integer categoryId;
+
+    public Integer getCategoryId() {
+        return categoryId;
     }
 
-    public void setFoodName(String foodName) {
-        this.foodName = foodName;
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
     }
 
     public String getDescription() {

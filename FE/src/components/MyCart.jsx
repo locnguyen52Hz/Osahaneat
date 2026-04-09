@@ -5,26 +5,29 @@ import shared from "../assets/styles/Shared.module.css";
 import CartEmpty from "./common/CartEmpty";
 import { getFormattedCartTotal } from "../util/cart";
 import FloatingLabel from "./common/FloatingLabel";
-import { userOrder } from "../contexts/OrderContext";
-import { useFormattedLocation } from "../hooks/useFormatedLocation";
 import { useLocation } from "../contexts/LocationContext";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import endpoints from "../api/endpoints";
 import { useModal } from "../contexts/ModalContext";
 import { toast } from "react-toastify";
+import OrderAddress from "./OrderAddress";
+import OrderPreview from "../pages/Buyer/OrderPreview";
+import { createOrder } from "../Services/OrderServices";
+import { MAX_LENGTH_NOTE } from "../constants";
 
 function MyCart({ shopId, shopName, navigate }) {
-  const { carts, removeFromCarts, increaseQuantity, decreaseQuantity,clearCart } =
-    useCart();
-  const { createOrder } = userOrder();
+  const {
+    carts,
+    removeFromCarts,
+    increaseQuantity,
+    decreaseQuantity,
+    clearCart,
+  } = useCart();
   const [currentShop, setCurrentShop] = useState(undefined);
   const cartDetailRef = useRef(null);
   const [note, setNote] = useState("");
-  const location = useFormattedLocation();
-  const { ready } = useLocation();
-  const { closeAllModal } = useModal();
-  console.log(typeof closeAllModal);
-  
+  const { isLocationReday } = useLocation();
+  const { closeAllModal, openModal, closeTopModal } = useModal();
 
   // cập nhật giỏ hàng hiện tại theo shopId
   useEffect(() => {
@@ -44,17 +47,17 @@ function MyCart({ shopId, shopName, navigate }) {
     return () => cartDetail.removeEventListener("wheel", handleWheel);
   }, [currentShop]);
 
-  const handleOrder = async (shopId, note) => {
-    const isSuccess = await createOrder(shopId, note);
+  const handleOrder = async () => {
+    const isSuccess = await createOrder(shopId, note, carts, isLocationReday);
     if (isSuccess) {
-      clearCart()
-      toast.success("Đặt hàng thành công",{
-        onClose: ()=>{
-          closeAllModal()
-          navigate('/buyer/orders')
-        }
+      clearCart();
+      closeTopModal()
+      toast.success("Đặt hàng thành công", {
+        onClose: () => {
+          closeAllModal();
+          navigate("/buyer/orders");
+        },
       });
-      
     } else {
       toast.error("Đặt hàng thất bại, thử lại");
     }
@@ -68,13 +71,7 @@ function MyCart({ shopId, shopName, navigate }) {
     <div className={style.cartContent}>
       <div className={style.header}>
         <h3>My cart</h3>
-        <div className={style.address}>
-          <div>
-            <p className={shared.textDanger}>Delivered to</p>
-            {location.address ? location.address : location}
-          </div>
-          <p className={`${style.edit} ${shared.textInfo}`}>Edit</p>
-        </div>
+        <OrderAddress location={isLocationReday} />
       </div>
 
       {(currentShop && (
@@ -86,16 +83,16 @@ function MyCart({ shopId, shopName, navigate }) {
                 .slice()
                 .reverse()
                 .map((food) => (
-                  <div className={style.foodItem} key={food.id}>
+                  <div className={style.foodItem} key={food.foodId}>
                     <img
                       className={style.img}
-                      src={`${endpoints.image.food}/${food.foodImage}`}
-                      alt={food.foodName}
+                      src={`${endpoints.image.food}/${food.image}`}
+                      alt={food.name}
                     />
                     <div className={style.quantityController}>
                       <button
                         onClick={() =>
-                          increaseQuantity(food.id, currentShop.id)
+                          increaseQuantity(food.foodId, currentShop.id)
                         }
                       >
                         <i className="bi bi-caret-up-fill"></i>
@@ -103,18 +100,20 @@ function MyCart({ shopId, shopName, navigate }) {
                       <h3>{food.quantity}</h3>
                       <button
                         onClick={() =>
-                          decreaseQuantity(food.id, currentShop.id)
+                          decreaseQuantity(food.foodId, currentShop.id)
                         }
                       >
                         <i className="bi bi-caret-down-fill"></i>
                       </button>
                     </div>
                     <div className={style.price}>
-                      <h2>{food.foodName}</h2>
+                      <h2>{food.name}</h2>
                       <p>{food.price}</p>
                     </div>
                     <button
-                      onClick={() => removeFromCarts(currentShop.id, food.id)}
+                      onClick={() =>
+                        removeFromCarts(currentShop.id, food.foodId)
+                      }
                       className={style.btnDetele}
                     >
                       <i className="bi bi-trash3"></i>
@@ -130,14 +129,25 @@ function MyCart({ shopId, shopName, navigate }) {
                 textarea
                 value={note}
                 onChange={handleOnchange}
+                maxLength={MAX_LENGTH_NOTE}
               />
             </div>
           </div>
 
           <div className={style.footer}>
-            {ready ? (
+            {isLocationReday ? (
               <button
-                onClick={() => handleOrder(currentShop.id, note)}
+                onClick={() =>
+                  openModal(
+                    <OrderPreview
+                      currentShop={currentShop}
+                      note={note}
+                      myLocation={isLocationReday}
+                      createOrder={handleOrder}
+                    />,
+                    { type: "slide" }
+                  )
+                }
                 className={shared.submitBtn}
               >
                 {getFormattedCartTotal(currentShop.foods)}

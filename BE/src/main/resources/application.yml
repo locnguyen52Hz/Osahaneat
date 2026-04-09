@@ -1,24 +1,20 @@
 
 spring:
   datasource:
-    # ???ng d?n ??n db v? th?ng tin ng??i d?ng
     url: jdbc:mysql://localhost:3307/restaurants_management
     username: root
     password: admin123
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      #none: m?c ??nh v? ko thay ?? c?u tr?c DATABASE ---> d?ng khi ?? c? database
-      #create: t?o l?i to?n b? database v? m?t d? li?u c? ---> Ph? h?p ?? th? nghi?m.
-      #create-drop: t?o l?i toa?n b? database, m?t d? li?u c?, s? x?a database khi t?t app ---> d?ng khi test t?m th?i
-      #update: T? ??ng c?p nh?t schema theo entity (t?o b?ng, c?t m?i n?u ch?a c?). Kh?ng x?a d? li?u. ---> d?ng khi ?ang ph?t tri?n ban ??u
-      #validate: Ki?m tra schema c? kh?p v?i entity kh?ng, n?u sai s? l?i.
       ddl-auto: update
 
     properties:
       hibernate:
         #MySQL8 : phi?n b?n MySql ?ang d?ng
         dialect: org.hibernate.dialect.MySQL8Dialect
+        jdbc:
+          time_zone : UTC
   servlet:
     multipart:
       max-file-size: 10MB

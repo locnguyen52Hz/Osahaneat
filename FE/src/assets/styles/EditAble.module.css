@@ -1,0 +1,30 @@
+.input {
+    font-weight: 700;
+
+    outline: solid 1px silver;
+    border: none;
+    font-size: 1.17rem;
+    margin-bottom: 10px;
+
+}
+
+.tag:hover {
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0.7);
+}
+
+
+
+.textArea {
+    width: 100%;
+    resize: none;
+    color: #6e707e;
+    font-size: 16px;
+    border: none;
+    outline: solid 1px silver;
+
+}
+
+.editableText {
+    word-break: break-all;
+}

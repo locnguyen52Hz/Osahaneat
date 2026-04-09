@@ -6,10 +6,10 @@ import jakarta.persistence.*;
 public class OrdersItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "orders_id",nullable = false)
+    @JoinColumn(name = "order_id",nullable = false)
     private Orders orders;
 
     @ManyToOne
@@ -19,11 +19,11 @@ public class OrdersItem {
     @Column(name = "quantity", nullable = false)
     private int quantity;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

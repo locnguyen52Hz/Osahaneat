@@ -9,18 +9,18 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "email", nullable = false, unique = true, length = 50)
     private String email;
 
-    @Column(name = "full_mame" ,nullable = false, length = 255)
+    @Column(name = "full_mame", nullable = false, length = 255)
     private String fullName;
 
     @Column(name = "password", nullable = false, length = 2083)
     private String password;
 
-    @OneToOne(mappedBy = "manager",cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "manager", cascade = CascadeType.ALL)
     private Shops shop;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -32,7 +32,9 @@ public class User {
 
 
     //Constructors
-    public User() {}
+    public User() {
+    }
+
     public User(String email, String fullName, String password, Roles role) {
         this.email = email;
         this.fullName = fullName;
@@ -49,11 +51,11 @@ public class User {
     }
 
     //Getter and setters
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

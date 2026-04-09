@@ -4,9 +4,10 @@ import shared from "../assets/styles/Shared.module.css";
 
 
 import { useFormattedLocation } from "../hooks/useFormatedLocation";
+import SearchBox from "../pages/Buyer/SearchBox";
 
 function NavBar() {
-  const location = useFormattedLocation()
+  const myLocation = useFormattedLocation()
 
 
   return (
@@ -15,7 +16,7 @@ function NavBar() {
       <div className={style.navLeft}>
         <div className={`${style.navItem} ${shared.paragraphColor} `}>
           <i className={` ${shared.textDanger} bi bi-crosshair2`}></i>
-          {location.address ?  location.address : location}
+          {myLocation.address ?  myLocation.address : myLocation}
         </div>
         <div
           className={`${style.navItem} ${shared.paragraphColor} ${shared.textUppercase}`}
@@ -27,15 +28,7 @@ function NavBar() {
 
       {/* Right */}
       <div className={style.navRight}>
-        <div className={style.inputGroup}>
-          <input type="text" placeholder="Search for..." />
-          <button className={style.searchBtn} aria-label="Search">
-            <i className={`bi bi-search ${style.searchIcon}`}></i>
-          </button>
-        </div>
-        <button className={style.cartButton}>
-          <i className="bi bi-cart"></i>
-        </button>
+        <SearchBox/>
       </div>
     </nav>
   );

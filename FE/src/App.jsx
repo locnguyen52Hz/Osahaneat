@@ -1,19 +1,19 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Suspense } from "react";
-import AppProvider from "./contexts/AppProvider";
 import PrivateRouter from "./components/PrivateRouter";
 import MainLayout from "./components/MainLayout";
 import routes from "./routes/config.jsx";
 import { useAuth } from "./contexts/UseContext.jsx";
 import Login from "./pages/Common/Login.jsx";
 import { ToastContainer } from "react-toastify";
-import useWebSocket from "./hooks/useWebSocket.js";
+import { WebSocketProvider } from "./contexts/WebSocketContext.jsx";
+
 // Import Login thật sự
 
 function App() {
   const { role, token } = useAuth();
-  useWebSocket(token)
+
   return (
     <>
       <BrowserRouter>

@@ -1,9 +1,15 @@
 package com.example.restaurant.management.Controllers;
 
+import com.example.restaurant.management.DTO.OsrmTableResponse;
 import com.example.restaurant.management.DTO.ShopDTO;
+import com.example.restaurant.management.DTO.ShopLocationDTO;
+import com.example.restaurant.management.Payload.Request.ShopUpdateRequest;
 import com.example.restaurant.management.Payload.ResponseData;
-import com.example.restaurant.management.ServiceInterface.FileService;
-import com.example.restaurant.management.ServiceInterface.ShopService;
+import com.example.restaurant.management.Service.FileService;
+import com.example.restaurant.management.Service.Shops.CommonShopService;
+import com.example.restaurant.management.Service.Shops.Imp.BuyerShopServiceImp;
+import com.example.restaurant.management.Service.Shops.Imp.ShopManagerShopServiceImp;
+import com.example.restaurant.management.Service.Shops.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -23,14 +29,19 @@ public class ShopController {
     FileService fileService;
 
     @Autowired
-    ShopService shopService;
+    CommonShopService  commonShopService;
 
+    @Autowired
+    ShopManagerShopServiceImp shopManagerShopServiceImp;
+
+    @Autowired
+    BuyerShopServiceImp buyerShopServiceImp;
 
     @GetMapping("/top-6-shops")
     @PreAuthorize("hasAnyRole('ROLE_BUYER')")
     public ResponseEntity<?> getTop6Shop(){
         ResponseData responseData = new ResponseData();
-        List<ShopDTO> shopDTOList = shopService.getTop6Shops();
+        List<ShopDTO> shopDTOList = buyerShopServiceImp.getTop6Shops();
         responseData.setData(shopDTOList);
         responseData.setStatus(HttpStatus.OK.value());
         responseData.setMessage("Success");
@@ -51,20 +62,71 @@ public class ShopController {
 
     @PostMapping("/add-avatar")
     @PreAuthorize("hasAnyRole('ROLE_SHOP_MANAGER')")
-    public ResponseEntity<?> addImageByShopManager(@RequestParam("file") MultipartFile file, @RequestHeader("Authorization") String authHeader ){
+    public ResponseEntity<?> addImageByShopManager(@RequestParam("file") MultipartFile file,
+                                                   @RequestHeader("Authorization") String authHeader ){
         ResponseData responseData = new ResponseData();
-        shopService.addShopImgByShopManager(file, authHeader);
+        shopManagerShopServiceImp.addShopImgByShopManager(file, authHeader);
         responseData.setStatus(HttpStatus.OK.value());
         responseData.setMessage("Success");
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_BUYER')")
-    public ResponseEntity<?> getShopById(@PathVariable int id) {
+    @GetMapping("/details")
+    @PreAuthorize("hasAnyRole('ROLE_BUYER','ROLE_SHOP_MANAGER')")
+    public ResponseEntity<?> getShopById(@RequestHeader ("Authorization") String authHeader,
+                                         @RequestParam(required = false) Integer shopId) {
         ResponseData responseData = new ResponseData();
-        ShopDTO shopDTO = shopService.getShopById(id);
+        ShopDTO shopDTO = commonShopService.getShopById(authHeader,shopId);
         responseData.setData(shopDTO);
+        responseData.setStatus(HttpStatus.OK.value());
+        responseData.setMessage("Success");
+        responseData.setSuccess(true);
+        return new ResponseEntity<>(responseData, HttpStatus.OK);
+    }
+
+    @GetMapping("/distance")
+    @PreAuthorize("hasAnyRole('ROLE_BUYER')")
+    public ResponseEntity<?> getShopsDistance(@RequestParam double fromLongitude,
+                                              @RequestParam double fromLatitude) {
+        ResponseData responseData = new ResponseData();
+        responseData.setStatus(HttpStatus.OK.value());
+        responseData.setMessage("Success");
+        responseData.setSuccess(true);
+        List<OsrmTableResponse> osrmTableResponseList = buyerShopServiceImp.getLocationsOfTop6Shops(fromLongitude, fromLatitude);
+        responseData.setData(osrmTableResponseList);
+        return new ResponseEntity<>(responseData, HttpStatus.OK);
+    }
+
+    @GetMapping("locations")
+    @PreAuthorize("hasAnyRole('ROLE_BUYER')")
+    public ResponseEntity<?> getShopLocations() {
+        ResponseData responseData = new ResponseData();
+        List<ShopLocationDTO> shopLocationDTOS = buyerShopServiceImp.getAllShopLocations();
+        responseData.setData(shopLocationDTOS);
+        responseData.setStatus(HttpStatus.OK.value());
+        responseData.setMessage("Success");
+        responseData.setSuccess(true);
+        return new ResponseEntity<>(responseData, HttpStatus.OK);
+    }
+
+    @PatchMapping("update")
+    @PreAuthorize("hasAnyRole('ROLE_SHOP_MANAGER')")
+    public ResponseEntity<?>  updateShop(@RequestHeader ("Authorization") String authHeader,
+                                         @RequestBody(required = false) ShopUpdateRequest shopUpdateRequest) {
+        ResponseData responseData = new ResponseData();
+        shopManagerShopServiceImp.shopUpdate(authHeader,shopUpdateRequest);
+        responseData.setStatus(HttpStatus.OK.value());
+        responseData.setMessage("Success");
+        responseData.setSuccess(true);
+        return new ResponseEntity<>(responseData, HttpStatus.OK);
+    }
+
+    @PatchMapping("update-avatar")
+    @PreAuthorize("hasAnyRole('ROLE_SHOP_MANAGER')")
+    public ResponseEntity<?> updateShopAvatar(@RequestHeader ("Authorization") String authHeader,
+                                              @RequestPart(required = true) MultipartFile file) {
+        ResponseData responseData = new ResponseData();
+        shopManagerShopServiceImp.updateShopAvatar(authHeader,file);
         responseData.setStatus(HttpStatus.OK.value());
         responseData.setMessage("Success");
         responseData.setSuccess(true);

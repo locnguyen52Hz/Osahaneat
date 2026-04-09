@@ -1,0 +1,124 @@
+.image {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    color: #414144;
+    cursor: pointer;
+    animation: fadeInUp 0.5s ease forwards;
+    text-align: center;
+    border-radius: 12px;
+    height: 270px;
+    margin-bottom: 12px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.image i {
+    font-size: 250px;
+}
+
+.image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+
+}
+
+.image:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    color: #a3a3a7;
+
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+    min-height: 60px;
+}
+
+.form label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+    color: #333;
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+}
+
+.foodName {
+    font-size: 1.5rem;
+}
+
+.description {
+    flex: 1;
+}
+
+.editInput {
+    width: 100%;
+    font-size: 1.05rem;
+    font-weight: 500;
+    padding: 8px 10px;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    outline: none;
+    color: #222;
+
+}
+
+.inputDescription {
+    width: 100%;
+    font-size: 1.05rem;
+    font-weight: 500;
+    padding: 8px 10px;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    outline: none;
+    color: #222;
+}
+
+.tag {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    padding: 8px 10px;
+
+}
+
+.editInput,
+.inputDescription:focus {
+    border-color: #0056b3;
+    /* box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2); */
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+        /* co nhẹ nhưng không dịch chuyển layout */
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.footer {
+    margin-top: auto;
+    display: flex;
+    column-gap: 10px;
+}
+
+.deleteBtn {
+    flex: 1;
+}
+.submitBtn{
+    flex: 5;
+}

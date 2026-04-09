@@ -6,12 +6,12 @@ const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [carts, setCarts] = useState([]);
-  console.log(carts);
+  // console.log(carts);
 
   const addToCart = (newFood, quantityValue, shopId, shopName) => {
-    // console.log(shopName)
+    // console.log(newFood);
     const quantity = Number(quantityValue);
-    console.log(quantity);
+
     setCarts((prev) => {
       const shopIndex = prev.findIndex((item) => item.id === shopId);
 
@@ -22,7 +22,7 @@ export const CartProvider = ({ children }) => {
         console.log("shop: ", shop);
 
         const foodIndex = shop.foods.findIndex(
-          (food) => food.id === newFood.id
+          (food) => food.foodId === newFood.foodId
         );
 
         if (foodIndex !== -1) {
@@ -52,7 +52,7 @@ export const CartProvider = ({ children }) => {
     });
   };
 
-  const increaseQuantity = (foodID, shopId) => {
+  const increaseQuantity = (foodId, shopId) => {
     setCarts((prev) => {
       return prev.map((shop) => {
         //So sánh tên shop hiện tại với shopID được truyền vào hàm
@@ -62,7 +62,7 @@ export const CartProvider = ({ children }) => {
             //Tạo bản sao của shop và cập nhật foods
             ...shop,
             foods: shop.foods.map((item) => {
-              if (item.id === foodID) {
+              if (item.foodId === foodId) {
                 const newQuantity =
                   item.quantity < MAX_QUANTITY_FOOD
                     ? item.quantity + 1
@@ -86,7 +86,7 @@ export const CartProvider = ({ children }) => {
           return {
             ...shop,
             foods: shop.foods.map((item) => {
-              if (item.id === foodId) {
+              if (item.foodId === foodId) {
                 const newQuantity =
                   item.quantity <= MIN_QUANTITY_FOOD
                     ? MIN_QUANTITY_FOOD
@@ -108,7 +108,7 @@ export const CartProvider = ({ children }) => {
         .map((shop) => {
           if (shop.id === shopId) {
             //tìm nếu shop tồn tại thì lọc bỏ món cần xóa
-            const updateFoods = shop.foods.filter((food) => food.id !== foodId);
+            const updateFoods = shop.foods.filter((food) => food.foodId !== foodId);
             // giữ nguyên shop, và tạo mảng mới đã lọc bỏ food cần xóa
             return { ...shop, foods: updateFoods };
           } else return shop;
@@ -126,7 +126,7 @@ export const CartProvider = ({ children }) => {
     const shop = carts.find((item) => item.id === shopId);
     // console.log(shop)
     if (!shop) return 0;
-    const totalAmount = calcCartTotal(shop.foods)
+    const totalAmount = calcCartTotal(shop.foods);
     return totalAmount;
   };
 

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.time.Duration;
 import java.util.Base64;
 import java.util.Date;
 
@@ -20,7 +21,8 @@ public class JwtHelper {
     public String generateToken(String email, String fullName, int id){
 
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + 86400000);
+        Duration expiration = Duration.ofDays(30);
+        Date expiryDate = new Date(now.getTime() + expiration.toMillis());
         SecretKey key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(privateKey));
         return Jwts.builder()
                 .subject(email)
@@ -58,6 +60,13 @@ public class JwtHelper {
             System.out.println("Token trống");
         }
         return false;
+    }
+
+    public Integer getUserID(String authHeader){
+        String token = authHeader.replace("Bearer ", "");
+        Claims claims = getClaimsFromToken(token);
+        Integer userID = claims.get("userID", Integer.class);
+        return userID;
     }
 
 }

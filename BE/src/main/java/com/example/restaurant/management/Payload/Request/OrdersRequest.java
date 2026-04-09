@@ -5,28 +5,30 @@ import com.example.restaurant.management.Entity.OrdersItem;
 import java.util.List;
 
 public class OrdersRequest {
-    private int shopId;
-    private List<OrdersItemRequest> ordersItemRequests;
+    private Integer shopId;
+    private List<OrdersItemRequest> foods;
     private String address;
     private String note;
-    private double latitude;
-    private double longitude;
+    private double fromLatitude;
+    private double fromLongitude;
 
-    public double getLatitude() {
-        return latitude;
+
+    public double getFromLatitude() {
+        return fromLatitude;
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
+    public void setFromLatitude(double fromLatitude) {
+        this.fromLatitude = fromLatitude;
     }
 
-    public double getLongitude() {
-        return longitude;
+    public double getFromLongitude() {
+        return fromLongitude;
     }
 
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
+    public void setFromLongitude(double fromLongitude) {
+        this.fromLongitude = fromLongitude;
     }
+
 
     public String getNote() {
         return note;
@@ -44,19 +46,19 @@ public class OrdersRequest {
         this.address = address;
     }
 
-    public int getShopId() {
+    public Integer getShopId() {
         return shopId;
     }
 
-    public void setShopId(int shopId) {
+    public void setShopId(Integer shopId) {
         this.shopId = shopId;
     }
 
-    public List<OrdersItemRequest> getOrdersItemRequests() {
-        return ordersItemRequests;
+    public List<OrdersItemRequest> getFoods() {
+        return foods;
     }
 
-    public void setOrdersItemRequests(List<OrdersItemRequest> ordersItemRequests) {
-        this.ordersItemRequests = ordersItemRequests;
+    public void setFoods(List<OrdersItemRequest> foods) {
+        this.foods = foods;
     }
 }

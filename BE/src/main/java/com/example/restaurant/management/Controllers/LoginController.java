@@ -5,7 +5,7 @@ import com.example.restaurant.management.DTO.RoleDTO;
 import com.example.restaurant.management.DTO.UserDTO;
 import com.example.restaurant.management.Payload.Request.LoginRequest;
 import com.example.restaurant.management.Payload.ResponseData;
-import com.example.restaurant.management.ServiceInterface.LoginService;
+import com.example.restaurant.management.Service.LoginService;
 import com.example.restaurant.management.Util.JwtHelper;
 
 import org.springframework.beans.factory.annotation.Autowired;

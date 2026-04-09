@@ -3,14 +3,17 @@ import { useNavigate } from "react-router-dom";
 import style from "../assets/styles/FeaturedShops.module.css";
 import shared from "../assets/styles/Shared.module.css";
 import endpoints from "../api/endpoints";
+import { useEffect } from "react";
 
 
-function FeaturedShops({ shops }) {
+function FeaturedShops({ shops}) {
   const navigate = useNavigate();
 
   const shopDetailPage = (id) => {
-    navigate(`shop/${id}`);
+    navigate(`/buyer/detail/shop/${id}`);
   };
+
+
 // console.log(shops)
   return (
     < >
@@ -28,10 +31,9 @@ function FeaturedShops({ shops }) {
         {shops.map((shop) => (
           <ShopCard
             key={shop.id}
-            shop={shop}
-            urlAvatar={endpoints.image.shop}
+            shop={shop}          
             onClick={() => shopDetailPage(shop.id)}
-            type = 'featuredShops'
+            type = 'card'
           />
         ))}
       </div>

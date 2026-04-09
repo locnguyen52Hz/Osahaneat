@@ -5,17 +5,16 @@ import { formatCurrency } from "../util/format";
 import endpoints from "../api/endpoints";
 
 function FoodCard({ food, onClick, type = "default" }) {
-  const { foodImage, foodName, price, description, ratting, id } = food;
-
+  const { image, name, price, description, ratting, id } = food;
 
   if (type === "default") {
     return (
       <div className={style.card} id={`food-${id}`} onClick={onClick}>
         <div className={style.imageWrapper}>
-          <img src={`${endpoints.image.food}/${foodImage}`} alt={foodName} />
+          <img src={`${endpoints.image.food}/${image}`} alt={image} />
         </div>
         <div className={style.cardTitle}>
-          <p className={style.foodName}>{foodName}</p>
+          <p className={style.foodName}>{name}</p>
           <div>
             <FreeShipIcon />
             <p className={style.rating}>⭐ 0 {ratting} </p>
@@ -30,10 +29,10 @@ function FoodCard({ food, onClick, type = "default" }) {
     return (
       <div className={style.cardDetail} id={`food-${id}`}>
         <div className={style.imageWrapper}>
-          <img src={`${endpoints.image.food}/${foodImage}`} alt={foodName} />
+          <img src={`${endpoints.image.food}/${image}`} alt={foodName} />
         </div>
         <div className={style.cardTitle}>
-          <p className={style.foodName}>{foodName}</p>
+          <p className={style.foodName}>{name}</p>
           <FreeShipIcon />
         </div>
         <div className={style.extraInfo}>

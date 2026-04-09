@@ -1,14 +1,14 @@
 package com.example.restaurant.management.Payload.Request;
 
 public class OrdersItemRequest {
-    private int foodId;
+    private Integer foodId;
     private int quantity;
 
-    public int getFoodId() {
+    public Integer getFoodId() {
         return foodId;
     }
 
-    public void setFoodId(int foodId) {
+    public void setFoodId(Integer foodId) {
         this.foodId = foodId;
     }
 

@@ -1,4 +1,3 @@
-
 import AuthForm from "../../components/AuthForm";
 import shared from "../../assets/styles/Shared.module.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -10,24 +9,26 @@ function Login() {
   const navigate = useNavigate();
   const [externalErrors, setExternalErrors] = useState([]);
   const { login, loading } = useAuth();
+ 
 
   const onSubmit = async (data) => {
     const role = await login(data);
     if (!role) return;
-  
+
     if (role === "ROLE_BUYER" && !loading) {
-      console.log(loading)
+      // console.log(loading)
 
       navigate("/buyer/home", { replace: true });
     }
     if (role === "ROLE_SHOP_MANAGER" && !loading) {
-      console.log(loading)
+      // console.log(loading)
       navigate("/manager/dashboard", { replace: true });
     }
   };
 
   return (
     <AuthForm
+      pathnameUrl={window.location.pathname}
       externalErrors={externalErrors}
       title="Welcome"
       description="Sign in to your account to continue"
@@ -78,6 +79,9 @@ function Login() {
           </a>
           <Link className={shared.a} to="/register">
             Create an account
+          </Link>
+          <Link className={shared.a} to="/register-shop">
+            Create a shop account
           </Link>
         </>
       }

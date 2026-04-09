@@ -12,7 +12,7 @@
 }
 
 
-.disabledBtn {
+.cancelBtn {
   background-color: #928d8d;
   color: white;
   padding: 12px;
@@ -24,6 +24,35 @@
   transition: background-color 0.2s ease;
   width: 100%;
 }
+
+/* Tablet (<= 1024px) */
+@media (max-width: 1024px) {
+  .submitBtn,
+  .cancelBtn {
+    font-size: 0.95rem;
+    padding: 10px;
+  }
+}
+
+/* Mobile (<= 768px) */
+@media (max-width: 768px) {
+  .submitBtn,
+  .cancelBtn {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+}
+
+/* Small Mobile (<= 480px) */
+@media (max-width: 480px) {
+  .submitBtn,
+  .cancelBtn {
+    font-size: 0.85rem;
+    padding: 8px;
+    border-radius: 6px;
+  }
+}
+
 
 .submitBtn:hover {
     background-color: #b71c1c;
@@ -112,9 +141,7 @@
     border-radius: 6px !important;
 }
 
-.bgLight {
-    background-color: #f1f1f1 !important;
-}
+
 
 .bgWhite {
     background-color: #fff !important;
@@ -129,26 +156,6 @@
 
 .textBlack {
     color: #000;
-}
-
-.h5 {
-    font-size: 1.25rem;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-.h1,
-.h2,
-.h3,
-.h4,
-.h5,
-.h6 {
-    font-weight: 400;
-    line-height: 1.2;
 }
 
 .small {
@@ -178,6 +185,13 @@ h6,
     line-height: 22px;
     letter-spacing: 0.4px;
     padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.bgLight {
+    background-color: rgb(231, 231, 233)  !important;
 }
 
 .btnLight:hover {
@@ -185,3 +199,5 @@ h6,
     background-color: #d4daed;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+

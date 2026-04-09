@@ -3,14 +3,14 @@
     font-size: 12px;
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: calc(100% - 20px);
     /* hoặc 100% của modal/parent */
     overflow: hidden;
 }
 
 .header {
     height: auto;
-    padding-bottom: 12px;
+    /* padding-bottom: 12px; */
 }
 
 .header h3 {
@@ -27,34 +27,12 @@
 
 }
 
-.address {
-    display: flex;
-    align-items: center;
-    padding: 10px 0;
-    border-top: 1px solid #e3e6f0;
-    border-bottom: 1px solid #e3e6f0;
-    line-height: 1.5rem;
-    margin: 10px 0;
-}
-
-.edit {
-    margin-left: auto;
-    text-align: right;
-    cursor: pointer;
-
-}
-
-.edit:hover {
-    text-decoration-line: underline;
-    text-decoration-style: solid;
-}
-
 .cartDetail {
     flex: 1;
     
     display: flex;
     flex-direction: column;
-    height: 40vh;
+    height: 40%;
 
 }
 
@@ -131,7 +109,7 @@
     /* bỏ position: sticky */
     /* giữ chiều cao cố định nếu muốn */
     padding-top: 1rem;
-    padding-bottom: 1rem;
+    /* padding-bottom: 1rem; */
     background-color: white;
     /* nếu cần */
 }

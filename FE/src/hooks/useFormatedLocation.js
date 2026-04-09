@@ -1,20 +1,19 @@
 import { useLocation } from "../contexts/LocationContext";
 
 export const useFormattedLocation = () => {
-  const { location, loading, error } = useLocation();
+  const { isLocationReday, loading, error } = useLocation();
+
 
   if (loading) return "Đang lấy vị trí...";
   if (error) return error;
-  if (!location?.address) return "Không xác định được vị trí";
+  if (!isLocationReday.address) return "Không xác định được vị trí";
 
-  const { city, country, town, village, city_district } = location.address;
-  const { latitude, longitude } = location;
+  const { address} = isLocationReday;
+  const { latitude, longitude } = isLocationReday;
   const formatedLocation = {
-    address: `${town || village || city_district}, ${city}, ${country}`,
+    address,
     latitude,
     longitude,
   };
-
-
   return formatedLocation
 };

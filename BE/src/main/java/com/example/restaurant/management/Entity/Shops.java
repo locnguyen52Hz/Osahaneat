@@ -8,15 +8,15 @@ import java.util.List;
 public class Shops {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "shop_name", nullable = false, length = 50, unique = true)
     private String shopName;
 
-    @Column(name = "latitude ")
+    @Column(name = "latitude")
     private double latitude;
 
-    @Column(name = "longitude ")
+    @Column(name = "longitude")
     private double longitude;
 
     @Column(name = "shop_image")
@@ -25,29 +25,46 @@ public class Shops {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(mappedBy = "shop")
+    @Column(name = "address")
+    private String address;
+
+    @OneToMany(mappedBy = "shops")
     private List<Orders> orders;
+
+    @ManyToMany
+    @JoinTable(name = "shops_categories", joinColumns = @JoinColumn(name = "shop_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private List<Categories> categories;
+
+
+    @OneToMany(mappedBy = "shops", cascade = CascadeType.ALL)
+    private List<Food> foods;
 
     @OneToOne
     @JoinColumn(name = "user_id")
     private User manager;
 
-    @OneToMany(mappedBy = "shop")
-    private List<Category> categories;
 
-    public List<Category> getCategories() {
+    public List<Categories> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<Category> categories) {
+    public List<Food> getFoods() {
+        return foods;
+    }
+
+    public void setFoods(List<Food> foods) {
+        this.foods = foods;
+    }
+
+    public void setCategories(List<Categories> categories) {
         this.categories = categories;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -105,5 +122,13 @@ public class Shops {
 
     public void setManager(User manager) {
         this.manager = manager;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

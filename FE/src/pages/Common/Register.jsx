@@ -15,7 +15,7 @@ function Register() {
 
     axios({
       method: "post",
-      url: `${endpoints.auth.register}`,
+      url: `${endpoints.auth.register}/buyer`,
       data: {
         fullName: data.fullName,
         email: data.email,
@@ -40,6 +40,7 @@ function Register() {
   return (
     <>
       <AuthForm
+        pathnameUrl={window.location.pathname}
         externalErrors={externalErrors}
         title="Create an account"
         description="Please create an account to continue using our service"

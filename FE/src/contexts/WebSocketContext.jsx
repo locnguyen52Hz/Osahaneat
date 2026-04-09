@@ -1,11 +1,49 @@
-import React, { createContext, useContext, useEffect, useRef, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Client } from "@stomp/stompjs";
+import { apiGet } from "../api/api";
+import endpoints from "../api/endpoints";
+import { useConversationStore } from "../stores/messages/useConversationStore";
+import { useChatScroll } from "../hooks/useChatScroll";
+import { useAuthStore } from "../stores/Auth/useAuthStore";
 
 const WebSocketContext = createContext(null);
 
-export const WebSocketProvider = ({ token, children }) => {
+export function WebSocketProvider({ token, children }) {
   const clientRef = useRef(null);
-  const [connected, setConnected] = useState(false);
+
+  const [ordersNotify, setOrdersNotify] = useState([]);
+  const onIncomingMessage = useConversationStore((s) => s.onIncomingMessage);
+  const conversationMap = useConversationStore((s) => s.conversationMap);
+  const conversationList = useConversationStore((s) => s.conversationList);
+  const ensureConversationExists = useConversationStore(
+    (s) => s.ensureConversationExists,
+  );
+  const messagesByConversation = useConversationStore(
+    (s) => s.messagesByConversation,
+  );
+  const bufferRealtimeMessage = useConversationStore(
+    (s) => s.bufferRealtimeMessage,
+  );
+  const pendingMessagesByConversation = useConversationStore(
+    (s) => s.pendingMessagesByConversation,
+  );
+
+  // message listeners (event-based)
+  const messageListenersRef = useRef(new Set());
+
+  /* =========================Register / Unregister listener========================= */
+  const subscribeMessage = (callback) => {
+    messageListenersRef.current.add(callback);
+    return () => messageListenersRef.current.delete(callback);
+  };
+
+  // console.log(token);
 
   useEffect(() => {
     if (!token) return;
@@ -16,15 +54,33 @@ export const WebSocketProvider = ({ token, children }) => {
         Authorization: `Bearer ${token}`,
       },
       onConnect: (frame) => {
-        console.log("✅ WebSocket connected:", frame);
-        setConnected(true);
-
-        // Lắng nghe tin nhắn riêng cho user
+        // console.log("✅ WebSocket connected:");
+        // Lắng nghe tin nhắn riêng
         client.subscribe("/user/queue/notify", (message) => {
-          console.log("📩 Notify:", message.body);
+          const data = JSON.parse(message.body);
+          console.log("📩 Notify: ", data);
+          setOrdersNotify((prev) => [...prev, data]);
         });
 
-        // Lắng nghe broadcast chung
+        client.subscribe("/user/queue/message", (messages) => {
+          const message = JSON.parse(messages.body);
+
+          const myId = useAuthStore.getState().myId;
+          const newMessage = {
+            ...message,
+            isMine: message.senderId === myId,
+          };
+
+
+          const store = useConversationStore.getState();
+
+
+
+          store.ensureConversationExists(newMessage);
+          store.onIncomingMessage(newMessage);
+        });
+
+        // Lắng nghe broadcast
         client.subscribe("/topic/greetings", (message) => {
           console.log("📢 Broadcast:", message.body);
         });
@@ -32,20 +88,36 @@ export const WebSocketProvider = ({ token, children }) => {
       onStompError: (frame) => {
         console.error("❌ Broker error:", frame.headers["message"]);
       },
-      onDisconnect: () => {
-        setConnected(false);
-      },
     });
 
     client.activate();
     clientRef.current = client;
 
     return () => {
-      client.deactivate();
+      if (clientRef.current) {
+        clientRef.current.deactivate();
+      }
     };
   }, [token]);
 
-  // Hàm gửi message
+  // useEffect(() => {
+  //   if (!token) {
+  //     setOrdersNotify([]);
+  //     return;
+  //   }
+  //   const fetchUnreadMessage = async () => {
+  //     try {
+  //       const res = await apiGet(endpoints.messages.countUnreadMessage);
+
+  //       console.log(res.data.data)
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   fetchUnreadMessage();
+  // }, [token]);
+
+  // Hàm gửi tin nhắn
   const sendMessage = (destination, body) => {
     if (clientRef.current && clientRef.current.connected) {
       clientRef.current.publish({
@@ -58,15 +130,18 @@ export const WebSocketProvider = ({ token, children }) => {
   };
 
   return (
-    <WebSocketContext.Provider value={{ sendMessage, connected }}>
+    <WebSocketContext.Provider
+      value={{
+        sendMessage,
+        ordersNotify,
+        subscribeMessage,
+      }}
+    >
       {children}
     </WebSocketContext.Provider>
   );
-};
+}
 
-// Hook tiện lợi để dùng context
-export const useWebSocketContext = () => {
-  const context = useContext(WebSocketContext);
-  if (!context) throw new Error("useWebSocketContext phải được dùng trong WebSocketProvider");
-  return context;
-};
+export function useWebSocketContext() {
+  return useContext(WebSocketContext);
+}

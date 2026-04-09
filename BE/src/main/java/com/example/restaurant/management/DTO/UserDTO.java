@@ -1,7 +1,7 @@
 package com.example.restaurant.management.DTO;
 
 public class UserDTO {
-    private int id;
+    private Integer id;
     public String email;
     private String password;
     private String fullName;
@@ -15,11 +15,11 @@ public class UserDTO {
         this.role = role;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

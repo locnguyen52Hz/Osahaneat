@@ -1,17 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import style from "../assets/styles/Sidebar.module.css";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/UseContext";
 
 import routes from "../routes/config.jsx";
+import { useWebSocketContext } from "../contexts/WebSocketContext.jsx";
+import { useConversationStore } from "../stores/messages/useConversationStore";
 
 function SideBar() {
   const role = localStorage.getItem("role");
+  const totalUnreadCount = useConversationStore((s) => s.totalUnreadCount);
+  const fetchUnreadMessage = useConversationStore((s) => s.fetchUnreadMessage);
+
+  useEffect(() => {
+    fetchUnreadMessage();
+  }, []);
 
   const { username, clearAuthData } = useAuth();
   const navigate = useNavigate();
   const sideBarItems = routes[role].children.filter(
-    (item) => item.showInSideBar === true
+    (item) => item.showInSideBar === true,
   );
 
   const handleLogout = () => {
@@ -35,6 +43,8 @@ function SideBar() {
             >
               <i className={item.icon}></i>
               <p>{item.label}</p>
+              {item.notify === "message" && <span>{totalUnreadCount}</span>}
+              {/* {item.notify === 'orders' && <span>{ordersNotify.length}</span>} */}
             </NavLink>
           </li>
         ))}

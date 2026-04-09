@@ -7,10 +7,7 @@ const ModalContext = createContext();
 export const ModalProvider = ({ children }) => {
   const [modalStack, setModalStack] = useState([]);
 
-  // console.log(modalStack);
-
   const openModal = useCallback((content, props = {}) => {
-    // console.log(props)
     const id = uuidv4(); // ID duy nhất cho modal
     setModalStack((prev) => [...prev, { id, content, props }]);
 
@@ -30,7 +27,9 @@ export const ModalProvider = ({ children }) => {
   };
 
   return (
-    <ModalContext.Provider value={{ openModal, closeModal, closeTopModal,closeAllModal }}>
+    <ModalContext.Provider
+      value={{ openModal, closeModal, closeTopModal, closeAllModal }}
+    >
       {children}
       {modalStack.map((modal, index) => (
         <Modal

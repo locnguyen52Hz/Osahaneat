@@ -1,7 +1,8 @@
 .card {
     display: flex;
     align-items: center;
-    gap: 16px; /* khoảng cách tự nhiên giữa avatar và phần mô tả */
+    gap: 16px;
+    /* khoảng cách tự nhiên giữa avatar và phần mô tả */
     padding: 0.75rem 1rem;
     border-radius: 10px;
     background-color: #fff;
@@ -60,5 +61,44 @@
     color: #777;
 }
 
-/* Responsive */
 
+.wrapperAvatar {
+    position: relative;
+    width: 90px;
+    height: 90px;
+    /* flex: 1; */
+}
+
+.overLay {
+    position: absolute;
+    background-color: rgba(212, 212, 212, 0.3);
+    width: 100%;
+    height: 100%;
+    display: none;
+    cursor: pointer;
+
+}
+
+.wrapperAvatar i {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    font-size: 15px;
+}
+
+.wrapperAvatar div{
+    width: 100px;
+    height: 100px;
+}
+
+
+.wrapperAvatar:hover .overLay {
+    display: block;
+}
+
+.content {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}

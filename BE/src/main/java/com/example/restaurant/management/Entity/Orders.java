@@ -1,18 +1,18 @@
 package com.example.restaurant.management.Entity;
 
-import com.example.restaurant.management.Enums.OrdersStatus;
 import jakarta.persistence.*;
 
-import java.math.BigDecimal;
+
 import java.time.LocalDateTime;
-import java.util.Date;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrdersItem> orderItems;
@@ -23,16 +23,25 @@ public class Orders {
 
     @ManyToOne
     @JoinColumn(name = "shop_id", nullable = false)
-    private Shops shop;
+    private Shops shops;
 
     @Column(name = "address", nullable = false)
     private String address;
 
-    @Column(name = "latitude")
-    private Double latitude;
+   @Column(name = "from_lat", nullable = false)
+   private double fromLatitude;
 
-    @Column(name = "longitude")
-    private Double longitude;
+   @Column(name = "from_longitude",nullable = false)
+   private double fromLongitude;
+
+   @Column(name = "to_lat", nullable = false)
+   private double toLatitude;
+
+   @Column(name = "to_Longitude", nullable = false)
+   private double toLongitude;
+
+   @Column(name = "distance")
+   private double distance;
 
     @Column(name = "note")
     private String note;
@@ -40,32 +49,61 @@ public class Orders {
     @Column(name = "total_amount", nullable = false)
     private double totalAmount;
 
-    @Column(name = "ship_price")
-    private double shipPrice;
+    @Column(name = "subtotal")
+    private double subtotal;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
-    private OrdersStatus ordersStatus;
+    @Column(name = "shipping_fee")
+    private double shipFee;
 
-    @Column(name = "created_date")
-    private LocalDateTime createdDate;  // dùng LocalDateTime
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+     private List<OrderStatusHistory> statusHistories = new ArrayList<>();
 
-    @Column(name = "updated_date")
-    private LocalDateTime updatedDate;
 
-    public LocalDateTime getUpdatedDate() {
-        return updatedDate;
+    public List<OrderStatusHistory> getStatusHistories() {
+        return statusHistories;
     }
 
-    public void setUpdatedDate(LocalDateTime updatedDate) {
-        this.updatedDate = updatedDate;
+    public void setStatusHistories(List<OrderStatusHistory> statusHistories) {
+        this.statusHistories = statusHistories;
     }
 
-    public int getId() {
+    public double getFromLatitude() {
+        return fromLatitude;
+    }
+
+    public void setFromLatitude(double fromLatitude) {
+        this.fromLatitude = fromLatitude;
+    }
+
+    public double getFromLongitude() {
+        return fromLongitude;
+    }
+
+    public void setFromLongitude(double fromLongitude) {
+        this.fromLongitude = fromLongitude;
+    }
+
+    public double getToLatitude() {
+        return toLatitude;
+    }
+
+    public void setToLatitude(double toLatitude) {
+        this.toLatitude = toLatitude;
+    }
+
+    public double getToLongitude() {
+        return toLongitude;
+    }
+
+    public void setToLongitude(double toLongitude) {
+        this.toLongitude = toLongitude;
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -86,13 +124,12 @@ public class Orders {
     }
 
     public Shops getShop() {
-        return shop;
+        return shops;
     }
 
-    public void setShop(Shops shop) {
-        this.shop = shop;
+    public void setShop(Shops shops) {
+        this.shops = shops;
     }
-
 
     public String getAddress() {
         return address;
@@ -102,20 +139,12 @@ public class Orders {
         this.address = address;
     }
 
-    public Double getLatitude() {
-        return latitude;
+    public double getDistance() {
+        return distance;
     }
 
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
+    public void setDistance(double distance) {
+        this.distance = distance;
     }
 
     public String getNote() {
@@ -134,27 +163,19 @@ public class Orders {
         this.totalAmount = totalAmount;
     }
 
-    public double getShipPrice() {
-        return shipPrice;
+    public double getSubtotal() {
+        return subtotal;
     }
 
-    public void setShipPrice(double shipPrice) {
-        this.shipPrice = shipPrice;
+    public void setSubtotal(double subtotal) {
+        this.subtotal = subtotal;
     }
 
-    public OrdersStatus getOrdersStatus() {
-        return ordersStatus;
+    public double getShipFee() {
+        return shipFee;
     }
 
-    public void setOrdersStatus(OrdersStatus ordersStatus) {
-        this.ordersStatus = ordersStatus;
-    }
-
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
+    public void setShipFee(double shipFee) {
+        this.shipFee = shipFee;
     }
 }

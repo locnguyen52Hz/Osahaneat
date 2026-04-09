@@ -1,0 +1,90 @@
+.searchTypes {
+  color: #5a5c69;
+}
+
+.searchTypes:hover {
+  background-color: #e42444;
+  color: white;
+}
+
+.active {
+  background-color: #c60021;
+  color: white;
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+
+.paginateContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  column-gap: 8px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+}
+
+/* Mỗi nút phân trang */
+.pageItem {
+  display: inline-block;
+}
+
+.pageLink {
+  display: block;
+  padding: 8px 14px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #333;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+/* Hover */
+.pageLink:hover {
+  background-color: #f1f1f1;
+  border-color: #adb5bd;
+}
+
+/* Trang đang active */
+.activePage .pageLink {
+  background-color: #0d6efd;
+  color: white;
+  border-color: #0d6efd;
+  font-weight: 500;
+  z-index: 1;
+}
+
+/* Nút "previous" hoặc "next" bị disable */
+.disable .pageLink {
+  background-color: #e9ecef;
+  color: #6c757d;
+  border-color: #dee2e6;
+  pointer-events: none;
+  cursor: default;
+  opacity: 0.6;
+}
+
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+
+.foodList {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  /* 4 cột mặc định */
+  column-gap: 20px;
+  row-gap: 30px;
+  width: 100%;
+}

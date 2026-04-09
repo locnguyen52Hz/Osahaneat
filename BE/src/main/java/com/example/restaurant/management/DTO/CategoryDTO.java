@@ -2,7 +2,7 @@ package com.example.restaurant.management.DTO;
 
 public class CategoryDTO {
     private Integer id;
-    private String categoryName;
+    private String name;
 
     public Integer getId() {
         return id;
@@ -12,11 +12,11 @@ public class CategoryDTO {
         this.id = id;
     }
 
-    public String getCategoryName() {
-        return categoryName;
+    public String getName() {
+        return name;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public void setName(String name) {
+        this.name = name;
     }
 }

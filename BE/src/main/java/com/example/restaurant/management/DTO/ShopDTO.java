@@ -1,50 +1,60 @@
 package com.example.restaurant.management.DTO;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ShopDTO {
-    private String shopName;
+    private Integer id;
+    private String name;
     private double latitude;
     private double longitude;
     private String shopAvatar;
-    private int id;
     private String description;
+    private double distance;
 
-
-    public String getDescription() {
-        return description;
+    // ✅ Constructor đầy đủ để JPA map trực tiếp
+    public ShopDTO(double longitude, double latitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public ShopDTO(Integer id, Double longitude, Double latitude) {
+        this.id = id;
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
 
-    public int getId() {
+
+    // ✅ Constructor rỗng (JPA / Jackson cần)
+    public ShopDTO() {}
+
+    // Getters & Setters
+    public Integer getId() {
         return id;
     }
-
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getShopName() {
-        return shopName;
+    public double getDistance() {
+        return distance;
     }
 
-    public String getShopAvatar() {
-        return shopAvatar;
+    public void setDistance(double distance) {
+        this.distance = distance;
     }
 
-    public void setShopAvatar(String shopAvatar) {
-        this.shopAvatar = shopAvatar;
+    public String getName() {
+        return name;
     }
 
-    public void setShopName(String shopName) {
-        this.shopName = shopName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public double getLatitude() {
         return latitude;
     }
-
     public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
@@ -52,8 +62,21 @@ public class ShopDTO {
     public double getLongitude() {
         return longitude;
     }
-
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public String getShopAvatar() {
+        return shopAvatar;
+    }
+    public void setShopAvatar(String shopAvatar) {
+        this.shopAvatar = shopAvatar;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

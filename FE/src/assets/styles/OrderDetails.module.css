@@ -1,0 +1,142 @@
+.wrapper {
+  color: #5a5c69;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.wrapper h2,
+h4 {
+  color: black;
+}
+
+.header {
+  flex: 1;
+}
+
+.foodItem {
+  display: flex;
+  column-gap: 20px;
+  align-items: center;
+  font-size: 13px;
+  line-height: 19px;
+  color: #5a5c69;
+  padding: 0 5px;
+}
+
+.list {
+  display: flex;
+  row-gap: 15px;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  overflow-y: auto;
+  /* max-height: 30%; */
+}
+
+.details {
+  height: 50%;
+  flex: 8;
+  display: flex;
+  flex-direction: column;
+}
+
+.price {
+  margin-left: auto;
+  color: #858796;
+}
+
+.shopName {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+.quantity {
+  padding: 0 8px;
+  border-radius: 6px;
+}
+
+.foodName {}
+
+.pay div {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #e3e6f0;
+  padding: 0.5rem 0;
+  font-size: 13px;
+}
+
+.pay>div:last-of-type {
+  font-size: 1rem;
+  padding: 1rem 0;
+}
+
+.pay div p:last-of-type {
+  color: #e74a3b;
+}
+
+.orderActions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px;
+  border-top: 1px solid #e3e6f0;
+  background: #fff;
+  position: sticky;
+  /* dính dưới cùng modal */
+  bottom: 0;
+}
+
+.cancelBtn,
+.confirmBtn {
+  flex: 1;
+  padding: 10px 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.cancelBtn {
+  background: #f8d7da;
+  color: #842029;
+}
+
+.cancelBtn:hover {
+  background: #f5c2c7;
+}
+
+.confirmBtn {
+  background: #198754;
+  color: white;
+}
+
+.confirmBtn:hover {
+  background: #157347;
+}
+
+.note {}
+
+.note u {
+  color: red;
+  text-decoration: underline;
+
+}
+
+.note p {
+  margin-top: 12px;
+  padding: 1rem;
+  border-radius: 9px;
+}
+
+
+.footer {
+  /* flex: 1; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 20px;
+  border-top: 1px solid #e3e6f0;
+}

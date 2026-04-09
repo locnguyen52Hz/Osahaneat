@@ -1,19 +1,66 @@
 package com.example.restaurant.management.DTO;
 
+import com.example.restaurant.management.Enums.OrdersStatus;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import javax.xml.crypto.Data;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrdersDTO {
     // thông tin đơn hàng
-    private int orderID;
+    private Integer orderID;
     private double totalAmount;
     private String status;
     private String note;
-    private LocalDateTime createdDate;
-    private LocalDateTime updatedDate;
+    private Instant time;
     private String address;
+    private double shippingFee;
+    private double subtotal;
+    private double distance;
+
+    public OrdersDTO() {}
+
+    public OrdersDTO(Integer orderID, double totalAmount, OrdersStatus status, String note, Instant time, String address, double shippingFee, double subtotal, double distance, Integer partnerID, String partnerName) {
+        this.orderID = orderID;
+        this.totalAmount = totalAmount;
+        this.status = status.toString();
+        this.note = note;
+        this.time = time;
+        this.address = address;
+        this.shippingFee = shippingFee;
+        this.subtotal = subtotal;
+        this.distance = distance;
+        this.partnerID = partnerID;
+        this.partnerName = partnerName;
+    }
+
+    public double getShippingFee() {
+        return shippingFee;
+    }
+
+    public void setShippingFee(double shippingFee) {
+        this.shippingFee = shippingFee;
+    }
+
+    public double getSubtotal() {
+        return subtotal;
+    }
+
+    public void setSubtotal(double subtotal) {
+        this.subtotal = subtotal;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
 
     public String getAddress() {
         return address;
@@ -23,23 +70,54 @@ public class OrdersDTO {
         this.address = address;
     }
 
-    // thông tin người mua
-    private int buyerID;
-    private String buyerName;
 
-    // thông tin shop
-    private int shopID;
-    private String shopName;
-    private int shopManagerID;// ID của user phụ trách shop
-
+    private Integer shopID;
     //chi tiết món ăn
-    private List<OrderItemDTO> orderItemDTOList;
+    private List<OrderItemDTO> foods;
 
-    public int getOrderID() {
+    //id người nhận thông báo
+    private Integer partnerID;
+    private String partnerName;
+    private Double partnerLatitude;
+    private Double partnerLongitude;
+
+    public Double getPartnerLatitude() {
+        return partnerLatitude;
+    }
+
+    public void setPartnerLatitude(Double partnerLatitude) {
+        this.partnerLatitude = partnerLatitude;
+    }
+
+    public Double getPartnerLongitude() {
+        return partnerLongitude;
+    }
+
+    public void setPartnerLongitude(Double partnerLongitude) {
+        this.partnerLongitude = partnerLongitude;
+    }
+
+    public Integer getPartnerID() {
+        return partnerID;
+    }
+
+    public void setPartnerID(Integer partnerID) {
+        this.partnerID = partnerID;
+    }
+
+    public String getPartnerName() {
+        return partnerName;
+    }
+
+    public void setPartnerName(String partnerName) {
+        this.partnerName = partnerName;
+    }
+
+    public Integer getOrderID() {
         return orderID;
     }
 
-    public void setOrderID(int orderID) {
+    public void setOrderID(Integer orderID) {
         this.orderID = orderID;
     }
 
@@ -67,69 +145,28 @@ public class OrdersDTO {
         this.note = note;
     }
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
+    public Instant getTime() {
+        return time;
     }
 
-    public void setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
+    public void setTime(Instant time) {
+        this.time = time;
     }
 
-    public LocalDateTime getUpdatedDate() {
-        return updatedDate;
-    }
-
-    public void setUpdatedDate(LocalDateTime updatedDate) {
-        this.updatedDate = updatedDate;
-    }
-
-    public int getBuyerID() {
-        return buyerID;
-    }
-
-    public void setBuyerID(int buyerID) {
-        this.buyerID = buyerID;
-    }
-
-    public String getBuyerName() {
-        return buyerName;
-    }
-
-    public void setBuyerName(String buyerName) {
-        this.buyerName = buyerName;
-    }
-
-    public int getShopID() {
+    public Integer getShopID() {
         return shopID;
     }
 
-    public void setShopID(int shopID) {
+    public void setShopID(Integer shopID) {
         this.shopID = shopID;
     }
 
-    public String getShopName() {
-        return shopName;
+
+    public List<OrderItemDTO> getFoods() {
+        return foods;
     }
 
-    public void setShopName(String shopName) {
-        this.shopName = shopName;
+    public void setFoods(List<OrderItemDTO> foods) {
+        this.foods = foods;
     }
-
-    public int getShopManagerID() {
-        return shopManagerID;
-    }
-
-    public void setShopManagerID(int shopManagerID) {
-        this.shopManagerID = shopManagerID;
-    }
-
-    public List<OrderItemDTO> getOrderItemDTOList() {
-        return orderItemDTOList;
-    }
-
-    public void setOrderItemDTOList(List<OrderItemDTO> orderItemDTOList) {
-        this.orderItemDTOList = orderItemDTOList;
-    }
-
-
 }

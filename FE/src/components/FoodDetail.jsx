@@ -13,10 +13,8 @@ import { createQuantityRegex } from "../util/regex";
 import { formatCurrency } from "../util/format";
 import endpoints from "../api/endpoints";
 
-
-
 function FoodDetail({ food, shopName, shopId, navigate }) {
-  const { foodName, foodImage, price, description } = food;
+  const { name, image, price, description } = food;
   const [isProcessing, setIsProCessing] = useState(true);
   const [quantity, setQuantity] = useState("1");
   const regex = createQuantityRegex(MIN_QUANTITY_FOOD, MAX_QUANTITY_FOOD);
@@ -28,11 +26,8 @@ function FoodDetail({ food, shopName, shopId, navigate }) {
     }, MODAL_ANIMATION_DURATION);
   }, []);
 
-
-
   // console.log("quantity: ", quantity);
   const { addToCart } = useCart();
-
   const { openModal } = useModal();
 
   const handleOnChange = (value) => {
@@ -60,14 +55,14 @@ function FoodDetail({ food, shopName, shopId, navigate }) {
     }
     if (quantity === 0) {
       openModal(<MyCart shopId={shopId} shopName={shopName} navigate={navigate} />, {
-        type: "mycart",
+        type: "slide",
       });
     }
 
     if (quantity > 0) {
       addToCart(food, quantity, shopId, shopName); // thêm vào giỏ
       openModal(<MyCart shopId={shopId} shopName={shopName} navigate={navigate} />, {
-        type: "mycart",
+        type: "slide",
       });
     }
 
@@ -95,14 +90,14 @@ function FoodDetail({ food, shopName, shopId, navigate }) {
   return (
     <>
       <div className={style.header}>
-        <h1>{foodName}</h1>
+        <h1>{name}</h1>
       </div>
       <div className={style.body}>
         <div className={style.imgWrapper}>
           <div>
             <i className="bi bi-suit-heart-fill"></i>
           </div>
-          <img src={`${endpoints.image.food}/${foodImage}`} alt={foodName} />
+          <img src={`${endpoints.image.food}/${image}`} alt={name} />
         </div>
         <p className={`${shared.textDark} ${shared.small}`}>{description}</p>
       </div>

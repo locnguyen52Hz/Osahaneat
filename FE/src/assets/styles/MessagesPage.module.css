@@ -1,0 +1,21 @@
+.container{
+    display: flex;
+    column-gap: 20px;
+    height: 80vh;
+}
+.title{
+    font-size:1.25rem ;
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+
+.child{
+    flex: 1;
+    box-shadow: 0 0.125rem 0.25rem 0 rgba(58, 59, 69, 0.2);
+    max-width: 50%;
+}
+
+.conversation{
+    height: 100%;
+}
+

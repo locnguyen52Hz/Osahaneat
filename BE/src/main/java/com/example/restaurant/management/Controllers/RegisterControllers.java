@@ -4,7 +4,7 @@ package com.example.restaurant.management.Controllers;
 import com.example.restaurant.management.Payload.Request.RegisterRequest;
 import com.example.restaurant.management.Payload.Request.ShopManagerRegister;
 import com.example.restaurant.management.Payload.ResponseData;
-import com.example.restaurant.management.ServiceInterface.RegisterService;
+import com.example.restaurant.management.Service.RegisterService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

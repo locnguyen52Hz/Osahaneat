@@ -6,16 +6,19 @@ import jakarta.persistence.*;
 public class Food {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "image", nullable = false)
     private String image;
 
-    @Column(name = "food_name", unique = true, nullable = false)
-    private String foodName;
+    @Column(name = "food_name", unique = false, nullable = false)
+    private String name;
 
     @Column(name = "description")
     private String description;
+
+    @Column(name = "deleted")
+    private boolean deleted;
 
     @Column(name = "price")
     private double price;
@@ -25,9 +28,37 @@ public class Food {
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    private Categories categories;
 
-    public int getId() {
+    @ManyToOne
+    @JoinColumn(name = "shop_id", nullable = false)
+    private Shops shops;
+
+    public Categories getCategories() {
+        return categories;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public void setCategories(Categories categories) {
+        this.categories = categories;
+    }
+
+    public Shops getShops() {
+        return shops;
+    }
+
+    public void setShops(Shops shops) {
+        this.shops = shops;
+    }
+
+    public Integer getId() {
         return id;
     }
 
@@ -47,16 +78,16 @@ public class Food {
         this.image = image;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getFoodName() {
-        return foodName;
+    public String getName() {
+        return name;
     }
 
-    public void setFoodName(String foodName) {
-        this.foodName = foodName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -75,11 +106,11 @@ public class Food {
         this.price = price;
     }
 
-    public Category getCategory() {
-        return category;
+    public Categories getCategory() {
+        return categories;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setCategory(Categories categories) {
+        this.categories = categories;
     }
 }

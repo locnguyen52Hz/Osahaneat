@@ -1,32 +1,17 @@
 package com.example.restaurant.management.Service.Orders;
-
-import com.example.restaurant.management.DTO.OrderItemDTO;
-import com.example.restaurant.management.DTO.OrdersDTO;
-import com.example.restaurant.management.DTO.OsrmResponse;
-import com.example.restaurant.management.DTO.ShopDTO;
+import com.example.restaurant.management.DTO.*;
 import com.example.restaurant.management.Entity.*;
 import com.example.restaurant.management.Enums.OrdersStatus;
-import com.example.restaurant.management.Payload.Request.OrdersItemRequest;
-import com.example.restaurant.management.Payload.Request.OrdersRequest;
 import com.example.restaurant.management.Repository.*;
 import com.example.restaurant.management.Service.Orders.Imp.BuyerOrdersServiceImp;
 import com.example.restaurant.management.Service.Orders.Imp.ShopManagerOrderServiceImp;
-import com.example.restaurant.management.Service.RoutesService;
 import com.example.restaurant.management.Util.JwtHelper;
-import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+
 
 
 @Service
@@ -35,18 +20,12 @@ public class CommonOrdersService {
     @Autowired
     JwtHelper jwtHelper;
 
-    @Autowired
-    ShopsRepository shopsRepository;
 
     @Autowired
     UserRepository userRepository;
 
-
     @Autowired
     OrdersRepository ordersRepository;
-
-    @Autowired
-    OrdersItemRepository ordersItemRepository;
 
     @Autowired
     OrderStatusHistoryRepository orderStatusHistoryRepository;
@@ -57,40 +36,56 @@ public class CommonOrdersService {
     @Autowired
     ShopManagerOrderServiceImp shopManagerOrderServiceImp;
 
-    @Autowired
-    OrdersHelper ordersHelper;
+
+    public Page<OrdersDTO> getOrders(String authHeader, int page, int pageSize, boolean includeTotalQuantity) {
+        Integer userId = jwtHelper.getUserID(authHeader);
+        User user = userRepository.findUserById(userId);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+        String role = user.getRole().getRoleName();
+        if (!includeTotalQuantity){
+            return switch (role) {
+                case "ROLE_SHOP_MANAGER" -> shopManagerOrderServiceImp.getOrdersWithPage(userId, page, pageSize);
+                case "ROLE_BUYER" -> buyerOrdersServiceImp.getOrdersWithPage(userId, page, pageSize);
+                default -> throw new RuntimeException("Role not authorized to access categories");
+            };
+        }
+        else {
+           return shopManagerOrderServiceImp.getOrdersWithTotalQuantity(userId, page, pageSize);
+        }
+
+    }
 
 
-    public Page<OrdersDTO> getOrdersWithPage(String authHeader, int page) {
-        Integer userID = jwtHelper.getUserID(authHeader);
-        User user = userRepository.findUserById(userID);
+    public Page<OrderTimeLineDTO> getActiveOrders(String authHeader , int page){
+        Integer userId = jwtHelper.getUserID(authHeader);
+        User user = userRepository.findUserById(userId);
         if (user == null) {
             throw new RuntimeException("User not found");
         }
         String role = user.getRole().getRoleName();
         return switch (role) {
-            case "ROLE_SHOP_MANAGER" -> shopManagerOrderServiceImp.getOrdersWithPage(userID,page);
-            case "ROLE_BUYER" -> buyerOrdersServiceImp.getOrdersWithPage(userID, page);
-            default -> throw new RuntimeException("Role not authorized to access categories");
+            case "ROLE_BUYER" ->  buyerOrdersServiceImp.getActiveOrdersWithPage(userId, page);
+//            case "ROLE_SHOP_MANAGER" -> shopManagerOrderServiceImp.getActiveOrders(userID);
+            default -> throw new RuntimeException("Role not found" + role);
         };
     }
 
 
 
 
-
-
-    public Page<OrdersDTO> findOrdersByStatus(String authHeader, OrdersStatus status, int page) {
-        Integer userID = jwtHelper.getUserID(authHeader);
-        User user = userRepository.findUserById(userID);
+    public Page<OrdersDTO> getPreviousOrders(String authHeader, int page) {
+        Integer userId = jwtHelper.getUserID(authHeader);
+        User user = userRepository.findUserById(userId);
         if (user == null) {
             throw new RuntimeException("User not found");
         }
 
         String role = user.getRole().getRoleName();
         return switch (role) {
-            case "ROLE_BUYER" ->  buyerOrdersServiceImp.getOrdersByStatus(userID,status, page);
-            case "ROLE_SHOP_MANAGER" -> shopManagerOrderServiceImp.getOrdersByStatus(userID,status, page);
+            case "ROLE_BUYER" ->  buyerOrdersServiceImp.getPreviousOrders(userId, page);
+            case "ROLE_SHOP_MANAGER" -> shopManagerOrderServiceImp.getPreviousOrders(userId, page);
             default -> throw new RuntimeException("Role not found" + role);
         };
     }
@@ -99,8 +94,8 @@ public class CommonOrdersService {
 
 
     public OrdersDTO updateOrderStatus(String authHeader, OrdersStatus newStatus, Integer orderId) {
-        Integer userID = jwtHelper.getUserID(authHeader);
-        User user = userRepository.findUserById(userID);
+        Integer userId = jwtHelper.getUserID(authHeader);
+        User user = userRepository.findUserById(userId);
         if (user == null) {
             throw new RuntimeException("User not found");
         }
@@ -113,24 +108,24 @@ public class CommonOrdersService {
         if (currentStatus == null) {
             throw new RuntimeException("Order status history not found");
         }
-        OrdersDTO ordersDTO = new OrdersDTO();
+        OrdersDTO ordersDTO;
         switch (role) {
             case "ROLE_BUYER" ->
-                    ordersDTO = buyerOrdersServiceImp.updateOrderStatus(currentStatus, newStatus, orders);
+                    ordersDTO = buyerOrdersServiceImp.updateOrderStatus( newStatus, orders);
             case "ROLE_SHOP_MANAGER" ->
-                    ordersDTO = shopManagerOrderServiceImp.updateOrderStatus(currentStatus, newStatus, orders);
+                    ordersDTO = shopManagerOrderServiceImp.updateOrderStatus( newStatus, orders);
             default -> throw new RuntimeException("Role not found" + role);
         }
         return ordersDTO;
     }
 
 
-    public List<OrderItemDTO> getOrdersItems(String authHeader,  Integer ordersId) {
-        Integer userID = jwtHelper.getUserID(authHeader);
-        String role = userRepository.findUserById(userID).getRole().getRoleName();
+    public List<OrderItemDTO> getOrdersItems(String authHeader,  Integer orderId) {
+        Integer userId = jwtHelper.getUserID(authHeader);
+        String role = userRepository.findUserById(userId).getRole().getRoleName();
         return switch (role) {
-          case "ROLE_BUYER" -> buyerOrdersServiceImp.getListOrderItems(userID,ordersId);
-          case "ROLE_SHOP_MANAGER" -> shopManagerOrderServiceImp.getListOrderItems(userID,ordersId);
+          case "ROLE_BUYER" -> buyerOrdersServiceImp.getListOrderItems(userId,orderId);
+          case "ROLE_SHOP_MANAGER" -> shopManagerOrderServiceImp.getListOrderItems(userId,orderId);
           default -> Collections.emptyList();
         };
     }

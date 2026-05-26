@@ -30,8 +30,10 @@ const endpoints = {
     get_orders: `${API_BASE_URL}/orders`,
     updateStatus: (id, action) =>
       `${API_BASE_URL}/orders/${id}/status/${action}`,
-    preview: `${API_BASE_URL}/orders/preview`,
+    shippingFee: `${API_BASE_URL}/orders/shipping-fee`,
     items: `${API_BASE_URL}/orders/items`,
+    active: `${API_BASE_URL}/orders/active`,
+    previous: `${API_BASE_URL}/orders/previous`,
   },
   routes: {
     shippingFee: `${API_BASE_URL}/routes/shipping-fee`,
@@ -53,7 +55,11 @@ const endpoints = {
     countUnreadMessage: `${API_BASE_URL}/messages/unread-count`,
     send: `${API_BASE_URL}/messages/send`,
     olderMessages: `${API_BASE_URL}/messages/older-messages`,
-    markUpMessages : `${API_BASE_URL}/messages/mark-up-messages`
+    markUpMessages: `${API_BASE_URL}/messages/mark-up-messages`,
+  },
+  chart: {
+    monthlyRevenue: `${API_BASE_URL}/revenue/monthly`,
+    dailyRevenue: `${API_BASE_URL}/revenue/daily`,
   },
 };
 export default endpoints;

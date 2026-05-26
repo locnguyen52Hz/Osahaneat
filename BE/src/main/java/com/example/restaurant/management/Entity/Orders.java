@@ -1,15 +1,16 @@
 package com.example.restaurant.management.Entity;
 
+import com.example.restaurant.management.DTO.Location;
+import com.example.restaurant.management.Enums.OrdersStatus;
 import jakarta.persistence.*;
 
-
-import java.time.LocalDateTime;
-
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 public class Orders {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -28,20 +29,24 @@ public class Orders {
     @Column(name = "address", nullable = false)
     private String address;
 
-   @Column(name = "from_lat", nullable = false)
-   private double fromLatitude;
+    // ✅ FROM LOCATION
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "latitude", column = @Column(name = "from_lat", nullable = false)),
+            @AttributeOverride(name = "longitude", column = @Column(name = "from_longitude", nullable = false))
+    })
+    private Location fromLocation;
 
-   @Column(name = "from_longitude",nullable = false)
-   private double fromLongitude;
+    // ✅ TO LOCATION
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "latitude", column = @Column(name = "to_lat", nullable = false)),
+            @AttributeOverride(name = "longitude", column = @Column(name = "to_longitude", nullable = false))
+    })
+    private Location toLocation;
 
-   @Column(name = "to_lat", nullable = false)
-   private double toLatitude;
-
-   @Column(name = "to_Longitude", nullable = false)
-   private double toLongitude;
-
-   @Column(name = "distance")
-   private double distance;
+    @Column(name = "distance")
+    private double distance;
 
     @Column(name = "note")
     private String note;
@@ -55,49 +60,21 @@ public class Orders {
     @Column(name = "shipping_fee")
     private double shipFee;
 
+    @Column(name = "created_at")
+    private Instant createdAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private OrdersStatus status;
+
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-     private List<OrderStatusHistory> statusHistories = new ArrayList<>();
+    private List<OrderStatusHistory> statusHistories = new ArrayList<>();
 
+    @Version
+    private Integer version;
 
-    public List<OrderStatusHistory> getStatusHistories() {
-        return statusHistories;
-    }
-
-    public void setStatusHistories(List<OrderStatusHistory> statusHistories) {
-        this.statusHistories = statusHistories;
-    }
-
-    public double getFromLatitude() {
-        return fromLatitude;
-    }
-
-    public void setFromLatitude(double fromLatitude) {
-        this.fromLatitude = fromLatitude;
-    }
-
-    public double getFromLongitude() {
-        return fromLongitude;
-    }
-
-    public void setFromLongitude(double fromLongitude) {
-        this.fromLongitude = fromLongitude;
-    }
-
-    public double getToLatitude() {
-        return toLatitude;
-    }
-
-    public void setToLatitude(double toLatitude) {
-        this.toLatitude = toLatitude;
-    }
-
-    public double getToLongitude() {
-        return toLongitude;
-    }
-
-    public void setToLongitude(double toLongitude) {
-        this.toLongitude = toLongitude;
-    }
+    // ================= GETTER / SETTER =================
 
     public Integer getId() {
         return id;
@@ -123,13 +100,6 @@ public class Orders {
         this.user = user;
     }
 
-    public Shops getShop() {
-        return shops;
-    }
-
-    public void setShop(Shops shops) {
-        this.shops = shops;
-    }
 
     public String getAddress() {
         return address;
@@ -139,8 +109,56 @@ public class Orders {
         this.address = address;
     }
 
+    public OrdersStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrdersStatus status) {
+        this.status = status;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Location getFromLocation() {
+        return fromLocation;
+    }
+
+    public void setFromLocation(Location fromLocation) {
+        this.fromLocation = fromLocation;
+    }
+
+    public Location getToLocation() {
+        return toLocation;
+    }
+
+    public void setToLocation(Location toLocation) {
+        this.toLocation = toLocation;
+    }
+
     public double getDistance() {
         return distance;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
+    public Shops getShops() {
+        return shops;
+    }
+
+    public void setShops(Shops shops) {
+        this.shops = shops;
     }
 
     public void setDistance(double distance) {
@@ -177,5 +195,13 @@ public class Orders {
 
     public void setShipFee(double shipFee) {
         this.shipFee = shipFee;
+    }
+
+    public List<OrderStatusHistory> getStatusHistories() {
+        return statusHistories;
+    }
+
+    public void setStatusHistories(List<OrderStatusHistory> statusHistories) {
+        this.statusHistories = statusHistories;
     }
 }

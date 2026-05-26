@@ -1,0 +1,19 @@
+.foodItem {
+    display: flex;
+    column-gap: 20px;
+    align-items: center;
+    font-size: 13px;
+    line-height: 19px;
+    color: #5a5c69;
+    padding: 0 5px;
+}
+
+.quantity {
+    padding: 0 8px;
+    border-radius: 6px;
+}
+
+.price {
+    margin-left: auto;
+    color: #858796;
+}

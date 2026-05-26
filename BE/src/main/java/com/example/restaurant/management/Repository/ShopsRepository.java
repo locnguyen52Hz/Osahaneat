@@ -43,29 +43,4 @@ public interface ShopsRepository extends JpaRepository<Shops, Integer>, JpaSpeci
     List<ShopDTO> findTop6ShopsLocation();
 
 
-    @Query("""
-            SELECT new com.example.restaurant.management.DTO.OrdersDTO(
-                    od.id
-                    ,od.totalAmount
-                    ,odh.status
-                    ,od.note
-                    ,odh.startTime
-                    ,od.address
-                    ,od.shipFee
-                    ,od.subtotal
-                    ,od.distance
-                    ,usr.id
-                    ,usr.fullName
-                )
-                    FROM Shops sh
-                    INNER JOIN Orders od ON sh.id = od.shops.id
-                    INNER JOIN OrderStatusHistory odh ON odh.order.id = od.id
-                    INNER JOIN User usr ON od.user.id = usr.id
-                    WHERE
-                        sh.manager.id = :managerID
-                        AND odh.endTime IS NULL
-                    ORDER BY od.id DESC
-            """)
-    Page<OrdersDTO> findListOrdersByShopsId(@Param("managerID") Integer managerID, Pageable pageable);
-
 }

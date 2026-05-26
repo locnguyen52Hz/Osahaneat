@@ -3,6 +3,7 @@
     box-shadow: 0 0.125rem 0.25rem 0 rgba(58, 59, 69, 0.2) !important;
     padding: 16px;
     display: flex;
+
     flex-direction: column;
     row-gap: 16px;
     border-radius: 9px;
@@ -23,6 +24,7 @@
     display: flex;
     align-items: center;
     column-gap: 20px;
+    justify-content: space-between;
 }
 
 .cardBody button {
@@ -40,23 +42,115 @@
 }
 
 
-.orderDetailBtn {
+.time {
+    display: flex;
+    gap: 12px;
+}
+
+.cardFooter {}
+
+.cardFooter div {}
+
+.done,
+.current {
+    height: 6px;
+    position: relative;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+
+.done {
+    background-color: #1cc88a;
+
+}
+
+.current {
+
+    background-color: #c60021;
+}
+
+.upcoming {
+
+    background-color: #eaecf4;
+}
+
+.current>.tooltip,
+.upcoming>.tooltip,
+.done>.tooltip {
+    display: none;
+
+}
+
+.current:hover>.tooltip,
+.upcoming:hover>.tooltip,
+.done:hover>.tooltip {
+    display: block;
+
+}
+
+.tooltip {
+    /* visibility: hidden; */
+    width: 100%;
+    background-color: black;
+    color: #ffffff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 100;
+    bottom: 10px;
+    font-size: 12px;
+}
+
+.tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
+}
+
+.btns{
+    display: flex;
+    column-gap: 16px;
+}
+
+.trackBtn {
+    background-color: transparent;
+    color: #d32f2f;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #d32f2f;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.trackBtn:hover{
+    color: white;
+    background-color: #d32f2f;
+}
+
+
+.detailBtn {
     background-color: #d32f2f;
     color: white;
     padding: 12px;
     border: none;
     border-radius: 8px;
     font-size: 1rem;
-    font-weight: 600;
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
 
-.orderDetailBtn:hover {
+.detailBtn:hover {
     background-color: #b71c1c;
-}
-
-.time {
-    display: flex;
-    gap: 12px;
 }

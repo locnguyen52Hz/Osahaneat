@@ -1,34 +1,47 @@
-
 import style from "../assets/styles/Navbar.module.css";
 import shared from "../assets/styles/Shared.module.css";
-
+import { useLocation } from "../contexts/LocationContext";
+import { useModal } from "../contexts/ModalContext";
 
 import { useFormattedLocation } from "../hooks/useFormatedLocation";
-import SearchBox from "../pages/Buyer/SearchBox";
+import SearchBox from "../features/search/SearchBox";
+import LoadingSpinner from "./common/LoadingSpinner";
+import SavedAddress from "./SavedAddress";
 
 function NavBar() {
-  const myLocation = useFormattedLocation()
-
+  const { location, loading, error } = useLocation();
+  const { openModal } = useModal();
 
   return (
     <nav className={`${style.navBarWrapper} ${shared.boxShadow}`}>
       {/* Left */}
       <div className={style.navLeft}>
-        <div className={`${style.navItem} ${shared.paragraphColor} `}>
-          <i className={` ${shared.textDanger} bi bi-crosshair2`}></i>
-          {myLocation.address ?  myLocation.address : myLocation}
+        <div
+          className={`${style.navItem} ${shared.paragraphColor}`}
+          onClick={() => openModal(<SavedAddress />, { type: "slide" })}
+        >
+          <i className={`${shared.textDanger} bi bi-crosshair2`}></i>
+
+          {loading ? (
+            <LoadingSpinner />
+          ) : error ? (
+            "Không thể lấy vị trí"
+          ) : location ? (
+            location.address
+          ) : (
+            "Không xác định vị trí"
+          )}
         </div>
+
         <div
           className={`${style.navItem} ${shared.paragraphColor} ${shared.textUppercase}`}
         >
-          <i className={`${shared.textDanger} bi bi-bag-fill`}></i>
-          <p>pick up</p>
         </div>
       </div>
 
       {/* Right */}
       <div className={style.navRight}>
-        <SearchBox/>
+        <SearchBox />
       </div>
     </nav>
   );

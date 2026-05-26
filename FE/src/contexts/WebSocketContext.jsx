@@ -9,7 +9,7 @@ import { Client } from "@stomp/stompjs";
 import { apiGet } from "../api/api";
 import endpoints from "../api/endpoints";
 import { useConversationStore } from "../stores/messages/useConversationStore";
-import { useChatScroll } from "../hooks/useChatScroll";
+import { useChatScroll } from "../features/messages/hooks/useChatScroll";
 import { useAuthStore } from "../stores/Auth/useAuthStore";
 
 const WebSocketContext = createContext(null);
@@ -36,12 +36,6 @@ export function WebSocketProvider({ token, children }) {
 
   // message listeners (event-based)
   const messageListenersRef = useRef(new Set());
-
-  /* =========================Register / Unregister listener========================= */
-  const subscribeMessage = (callback) => {
-    messageListenersRef.current.add(callback);
-    return () => messageListenersRef.current.delete(callback);
-  };
 
   // console.log(token);
 
@@ -70,13 +64,12 @@ export function WebSocketProvider({ token, children }) {
             ...message,
             isMine: message.senderId === myId,
           };
-
+          console.log(newMessage)
 
           const store = useConversationStore.getState();
 
-
-
           store.ensureConversationExists(newMessage);
+          // console.log(newMessage)
           store.onIncomingMessage(newMessage);
         });
 
@@ -134,7 +127,6 @@ export function WebSocketProvider({ token, children }) {
       value={{
         sendMessage,
         ordersNotify,
-        subscribeMessage,
       }}
     >
       {children}

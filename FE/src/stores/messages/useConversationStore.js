@@ -8,7 +8,6 @@ import {
   normalizeMessages,
 } from "../../util/message";
 
-
 // thêm message realtime đã xong
 
 //  buffer: đưa message vào pendingMessagesByConversation chưa làm
@@ -30,7 +29,6 @@ export const useConversationStore = create((set, get) => ({
       const res = await apiGet(`${endpoints.messages.conversation}?page=0`);
       // console.log(res.data);
       const list = res.data.data;
-      console.log(list)
 
       const map = {};
       for (const c of list) {
@@ -48,6 +46,21 @@ export const useConversationStore = create((set, get) => ({
   setActiveConversation: (id) => set({ activeConversationId: id }),
 
   /* ================= Messages ================= */
+
+  sendMessage: async (newMessage) => {
+    const state = get();
+    const msgBody = {
+      receiverId: state.conversationMap[state.activeConversationId].partnerId,
+      content: newMessage.trim(),
+    };
+    // console.log(msgBody);
+    try {
+      const res = await apiPost(endpoints.messages.send, msgBody);
+      // console.log(res.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  },
 
   fetchLatestMessages: async (conversationId, partnerId) => {
     const state = get();
@@ -76,9 +89,9 @@ export const useConversationStore = create((set, get) => ({
       const { messages, oldestCursor, latestCursor } = res.data.data;
 
       const myId = useAuthStore.getState().myId;
+      console.log(myId)
 
       const grouped = groupMessagesByDate(normalizeMessages(messages, myId));
-      console.log(grouped)
 
       set((prev) => ({
         messagesByConversation: {
@@ -191,14 +204,14 @@ export const useConversationStore = create((set, get) => ({
 
       // ===== 1. HANDLE MESSAGE DETAIL =====
       let updatedMessagesByConversation = state.messagesByConversation;
-      
+
       let updatedPending = state.pendingMessagesByConversation;
 
       if (!hasFetched) {
         //  chưa fetch → buffer
         const pending =
           state.pendingMessagesByConversation[conversationId] || [];
-        console.log(pending);
+        // console.log(pending);
 
         // tránh duplicate trong buffer
         const exists = pending.some((m) => m.id === message.id);
@@ -215,7 +228,6 @@ export const useConversationStore = create((set, get) => ({
 
         const lastIndex = groups.length - 1;
         const lastGroup = groups[lastIndex];
-    
 
         const date = new Date(message.createdAt);
         const dateKey = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
@@ -251,7 +263,10 @@ export const useConversationStore = create((set, get) => ({
             [conversationId]: {
               ...conversation,
               groupedMessages: newGroups,
-              hasNewMessage: !message.isMine,
+              latestCursor: {
+                createdAt: message.createdAt,
+                id: message.id,
+              },
             },
           };
         }
@@ -268,7 +283,11 @@ export const useConversationStore = create((set, get) => ({
         unreadCount: isActive
           ? conversation.unreadCount
           : conversation.unreadCount + 1,
+        senderName: message.senderName,
+        senderId: message.senderId,
       };
+
+      console.log(updatedConversation);
 
       return {
         messagesByConversation: updatedMessagesByConversation,
@@ -290,21 +309,6 @@ export const useConversationStore = create((set, get) => ({
       };
     }),
 
-  resetHasNewMessage: (conversationId) => {
-    set((state) => {
-      const conversation = state.messagesByConversation[conversationId];
-      return {
-        messagesByConversation: {
-          ...state.messagesByConversation,
-          [conversationId]: {
-            ...conversation,
-            hasNewMessage: false,
-          },
-        },
-      };
-    });
-  },
-
   clearPendingMessages: (conversationId) =>
     set((state) => ({
       pendingMessagesByConversation: {
@@ -320,7 +324,7 @@ export const useConversationStore = create((set, get) => ({
       // console.log("check", conversationId);
 
       if (state.conversationMap[conversationId]) {
-        console.log("conversation already exists");
+        // console.log("conversation already exists");
         return {};
       }
 

@@ -1,6 +1,9 @@
 package com.example.restaurant.management.Service.Orders.Imp;
 
 import com.example.restaurant.management.DTO.OrderItemDTO;
+import com.example.restaurant.management.DTO.OrderTimeLineDTO;
+import com.example.restaurant.management.DTO.OrderTimeLineRowDTO;
+
 import com.example.restaurant.management.DTO.OrdersDTO;
 import com.example.restaurant.management.Entity.OrderStatusHistory;
 import com.example.restaurant.management.Entity.Orders;
@@ -19,6 +22,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,40 +51,57 @@ public class ShopManagerOrderServiceImp implements OrdersService {
 
 
     @Override
-    public OrdersDTO updateOrderStatus(OrderStatusHistory currentStatus, OrdersStatus newStatus, Orders orders) {
+    @Transactional
+    public OrdersDTO updateOrderStatus( OrdersStatus newStatus, Orders orders) {
         OrdersDTO ordersDTO = new OrdersDTO();
 
+        // 1. lấy current status
+        OrderStatusHistory currentStatus = orderStatusHistoryRepository.findCurrentStatus(orders.getId());
+
+
+        // 2. validate
         if (!currentStatus.getStatus().equals(OrdersStatus.CANCELLED) && !currentStatus.getStatus().equals(OrdersStatus.COMPLETED)) {
             ordersHelper.applyNewStatus(orders, currentStatus, newStatus);
 
-            ordersDTO.setPartnerName(orders.getShop().getShopName());
-            ordersDTO.setPartnerID(orders.getUser().getId());
+            //3. save
+            orders.setStatus(newStatus);
+            ordersRepository.save(orders);
+
+            // build dot
+            ordersDTO.setPartnerName(orders.getShops().getShopName());
+            ordersDTO.setPartnerId(orders.getUser().getId());
 
             List<OrdersItem> ordersItems = ordersItemRepository.findByOrdersId(orders.getId());
             ordersDTO.setFoods(ordersHelper.mapOrderItems(ordersItems));
-            ordersDTO.setOrderID(orders.getId());
+            ordersDTO.setOrderId(orders.getId());
             ordersDTO.setStatus(newStatus.toString());
         } else {
-            throw new IllegalStateException("Buyer can only cancel PENDING orders.");
+            throw new IllegalStateException("Update failed");
         }
         return ordersDTO;
     }
 
     @Override
-    public Page<OrdersDTO> getOrdersWithPage(Integer userId, int page) {
-        Pageable pageable = PageRequest.of(page, 12);
-        return shopsRepository.findListOrdersByShopsId(userId, pageable);
+    public Page<OrdersDTO> getOrdersWithPage(Integer userId, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return ordersRepository.findListOrdersByShopsId(userId, pageable);
+    }
+
+
+    public Page<OrdersDTO> getOrdersWithTotalQuantity(Integer userId, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return ordersRepository.findOrdersWithQuantity(userId,pageable);
     }
 
     @Override
-    public Page<OrdersDTO> getOrdersByStatus(Integer userId,OrdersStatus status, int page) {
+    public Page<OrdersDTO> getPreviousOrders(Integer userId, int page) {
         Shops shop = shopsRepository.findShopsByManager_Id(userId);
         if (shop == null) {
             throw new RuntimeException("Shop not found");
         }
 
-        Pageable pageable = PageRequest.of(page, 12);
-        Page<OrdersDTO> ordersPage = ordersRepository.findOrdersByStatusForShopManager(status, shop.getId(), pageable);
+        Pageable pageable = PageRequest.of(page, 10);
+        Page<OrdersDTO> ordersPage = ordersRepository.findPreviousOrdersForShopManager( shop.getId(), pageable);
 
         return ordersPage;
     }
@@ -105,8 +126,18 @@ public class ShopManagerOrderServiceImp implements OrdersService {
             orderItemDTO.setQuantity(ordersItem.getQuantity());
             orderItemDTOS.add(orderItemDTO);
         }
-
         return orderItemDTOS;
+    }
+
+
+    @Override
+    public Page<OrderTimeLineDTO> getActiveOrdersWithPage(Integer userId, int page) {
+        return Page.empty();
+    }
+
+    @Override
+    public Page<OrderTimeLineDTO> getPreviousOrdersWithPage(Integer userId, int page) {
+        return null;
     }
 
 

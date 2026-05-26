@@ -1,5 +1,6 @@
 package com.example.restaurant.management.Service.ServiceImp;
 
+import com.example.restaurant.management.DTO.Location;
 import com.example.restaurant.management.DTO.OsrmResponse;
 import com.example.restaurant.management.DTO.OsrmTableResponse;
 import com.example.restaurant.management.Entity.Shops;
@@ -19,11 +20,11 @@ public class RoutesImp implements RoutesService {
     ShopsRepository shopsRepository;
 
     @Override
-    public OsrmResponse getRoutes(double fromLongitude, double fromLatitude, double toLongitude, double toLatitude) {
+    public OsrmResponse getRoutes(Location from, Location to) {
         String url = String.format(
                 "http://localhost:5000/route/v1/driving/%f,%f;%f,%f?overview=full&geometries=geojson",
-                fromLongitude, fromLatitude,
-                toLongitude, toLatitude
+                from.getLongitude(), from.getLatitude(),
+                to.getLongitude(), to.getLatitude()
         );
 
         return restTemplate.getForObject(url, OsrmResponse.class);

@@ -18,7 +18,7 @@ public class NotificationServiceImp implements NotificationService {
         Notification<OrdersDTO> notification = new Notification<>();
         notification.setData(ordersDTO);
         notification.setMessage("Order " +ordersDTO.getStatus() + " by " + ordersDTO.getPartnerName());
-        simpMessagingTemplate.convertAndSendToUser(String.valueOf(ordersDTO.getPartnerID()),
+        simpMessagingTemplate.convertAndSendToUser(String.valueOf(ordersDTO.getPartnerId()),
                 "/queue/notify",notification);
     };
 

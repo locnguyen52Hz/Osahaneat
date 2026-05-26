@@ -34,6 +34,7 @@ public class BuyerShopServiceImp implements ShopService {
             shopDTO.setShopAvatar(shop.getShopImage());
             shopDTO.setId(shop.getId());
             shopDTOS.add(shopDTO);
+            shopDTO.setAddress(shop.getAddress());
         }
         return shopDTOS;
     }

@@ -1,0 +1,76 @@
+.timeLineTracks {
+    display: flex;
+    column-gap: 5px;
+}
+
+.timeLineTracks div {
+    flex: 3;
+    border-radius: 8px;
+}
+
+.done,
+.current {
+    height: 6px;
+    position: relative;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+
+.done {
+    background-color: #1cc88a;
+
+}
+
+.current {
+
+    background-color: #c60021;
+}
+
+.upcoming {
+
+    background-color: #eaecf4;
+}
+
+.current>.tooltip,
+.upcoming>.tooltip,
+.done>.tooltip {
+    display: none;
+
+}
+
+.current:hover>.tooltip,
+.upcoming:hover>.tooltip,
+.done:hover>.tooltip {
+    display: block;
+
+}
+
+.tooltip {
+    /* visibility: hidden; */
+    width: 100%;
+    background-color: black;
+    color: #ffffff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 100;
+    bottom: 10px;
+    font-size: 12px;
+}
+
+.tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
+}

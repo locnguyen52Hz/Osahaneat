@@ -1,19 +1,19 @@
 // routes/config.js
-import Home from "../pages/Buyer/Home";
-import Dashboard from "../pages/ShopManager/Dashboard";
-import Favourites from "../pages/Buyer/Favourites";
-import Explore from "../pages/Buyer/Explore";
-import ShopDetail from "../pages/Buyer/ShopDetail";
-import Orders from "../pages/Common/Orders";
-import Login from "../pages/Common/Login";
-import Register from "../pages/Common/Register";
-import Forbidden from "../pages/Common/Forbidden";
+import Home from "../features/buyer/pages/Home";
+import Dashboard from "../features/shop-manager/Dashboard";
+import Favourites from "../features/buyer/pages/Favourites";
+import Explore from "../features/buyer/pages/Explore";
+import ShopDetail from "../features/shops/ShopDetail";
+import Orders from "../features/orders/pages/Orders";
+import Login from "../features/auth/Common/Login";
+import Register from "../features/auth/Register";
+import Forbidden from "../features/auth/Common/Forbidden";
 
-import Map from "../components/Map";
-import RegisterShop from "../pages/ShopManager/RegisterShop";
-import Categories from "../pages/ShopManager/Categories";
-import SearchResults from "../pages/Buyer/SearchResults";
-import MessagesPage from "../pages/Common/MessagesPage";
+import Nearest from "../features/buyer/pages/Nearest";
+import RegisterShop from "../features/auth/RegisterShop";
+import Categories from "../features/shop-manager/Categories";
+import SearchResults from "../features/search/SearchResults";
+import MessagesPage from "../features/messages/pages/MessagesPage";
 import { icon } from "leaflet";
 
 const routes = {
@@ -54,7 +54,7 @@ const routes = {
         label: "orders",
         icon: "bi bi-bag-fill",
         showInSideBar: true,
-        notify: 'orders',
+        notify: "orders",
       },
       {
         path: "/buyer/detail/shop/:id",
@@ -62,10 +62,10 @@ const routes = {
         showInSideBar: false,
       },
       {
-        path: "/buyer/map",
-        element: <Map />,
+        path: "/buyer/nearest",
+        element: <Nearest />,
         showInSideBar: true,
-        label: "map",
+        label: "nearest",
       },
       {
         path: "/search",
@@ -77,7 +77,7 @@ const routes = {
         element: <MessagesPage />,
         label: "messages",
         icon: '"bi bi-chat-dots-fill"',
-        notify: 'message',
+        notify: "message",
         showInSideBar: true,
       },
     ],
@@ -99,7 +99,7 @@ const routes = {
         label: "shop orders",
         icon: "bi bi-bag-fill",
         showInSideBar: true,
-        notify: 'orders',
+        notify: "orders",
       },
       {
         path: "/manager/categories",
@@ -113,7 +113,7 @@ const routes = {
         element: <MessagesPage />,
         label: "messages",
         icon: '"bi bi-chat-dots-fill"',
-        notify: 'message',
+        notify: "message",
         showInSideBar: true,
       },
     ],

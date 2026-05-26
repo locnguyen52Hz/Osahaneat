@@ -11,6 +11,8 @@
 .header {
     height: auto;
     /* padding-bottom: 12px; */
+    margin: 1rem 0;
+
 }
 
 .header h3 {

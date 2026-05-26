@@ -78,7 +78,7 @@ public class CommonMessageService {
     public MessagePageResponseDTO latestMessage(@RequestHeader("Authorization") String authHeader, Integer conversationId, Integer partnerId) {
         Integer userId = jwtHelper.getUserID(authHeader);
         String role = userRepository.findUserById(userId).getRole().getRoleName();
-        Pageable pageable = PageRequest.ofSize(5);
+        Pageable pageable = PageRequest.ofSize(10);
 
 
         return switch (role) {

@@ -1,0 +1,30 @@
+.container{
+
+}
+
+.rating{
+    display: flex;
+    align-items: center;
+}
+
+
+.starList{
+    width: 70%;
+    display: flex;
+    align-items: center;
+    column-gap: 8px;
+    color: #f6c23e;
+
+}
+
+
+
+.starList > i:hover{
+    cursor: pointer;
+
+  
+}
+
+.btn{
+    width: 30%;
+}

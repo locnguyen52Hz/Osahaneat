@@ -1,18 +1,28 @@
 import React from "react";
 import ReactPaginate from "react-paginate";
-import styles from '../../assets/styles/Paginate.module.css'
+import styles from "../../assets/styles/Paginate.module.css";
 
+function Paginate({
+  pageCount,
+  onPageChange,
+  pageRangeDisplayed = 0,
+  marginPagesDisplayed = 3,
+  breakLabel = "...",
+  nextLabel = ">",
+  previousLabel = "<",
+  forcePage,
+}) {
 
-function Paginate({pageCount, onPageChange}) {
   return (
     <>
       <ReactPaginate
-        nextLabel="›"
-        previousLabel="‹"
-        breakLabel="..."
+        nextLabel={nextLabel}
+        forcePage={forcePage}
+        previousLabel={previousLabel}
+        breakLabel={breakLabel}
         pageCount={pageCount}
-        marginPagesDisplayed={3}
-        pageRangeDisplayed={3}
+        marginPagesDisplayed={marginPagesDisplayed}
+        pageRangeDisplayed={pageRangeDisplayed}
         onPageChange={onPageChange}
         containerClassName={styles.paginateContainer}
         pageClassName={styles.pageItem}

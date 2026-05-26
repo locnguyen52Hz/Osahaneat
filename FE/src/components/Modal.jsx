@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import style from "../assets/styles/Modal.module.css";
 import { MODAL_ANIMATION_DURATION } from "../constants";
 
-function Modal({ isOpen, onClose, closeAllModal, children, zIndex, type }) {
+function Modal({ isOpen, onClose, children, zIndex, type }) {
   const [closing, setClosing] = useState(false);
 
   useEffect(() => {
@@ -18,41 +18,21 @@ function Modal({ isOpen, onClose, closeAllModal, children, zIndex, type }) {
   const handleClose = (e) => {
     e?.stopPropagation?.();
 
-    // Nếu modal đang trong trạng thái đóng, bỏ qua
     if (closing) return;
 
     setClosing(true);
-
-    // Hẹn giờ gọi onClose sau 300ms (thời gian animation)
-    const timeoutId = setTimeout(() => {
-      onClose();
-    }, MODAL_ANIMATION_DURATION);
-
-    // Dọn dẹp timeout khi component unmount
-    return () => clearTimeout(timeoutId);
+    onClose(); // gọi callback
   };
 
-  const handleCloseAll = (e) => {
-    e?.stopPropagation?.();
-
-    // Nếu modal đang trong trạng thái đóng, bỏ qua
-    if (closing) return;
-
-    setClosing(true);
-
-    // Hẹn giờ gọi onClose sau 300ms (thời gian animation)
-    const timeoutId = setTimeout(() => {
-      closeAllModal();
-    }, 300);
-
-    // Dọn dẹp timeout khi component unmount
-    return () => clearTimeout(timeoutId);
-  };
 
   if (!isOpen) return null;
 
   return ReactDOM.createPortal(
-    <div className={`${style.modalOverlay} `} style={{ zIndex }}>
+    <div
+      className={`${style.modalOverlay} `}
+      style={{ zIndex }}
+      onClick={() => handleClose()}
+    >
       {type === "slide" && (
         <div
           className={`${style.modalContent} ${
@@ -72,7 +52,7 @@ function Modal({ isOpen, onClose, closeAllModal, children, zIndex, type }) {
       )}
       {type === "popup" && <div className={style.popup}>{children}</div>}
     </div>,
-    document.body
+    document.body,
   );
 }
 

@@ -12,7 +12,9 @@ import java.util.List;
 @Repository
 public interface OrderStatusHistoryRepository extends JpaRepository<OrderStatusHistory, Integer> {
 
-    @Query("SELECT h FROM OrderStatusHistory h WHERE h.order.id = :orderId AND h.endTime IS NULL")
+    @Query("SELECT h" +
+           " FROM OrderStatusHistory h" +
+           " WHERE h.order.id = :orderId AND h.endTime IS NULL")
     OrderStatusHistory findCurrentStatus(@Param("orderId") Integer orderId);
 
     @Query("""

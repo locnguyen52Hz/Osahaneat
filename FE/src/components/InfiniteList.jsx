@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import OrderCard from "./OrderCard";
+import OrderCard from "./UpcomingOrderCard";
 
 function InfiniteList({
   list,

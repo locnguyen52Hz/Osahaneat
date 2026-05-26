@@ -12,31 +12,77 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrdersDTO {
     // thông tin đơn hàng
-    private Integer orderID;
+    private Integer orderId;
     private double totalAmount;
     private String status;
     private String note;
-    private Instant time;
+    private Instant createdAt;
     private String address;
     private double shippingFee;
     private double subtotal;
     private double distance;
+    private Long totalQuantity;
 
+    //id người nhận thông báo
+    private Integer partnerId;
+    private String partnerName;
+    private Double partnerLatitude;
+    private Double partnerLongitude;
+    private Integer shopId;
+    private String shopName;
+    private double latitude;
+    private double longitude;
+    private List<OrderItemDTO> foods;
     public OrdersDTO() {}
 
-    public OrdersDTO(Integer orderID, double totalAmount, OrdersStatus status, String note, Instant time, String address, double shippingFee, double subtotal, double distance, Integer partnerID, String partnerName) {
-        this.orderID = orderID;
+    public OrdersDTO(Integer orderId, double totalAmount, OrdersStatus status,
+                     String note, Instant createdAt, String address, double shippingFee,
+                     double subtotal, double distance, Integer shopId, String shopName, double  latitude, double longitude) {
+        this.orderId = orderId;
         this.totalAmount = totalAmount;
         this.status = status.toString();
         this.note = note;
-        this.time = time;
+        this.createdAt = createdAt;
         this.address = address;
         this.shippingFee = shippingFee;
         this.subtotal = subtotal;
         this.distance = distance;
-        this.partnerID = partnerID;
+        this.shopId = shopId;
+        this.shopName = shopName;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+
+    public OrdersDTO(Integer orderId, double totalAmount, OrdersStatus status,
+                     String note, Instant createdAt, String address, double shippingFee,
+                     double subtotal, double distance, Integer partnerId, String partnerName) {
+        this.orderId = orderId;
+        this.totalAmount = totalAmount;
+        this.status = status.toString();
+        this.note = note;
+        this.createdAt = createdAt;
+        this.address = address;
+        this.shippingFee = shippingFee;
+        this.subtotal = subtotal;
+        this.distance = distance;
+        this.partnerId = partnerId;
         this.partnerName = partnerName;
     }
+
+    public OrdersDTO(Integer orderId, double totalAmount, OrdersStatus status,
+                     Instant createdAt, String address, Integer partnerId,
+                     String partnerName, Long totalQuantity) {
+        this.orderId = orderId;
+        this.totalAmount = totalAmount;
+        this.status = status.toString();
+        this.createdAt = createdAt;
+        this.address = address;
+        this.partnerId = partnerId;
+        this.partnerName = partnerName;
+        this.totalQuantity = totalQuantity;
+    }
+
 
     public double getShippingFee() {
         return shippingFee;
@@ -71,15 +117,21 @@ public class OrdersDTO {
     }
 
 
-    private Integer shopID;
-    //chi tiết món ăn
-    private List<OrderItemDTO> foods;
+    public double getLatitude() {
+        return latitude;
+    }
 
-    //id người nhận thông báo
-    private Integer partnerID;
-    private String partnerName;
-    private Double partnerLatitude;
-    private Double partnerLongitude;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
 
     public Double getPartnerLatitude() {
         return partnerLatitude;
@@ -97,12 +149,20 @@ public class OrdersDTO {
         this.partnerLongitude = partnerLongitude;
     }
 
-    public Integer getPartnerID() {
-        return partnerID;
+    public Integer getOrderId() {
+        return orderId;
     }
 
-    public void setPartnerID(Integer partnerID) {
-        this.partnerID = partnerID;
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
+    }
+
+    public Integer getPartnerId() {
+        return partnerId;
+    }
+
+    public void setPartnerId(Integer partnerId) {
+        this.partnerId = partnerId;
     }
 
     public String getPartnerName() {
@@ -113,12 +173,12 @@ public class OrdersDTO {
         this.partnerName = partnerName;
     }
 
-    public Integer getOrderID() {
-        return orderID;
+    public Instant getCreatedAt() {
+        return createdAt;
     }
 
-    public void setOrderID(Integer orderID) {
-        this.orderID = orderID;
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
     }
 
     public double getTotalAmount() {
@@ -145,22 +205,30 @@ public class OrdersDTO {
         this.note = note;
     }
 
-    public Instant getTime() {
-        return time;
+
+    public Integer getShopId() {
+        return shopId;
     }
 
-    public void setTime(Instant time) {
-        this.time = time;
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
     }
 
-    public Integer getShopID() {
-        return shopID;
+    public String getShopName() {
+        return shopName;
     }
 
-    public void setShopID(Integer shopID) {
-        this.shopID = shopID;
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
     }
 
+    public Long getTotalQuantity() {
+        return totalQuantity;
+    }
+
+    public void setTotalQuantity(Long totalQuantity) {
+        this.totalQuantity = totalQuantity;
+    }
 
     public List<OrderItemDTO> getFoods() {
         return foods;

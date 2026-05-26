@@ -11,8 +11,10 @@ public class ShopDTO {
     private String shopAvatar;
     private String description;
     private double distance;
+    private String address;
+    private Location location;
 
-    // ✅ Constructor đầy đủ để JPA map trực tiếp
+    //
     public ShopDTO(double longitude, double latitude) {
         this.latitude = latitude;
         this.longitude = longitude;
@@ -24,11 +26,26 @@ public class ShopDTO {
         this.latitude = latitude;
     }
 
+    public ShopDTO(Integer shopId, String shopName) {
+        this.id = shopId;
+        this.name = shopName;
 
-    // ✅ Constructor rỗng (JPA / Jackson cần)
+    }
+
+    //
     public ShopDTO() {}
 
     // Getters & Setters
+
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -78,5 +95,11 @@ public class ShopDTO {
     }
     public void setDescription(String description) {
         this.description = description;
+    }
+    public String getAddress() {
+        return address;
+    }
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

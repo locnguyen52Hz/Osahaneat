@@ -2,18 +2,16 @@
     display: flex;
     align-items: center;
     padding: 10px 0;
-    border-top: 1px solid #e3e6f0;
-    border-bottom: 1px solid #e3e6f0;
     line-height: 1.5rem;
-    margin: 1rem 0;
     font-size: 13px;
-    color: #5a5c69 ;
+    color: #5a5c69;
 }
 
 
-.address{
+.address {
     font-weight: 700;
 }
+
 .edit {
     margin-left: auto;
     text-align: right;
@@ -24,4 +22,9 @@
 .edit:hover {
     text-decoration-line: underline;
     text-decoration-style: solid;
+}
+
+.border {
+    border-top: 1px solid #e3e6f0;
+    border-bottom: 1px solid #e3e6f0;
 }

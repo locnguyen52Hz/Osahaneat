@@ -37,3 +37,6 @@ export const getFormattedCartTotal = (foods = []) => {
   }, 0);
   return formatCurrency(total);
 };
+
+
+

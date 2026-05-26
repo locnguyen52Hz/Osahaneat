@@ -1,0 +1,36 @@
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    border: none;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    border-radius: 0.25rem;
+}
+
+.cardHeader {
+    padding: 15px 1.25rem;
+    margin-bottom: 0;
+    background-color: #fff;
+    border-bottom: 1px solid rgb(0 0 0 / 7%);
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    column-gap: 12px;
+}
+
+
+
+@media (min-width : 1200px) {
+    .cardBody {
+        width: 100%;
+        aspect-ratio: 2.5/1;
+    }
+}
+
+.cardBody {
+    padding: 1.2rem;
+}

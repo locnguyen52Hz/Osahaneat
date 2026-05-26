@@ -1,13 +1,13 @@
 package com.example.restaurant.management.Service.Orders;
 
-import com.example.restaurant.management.DTO.OrderItemDTO;
-import com.example.restaurant.management.DTO.OrdersDTO;
+import com.example.restaurant.management.DTO.*;
 import com.example.restaurant.management.Entity.*;
 import com.example.restaurant.management.Enums.OrdersStatus;
 import com.example.restaurant.management.Payload.Request.OrdersItemRequest;
 import com.example.restaurant.management.Payload.Request.OrdersRequest;
 import com.example.restaurant.management.Repository.FoodRepository;
 import com.example.restaurant.management.Repository.OrderStatusHistoryRepository;
+import com.example.restaurant.management.Repository.OrdersRepository;
 import com.example.restaurant.management.Repository.ShopsRepository;
 import com.example.restaurant.management.Service.RoutesService;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,9 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrdersHelper {
@@ -26,16 +27,19 @@ public class OrdersHelper {
     OrderStatusHistoryRepository orderStatusHistoryRepository;
 
     @Autowired
-    ShopsRepository  shopsRepository;
+    ShopsRepository shopsRepository;
 
     @Autowired
-    FoodRepository  foodRepository;
+    FoodRepository foodRepository;
 
     @Autowired
     RoutesService routesService;
 
+    @Autowired
+    OrdersRepository ordersRepository;
+
     public OrdersDTO orderPreview(OrdersRequest ordersRequest) {
-        OrdersDTO ordersDTO = new OrdersDTO();
+        OrdersDTO ordersDTO;
         ordersDTO = calculateOrderPrice(ordersRequest);
         return ordersDTO;
     }
@@ -50,17 +54,22 @@ public class OrdersHelper {
     }
 
 
-    public void applyNewStatus(Orders orders, OrderStatusHistory currentStatus, OrdersStatus newStatus) {
-        // kết thúc trạng thái cũ
-        currentStatus.setEndTime(Instant.now());
-        orderStatusHistoryRepository.save(currentStatus);
+    public void applyNewStatus(Orders orders,
+                               OrderStatusHistory currentStatus,
+                               OrdersStatus newStatus) {
+        Instant now = Instant.now();
 
-        // tạo trạng thái mới
+        // 1. End current status
+        currentStatus.setEndTime(now);
+
+        // 2. Create a new status
         OrderStatusHistory newStatusHistory = new OrderStatusHistory();
         newStatusHistory.setStatus(newStatus);
-        newStatusHistory.setStartTime(Instant.now());
+        newStatusHistory.setStartTime(now);
         newStatusHistory.setOrder(orders);
-        orderStatusHistoryRepository.save(newStatusHistory);
+
+        // 3. Add vào collection
+        orders.getStatusHistories().add(newStatusHistory);
     }
 
     public List<OrderItemDTO> mapOrderItems(List<OrdersItem> ordersItems) {
@@ -81,24 +90,60 @@ public class OrdersHelper {
         Shops shop = shopsRepository.findById(ordersRequest.getShopId()).orElseThrow(() -> new EntityNotFoundException("Shop not found"));
 
         //tính giá món
-        List<OrdersItem> items = new ArrayList<>();
         double subtotal = 0;
 
-        for (OrdersItemRequest item: ordersRequest.getFoods() ){
+        for (OrdersItemRequest item : ordersRequest.getFoods()) {
             Food food = foodRepository.findFoodById(item.getFoodId());
             if (food == null) {
                 throw new RuntimeException("Food not found");
             }
-            double itemTotal = food.getPrice()*item.getQuantity();
+            double itemTotal = food.getPrice() * item.getQuantity();
             subtotal = subtotal + itemTotal;
         }
         OrdersDTO ordersDTO = new OrdersDTO();
         ordersDTO.setSubtotal(subtotal);
-        double shippingFee = routesService.getShippingFee(shop.getLongitude(), shop.getLatitude(), ordersRequest.getShopId());
+        double shippingFee = routesService.getShippingFee(ordersRequest.getFromLongitude(), ordersRequest.getFromLatitude(), ordersRequest.getShopId());
         ordersDTO.setShippingFee(shippingFee);
         ordersDTO.setTotalAmount(shippingFee + subtotal);
 
         return ordersDTO;
+    }
+
+    public List<OrderTimeLineDTO> groupOrders(List<OrderTimeLineRowDTO> rows) {
+        Map<Integer, OrderTimeLineDTO> map = new LinkedHashMap<>();
+
+        for (OrderTimeLineRowDTO row : rows) {
+            OrderTimeLineDTO order = map.computeIfAbsent(
+                    row.getOrderId(),
+                    id -> {
+                        OrderTimeLineDTO dto = new OrderTimeLineDTO();
+                        dto.setOrderId(row.getOrderId());
+                        dto.setUserId(row.getUserId());
+                        dto.setTotalAmount(row.getTotalAmount());
+                        dto.setShippingFee(row.getShippingFee());
+                        dto.setSubtotal(row.getSubtotal());
+                        dto.setDistance(row.getDistance());
+                        dto.setNote(row.getNote());
+                        dto.setAddress(row.getAddress());
+                        dto.setShopName(row.getShopName());
+                        dto.setShopAddress(row.getShopAddress());
+                        dto.setShopId(row.getShopId());
+                        dto.setCreatedAt(row.getCreatedAt());
+                        dto.setFromLocation(row.getFromLocation());
+                        dto.setToLocation(row.getToLocation());
+                        dto.setStatus(row.getCurrentStatus());
+                        return dto;
+                    }
+            );
+            order.getStatuses().add(new StatusDTO(
+                            row.getOhsStatus(),
+                            row.getStartTime(),
+                            row.getEndTime()
+                    )
+            );
+        }
+
+        return new ArrayList<>(map.values());
     }
 
 }

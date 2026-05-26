@@ -4,6 +4,7 @@ import L from "leaflet";
 import { apiGet } from "../api/api";
 
 function Routing({ from, to }) {
+  console.log(from);
   const map = useMap();
   const [route, setRoute] = useState(null);
   const polylineRef = useRef(null); // giữ ref để cleanup chắc chắn
@@ -13,7 +14,6 @@ function Routing({ from, to }) {
   const isSameCoords = (a, b) => a && b && a[0] === b[0] && a[1] === b[1];
 
   useEffect(() => {
-    if (!from || !to) return;
     const prev = prevCoordsRef.current;
     if (prev && isSameCoords(prev.from, from) && isSameCoords(prev.to, to)) {
       console.log("⚡ Bỏ qua vì trùng dữ liệu cũ");
@@ -24,7 +24,7 @@ function Routing({ from, to }) {
     const fetchRoute = async () => {
       try {
         const res = await apiGet(
-          `http://localhost:8080/api/routes?fromLat=${from[1]}&fromLong=${from[0]}&toLat=${to[1]}&toLong=${to[0]}`
+          `http://localhost:8080/api/routes?fromLat=${from[0]}&fromLong=${from[1]}&toLat=${to[0]}&toLong=${to[1]}`,
         );
         if (!mountedRef.current) return; // tránh setState khi unmounted
 
@@ -44,7 +44,7 @@ function Routing({ from, to }) {
     };
 
     fetchRoute();
-  }, [from, to]);
+  }, []);
 
   useEffect(() => {
     if (!map || !route || route.length < 2) return;

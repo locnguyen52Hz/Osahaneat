@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import style from "../assets/styles/Sidebar.module.css";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/UseContext";
+import { useAuth } from "../app/providers/UseContext.jsx";
 
 import routes from "../routes/config.jsx";
 import { useWebSocketContext } from "../contexts/WebSocketContext.jsx";

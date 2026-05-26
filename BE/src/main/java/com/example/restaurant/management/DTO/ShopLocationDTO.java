@@ -4,15 +4,15 @@ public class ShopLocationDTO {
     private String shopName;
     private double latitude;
     private double longitude;
-    private String address;
-    private Integer shopID;
+    private String shopAddress;
+    private Integer shopId;
 
-    public ShopLocationDTO(String shopName, double latitude, double longitude, String address, Integer shopID) {
+    public ShopLocationDTO(String shopName, double latitude, double longitude, String shopAddress, Integer shopId) {
         this.shopName = shopName;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.address = address;
-        this.shopID = shopID;
+        this.shopAddress = shopAddress;
+        this.shopId = shopId;
     }
 
     public String getShopName() {
@@ -25,9 +25,6 @@ public class ShopLocationDTO {
         return longitude;
     }
 
-    public String getAddress() {
-        return address;
-    }
 
     public void setShopName(String shopName) {
         this.shopName = shopName;
@@ -41,15 +38,21 @@ public class ShopLocationDTO {
         this.longitude = longitude;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+
+
+    public String getShopAddress() {
+        return shopAddress;
     }
 
-    public Integer getShopID() {
-        return shopID;
+    public void setShopAddress(String shopAddress) {
+        this.shopAddress = shopAddress;
     }
 
-    public void setShopID(Integer shopID) {
-        this.shopID = shopID;
+    public Integer getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
     }
 }

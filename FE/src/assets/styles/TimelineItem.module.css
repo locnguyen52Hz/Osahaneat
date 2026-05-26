@@ -1,0 +1,49 @@
+.item {
+  display: flex;
+  margin:12px 0 ;
+  gap: 12px;
+}
+
+.iconWrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.content {
+  display: flex;
+  /* flex-direction: column; */
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  gap: 2px;
+}
+
+.text {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.time {
+  font-size: 12px;
+  color: #888;
+}
+
+.done {
+  background: #16a34a;
+  color: white;
+}
+
+.current {
+  background: #dc2626;
+  color: white;
+}
+
+.pending {
+  background: #e5e7eb;
+  color: #9ca3af;
+}

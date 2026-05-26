@@ -1,8 +1,3 @@
-/* BuyerOrders.module.css */
-.container {
-    width: 100%;
-}
-
 .cardList {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -28,7 +23,8 @@
     justify-content: space-between;
     align-items: center;
 }
-.cardHeader >p{
+
+.cardHeader>p {
     font-size: 13px;
     font-weight: 700;
 }
@@ -74,13 +70,7 @@
     background-color: #b71c1c;
 }
 
-.time{
+.time {
     display: flex;
     gap: 12px;
-}
-
-.orderList{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
 }

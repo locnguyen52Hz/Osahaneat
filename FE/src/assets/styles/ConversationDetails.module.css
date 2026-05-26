@@ -5,6 +5,10 @@
     background-color: #f6f6f8;
 }
 
+
+
+
+
 /* ---------- HEADER ---------- */
 .header {
     padding: 16px;
@@ -21,7 +25,12 @@
     flex-direction: column;
     gap: 12px;
     scroll-behavior: auto;
+
 }
+
+
+
+
 
 /* ---------- GROUP THEO NGÀY ---------- */
 .chatBox {
@@ -37,6 +46,19 @@
     color: #777;
     margin: 6px 0;
     user-select: none;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    column-gap: 50px;
+    width: 100% ;
+   
+}
+
+.dash{
+    flex: 2;
+    height: 1px;
+
+    background-color: #d4caca;
 }
 
 /* ---------- MESSAGE WRAPPER ---------- */
@@ -53,7 +75,7 @@
 
 .partner {
     align-self: flex-start;
-   
+
 }
 
 /* ---------- MESSAGE BUBBLE ---------- */
@@ -90,6 +112,54 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    position: relative;
+}
+
+.arrowDown {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    left: 10px;
+    /* transform: translateX(-50%); */
+    top: -35px;
+    z-index: 12;
+
+}
+
+.arrowDown i {
+    color: #858796;
+    font-size: 30px;
+    display: inline-block;
+    cursor: pointer;
+    animation: wiggle 1.2s ease-in-out infinite;
+}
+
+/* Keyframes lắc */
+@keyframes wiggle {
+
+    0%,
+    70%,
+    100% {
+        transform: rotate(0deg) translateY(0);
+    }
+
+    75% {
+        transform: rotate(-12deg) translateY(-2px);
+    }
+
+    80% {
+        transform: rotate(12deg) translateY(2px);
+    }
+
+    85% {
+        transform: rotate(-8deg) translateY(-1px);
+    }
+
+    90% {
+        transform: rotate(8deg) translateY(1px);
+    }
 }
 
 /* ---------- SEND BUTTON ---------- */

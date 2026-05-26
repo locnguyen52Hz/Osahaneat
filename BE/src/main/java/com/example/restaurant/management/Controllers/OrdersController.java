@@ -2,6 +2,7 @@ package com.example.restaurant.management.Controllers;
 
 
 import com.example.restaurant.management.DTO.OrderItemDTO;
+import com.example.restaurant.management.DTO.OrderTimeLineDTO;
 import com.example.restaurant.management.DTO.OrdersDTO;
 import com.example.restaurant.management.Entity.OrdersItem;
 import com.example.restaurant.management.Enums.OrdersStatus;
@@ -43,20 +44,17 @@ public class OrdersController {
     @PreAuthorize("hasAnyRole('ROLE_BUYER')")
     public ResponseEntity<?> createOrder(
             @RequestBody OrdersRequest ordersRequest,
-            @RequestHeader("Authorization") String authorization,
-            Principal principal) { // 👉 inject Principal vào controller
-
-//        System.out.println("📌 Buyer Principal: " + (principal != null ? principal.getName() : "null"));
-//        System.out.println("📌 Request body: " + ordersRequest);
+            @RequestHeader("Authorization") String authorization
+          ) {
 
         ResponseData responseData = new ResponseData();
         OrdersDTO ordersDTO = buyerOrdersServiceImp.createOrder(ordersRequest, authorization);
 
         // sau khi tạo order, gửi thông báo cho shop_manager
-        System.out.println("📌 ShopManagerId (từ ordersDTO): " + ordersDTO.getPartnerID());
+        System.out.println("📌 ShopManagerId (từ ordersDTO): " + ordersDTO.getPartnerId());
 
         simpMessagingTemplate.convertAndSendToUser(
-                String.valueOf( ordersDTO.getPartnerID()),
+                String.valueOf( ordersDTO.getPartnerId()),
                 "/queue/notify",
                 ordersDTO
         );
@@ -82,13 +80,12 @@ public class OrdersController {
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
-    @GetMapping()
+    @GetMapping("/previous")
     @PreAuthorize("hasAnyRole('ROLE_BUYER','ROLE_SHOP_MANAGER')")
     public ResponseEntity<?> getOrdersByStatus(@RequestHeader("Authorization") String authorization,
-                                               @RequestParam OrdersStatus status,
                                                @RequestParam int page) {
         ResponseData responseData = new ResponseData();
-        Page<OrdersDTO> ordersDTO = commonOrdersService.findOrdersByStatus(authorization, status, page);
+        Page<OrdersDTO> ordersDTO = commonOrdersService.getPreviousOrders(authorization, page);
         Map<String, Object> map = new HashMap<>();
         map.put("list", ordersDTO.getContent());
         map.put("totalElement", ordersDTO.getTotalElements());
@@ -104,10 +101,12 @@ public class OrdersController {
     @PreAuthorize("hasAnyRole('ROLE_SHOP_MANAGER','ROLE_BUYER')")
     public ResponseEntity<ResponseData> getOrders(
             @RequestHeader("Authorization") String authorization,
-            @RequestParam int page
+            @RequestParam int page,
+            @RequestParam( required = false,defaultValue = "10") int pageSize,
+            @RequestParam(required = false, defaultValue = "false") boolean includeTotalQuantity
     ) {
-//
-        Page<OrdersDTO> ordersDTOS = commonOrdersService.getOrdersWithPage(authorization, page);
+
+        Page<OrdersDTO> ordersDTOS = commonOrdersService.getOrders(authorization, page, pageSize, includeTotalQuantity);
         ResponseData responseData = new ResponseData();
         Map<String,Object> map = new HashMap<>();
         map.put("list",ordersDTOS.getContent());
@@ -116,17 +115,18 @@ public class OrdersController {
         map.put("size",ordersDTOS.getSize());
         map.put("totalPages",ordersDTOS.getTotalPages());
         responseData.setData(map);
+        responseData.setSuccess(true);
 //        responseData.setData(ordersDTOS);
 
         return ResponseEntity.ok(responseData);
     }
 
 
-    @PostMapping("preview")
+    @PostMapping("shipping-fee")
     @PreAuthorize("hasAnyRole('ROLE_BUYER')")
-    public ResponseEntity<?> getOrdersPrevView(@RequestBody OrdersRequest ordersRequest) {
+    public ResponseEntity<?> getShippingFee(@RequestBody OrdersRequest ordersRequest) {
         ResponseData responseData = new ResponseData();
-        OrdersDTO ordersDTO = buyerOrdersServiceImp.orderPreview(ordersRequest);
+        OrdersDTO ordersDTO = buyerOrdersServiceImp.getShippingFee(ordersRequest);
         responseData.setData(ordersDTO);
         responseData.setSuccess(true);
         responseData.setMessage("Previous orders successfully");
@@ -136,9 +136,9 @@ public class OrdersController {
 
     @GetMapping("/items")
     @PreAuthorize("hasAnyRole('ROLE_BUYER', 'ROLE_SHOP_MANAGER')")
-    public ResponseEntity<?> getOrdersItems(@RequestHeader("Authorization") String authorization, @RequestParam Integer ordersId) {
+    public ResponseEntity<?> getOrdersItems(@RequestHeader("Authorization") String authorization, @RequestParam Integer orderId) {
         ResponseData responseData = new ResponseData();
-        List<OrderItemDTO> ordersItemList = commonOrdersService.getOrdersItems(authorization, ordersId);
+        List<OrderItemDTO> ordersItemList = commonOrdersService.getOrdersItems(authorization, orderId);
         responseData.setData(ordersItemList);
         responseData.setSuccess(true);
         responseData.setMessage("Orders items successfully");
@@ -147,19 +147,24 @@ public class OrdersController {
     }
 
 
+    @GetMapping("/active")
+    public ResponseEntity<?> getActiveOrders (@RequestHeader("Authorization") String authorization , int page){
+        Page<OrderTimeLineDTO> result = commonOrdersService.getActiveOrders(authorization ,page);
+        ResponseData responseData = new ResponseData();
+        Map<String,Object> map = new HashMap<>();
+        map.put("list",result.getContent());
+        map.put("totalElement",result.getTotalElements());
+        map.put("page",result.getNumber());
+        map.put("size",result.getSize());
+        map.put("totalPages",result.getTotalPages());
+        responseData.setData(map);
+        responseData.setSuccess(true);
+        responseData.setMessage("Active orders successfully");
+        responseData.setStatus(HttpStatus.OK.value());
+        return new ResponseEntity<>(responseData, HttpStatus.OK );
+    }
 
 
-//    @GetMapping("/filter")
-//    @PreAuthorize("hasAnyRole('ROLE_SHOP_MANAGER','ROLE_BUYER')")
-//    public ResponseEntity<?> filterOrders(@RequestHeader("Authorization") String authorization, @RequestParam OrdersStatus status) {
-//        ResponseData responseData = new ResponseData();
-//        List<OrdersDTO> ordersDTOS = ordersService.findOrdersWithFilters(authorization, status);
-//        responseData.setData(ordersDTOS);
-//        responseData.setSuccess(true);
-//        responseData.setMessage("Find orders successfully");
-//        responseData.setStatus(HttpStatus.OK.value());
-//        return new ResponseEntity<>(responseData, HttpStatus.OK);
-//    }
 
 
 }

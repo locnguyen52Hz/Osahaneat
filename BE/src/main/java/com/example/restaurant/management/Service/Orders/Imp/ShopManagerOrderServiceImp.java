@@ -135,10 +135,5 @@ public class ShopManagerOrderServiceImp implements OrdersService {
         return Page.empty();
     }
 
-    @Override
-    public Page<OrderTimeLineDTO> getPreviousOrdersWithPage(Integer userId, int page) {
-        return null;
-    }
-
 
 }

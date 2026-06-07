@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Marker, Popup } from "react-leaflet";
+import { Marker, Popup, useMapEvents } from "react-leaflet";
 
 function UserMarker({location}) {
 
@@ -15,6 +15,15 @@ function UserMarker({location}) {
     popupAnchor: [1, -34],
     shadowSize: [41, 41],
   });
+
+    const map = useMapEvents({
+      click: (e) => {
+        const { lat, lng } = e.latlng;
+        map.flyTo([lat, lng]);
+        // fetchAddress(lat, lng);
+        console.log(lat,lng)
+      },
+    });
   return (
     <>
       {location && (

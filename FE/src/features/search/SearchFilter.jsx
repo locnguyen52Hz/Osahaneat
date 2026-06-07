@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import ActiveCategories from "../../components/common/ActiveCategories";
+import ActiveCategories from "../../features/category/components/ActiveCategories";
 import styles from "../../assets/styles/SearchFilter.module.css";
 import { useModal } from "../../contexts/ModalContext";
 import { apiGet } from "../../api/api";

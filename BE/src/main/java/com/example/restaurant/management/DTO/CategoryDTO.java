@@ -19,4 +19,11 @@ public class CategoryDTO {
     public void setName(String name) {
         this.name = name;
     }
+
+    public CategoryDTO() {}
+
+    public CategoryDTO(Integer id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

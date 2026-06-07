@@ -25,33 +25,6 @@
   width: 100%;
 }
 
-/* Tablet (<= 1024px) */
-@media (max-width: 1024px) {
-  .submitBtn,
-  .cancelBtn {
-    font-size: 0.95rem;
-    padding: 10px;
-  }
-}
-
-/* Mobile (<= 768px) */
-@media (max-width: 768px) {
-  .submitBtn,
-  .cancelBtn {
-    font-size: 0.9rem;
-    padding: 10px;
-  }
-}
-
-/* Small Mobile (<= 480px) */
-@media (max-width: 480px) {
-  .submitBtn,
-  .cancelBtn {
-    font-size: 0.85rem;
-    padding: 8px;
-    border-radius: 6px;
-  }
-}
 
 
 .submitBtn:hover {

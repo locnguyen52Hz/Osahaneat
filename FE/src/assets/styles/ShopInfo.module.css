@@ -1,0 +1,45 @@
+.shopName {
+    margin-bottom: 10px;
+    font-weight: 700;
+    font-size: 28px;
+}
+
+.description {
+    margin-bottom: 10px;
+    color: #858796;
+}
+
+
+
+@media (max-width: 480px) {
+
+    .shopName {
+        font-size: 18px;
+    }
+
+    .description {
+        font-size: 13px;
+    }
+
+}
+
+@media (max-width: 480px) {
+
+    .shopName {
+        font-size: 18px;
+    }
+
+    .description {
+        font-size: 13px;
+    }
+
+
+}
+
+@media (max-width: 768px) {
+
+
+    .shopName {
+        font-size: 22px;
+    }
+}

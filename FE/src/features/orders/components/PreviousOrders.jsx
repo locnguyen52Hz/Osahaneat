@@ -1,51 +1,33 @@
-import React, { useEffect, useState } from "react";
-import PreviousOrdersCard from "./PreviousOrdersCard";
-import { apiGet } from "../../../api/api";
-import endpoints from "../../../api/endpoints";
+import { getPreviousOrders } from "../service/OrderServices";
 import styles from "../../../assets/styles/WrapperOrders.module.css";
+import PreviousOrderCard from "./PreviousOrdersCard";
+import OrdersList from "./OrdersList";
+import useOrders from "../hooks/useOrders";
+import useOrderActions from "../hooks/useOrderActions";
+import PreviousOrdersCard from "./PreviousOrdersCard";
 
 function PreviousOrders() {
-  const [loading, setLoading] = useState(false);
-  const [previousOrders, setPreviousOrders] = useState([]);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
-  const [totalElement, setTotalElement] = useState(0);
-console.log(previousOrders)
-  useEffect(() => {
-    const fetch = async () => {
-      setLoading(true);
-      try {
-        const res = await apiGet(
-          `${endpoints.order.previous}?page=${currentPage}`,
-        );
+  const { loading, state, setState, setCurrentPage } =
+    useOrders(getPreviousOrders);
 
-        const { list, page, totalElement, totalPages } = res.data.data;
-        console.log(res.data.data)
-        setPreviousOrders(list);
-        setCurrentPage(page);
-        setTotalElement(totalElement);
-        setTotalPages(totalPages);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetch();
-  }, [currentPage]);
+  const { rateOrder } = useOrderActions(setState);
 
   return (
-    <div className={styles.container}>
-      <h5>Previous orders ({totalElement})</h5>
-      <div className={styles.orderList}>
-        {!loading &&
-          previousOrders.map((order) => (
-            <div className={styles.item} key={order.orderId}>
-              <PreviousOrdersCard order={order} />
-            </div>
-          ))}
-      </div>
-    </div>
+    <OrdersList
+      title="Previous Orders"
+      orders={state.orders}
+      loading={loading}
+      currentPage={state.currentPage}
+      totalPages={state.totalPages}
+      totalElement={state.totalElement}
+      onPageChange={setCurrentPage}
+      renderItem={(order) => (
+        <PreviousOrdersCard
+          order={order}
+          submitRating={(rating) => rateOrder(order.orderId, rating)}
+        />
+      )}
+    />
   );
 }
 

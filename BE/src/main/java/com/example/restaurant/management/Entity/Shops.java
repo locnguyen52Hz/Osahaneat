@@ -31,15 +31,24 @@ public class Shops {
     @OneToMany(mappedBy = "shops")
     private List<Orders> orders;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "shops_categories", joinColumns = @JoinColumn(name = "shop_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
     private List<Categories> categories;
 
+    @Column(name = "rating_avg", nullable = false)
+    private Double ratingAvg = 0.0;
 
-    @OneToMany(mappedBy = "shops", cascade = CascadeType.ALL)
+    @Column(name = "rating_count", nullable = false)
+    private Integer ratingCount = 0;
+
+    @Version
+    private Integer version =0;
+
+
+    @OneToMany(mappedBy = "shops")
     private List<Food> foods;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User manager;
 
@@ -130,5 +139,29 @@ public class Shops {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public Double getRatingAvg() {
+        return ratingAvg;
+    }
+
+    public void setRatingAvg(Double ratingAvg) {
+        this.ratingAvg = ratingAvg;
+    }
+
+    public Integer getRatingCount() {
+        return ratingCount;
+    }
+
+    public void setRatingCount(Integer ratingCount) {
+        this.ratingCount = ratingCount;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 }

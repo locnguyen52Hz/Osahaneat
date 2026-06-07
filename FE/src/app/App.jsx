@@ -1,77 +1,98 @@
-// import "../App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import PrivateRouter from "../components/PrivateRouter.jsx";
 import MainLayout from "../components/MainLayout.jsx";
 import routes from "../routes/config.jsx";
 import { useAuth } from "./providers/UseContext.jsx";
 import Login from "../features/auth/Common/Login.jsx";
 import { ToastContainer } from "react-toastify";
-import { WebSocketProvider } from "../contexts/WebSocketContext.jsx";
+import { useConversationStore } from "../stores/messages/useConversationStore.js";
 
-// Import Login thật sự
+// helper
+function mapRoutes(routeTree) {
+  let result = [];
+
+  routeTree.forEach((item) => {
+    if (item.type === "item" && item.path) {
+      result.push({
+        path: item.path,
+        element: item.element,
+      });
+    }
+
+    if (item.type === "group" && item.children) {
+      result = result.concat(mapRoutes(item.children));
+    }
+  });
+
+  return result;
+}
 
 function App() {
   const { role, token } = useAuth();
 
+  const privateRoutes =
+    role && routes[role] ? mapRoutes(routes[role].children) : [];
+
+  const fetchUnreadMessage = useConversationStore((s) => s.fetchUnreadMessage);
+
+  useEffect(() => {
+    if (token) {
+      fetchUnreadMessage();
+    }
+  }, [token]);
   return (
-    <>
-      <BrowserRouter>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Routes>
-            {/* Public routes */}
-            {routes.public.map(({ path, element }) => (
-              <Route key={path} path={path} element={element} />
-            ))}
+    <BrowserRouter>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          {/* Public */}
+          {routes.public.map(({ path, element }) => (
+            <Route key={path} path={path} element={element} />
+          ))}
 
-            {/* Trang login */}
-            <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login />} />
 
-            {/* Private routes theo role */}
-            {role && token && routes[role] && (
-              <Route
-                element={
-                  <PrivateRouter allowedRoles={[role]}>
-                    <MainLayout />
-                  </PrivateRouter>
-                }
-              >
-                {routes[role].children.map(({ path, element }) => (
-                  <Route key={path} path={path} element={element} />
-                ))}
-              </Route>
-            )}
-
-            {/* Redirect mặc định */}
+          {/* Private */}
+          {role && token && routes[role] && (
             <Route
-              path="/"
               element={
-                role && token ? (
-                  <Navigate
-                    to={
-                      role === "ROLE_BUYER"
-                        ? "/buyer/home"
-                        : "/manager/dashboard"
-                    }
-                  />
-                ) : (
-                  <Navigate to="/login" />
-                )
+                <PrivateRouter allowedRoles={[role]}>
+                  <MainLayout />
+                </PrivateRouter>
               }
-            />
+            >
+              {privateRoutes.map(({ path, element }) => (
+                <Route key={path} path={path} element={element} />
+              ))}
+            </Route>
+          )}
 
-            {/* Catch all */}
-            <Route
-              path="*"
-              element={
-                token ? <Navigate to="/403" /> : <Navigate to="/login" />
-              }
-            />
-          </Routes>
-          <ToastContainer position="top-right" autoClose ={3000}/>
-        </Suspense>
-      </BrowserRouter>
-    </>
+          {/* Default redirect */}
+          <Route
+            path="/"
+            element={
+              role && token ? (
+                <Navigate
+                  to={
+                    role === "ROLE_BUYER" ? "/buyer/home" : "/manager/dashboard"
+                  }
+                />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+
+          {/* Catch all */}
+          <Route
+            path="*"
+            element={token ? <Navigate to="/403" /> : <Navigate to="/login" />}
+          />
+        </Routes>
+
+        <ToastContainer position="top-right" autoClose={3000} />
+      </Suspense>
+    </BrowserRouter>
   );
 }
 

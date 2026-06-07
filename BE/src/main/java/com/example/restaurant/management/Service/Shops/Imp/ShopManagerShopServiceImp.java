@@ -1,5 +1,6 @@
 package com.example.restaurant.management.Service.Shops.Imp;
 
+import com.example.restaurant.management.DTO.Coordinate;
 import com.example.restaurant.management.DTO.OsrmTableResponse;
 import com.example.restaurant.management.DTO.ShopDTO;
 import com.example.restaurant.management.DTO.ShopLocationDTO;
@@ -34,9 +35,9 @@ public class ShopManagerShopServiceImp implements ShopService {
     FileService fileService;
 
 
-    @Override
-    public ShopDTO getShopById(Integer userId) {
-        Shops shop = shopsRepository.findShopsByManager_Id(userId);
+
+    public ShopDTO getShopById(Integer shopId ) {
+        Shops shop = shopsRepository.findShopsByManager_Id(shopId);
         if (shop == null) {
             throw new RuntimeException("Shop not found");
         }

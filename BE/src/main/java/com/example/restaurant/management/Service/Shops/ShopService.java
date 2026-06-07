@@ -1,5 +1,6 @@
 package com.example.restaurant.management.Service.Shops;
 
+import com.example.restaurant.management.DTO.Coordinate;
 import com.example.restaurant.management.DTO.OsrmTableResponse;
 import com.example.restaurant.management.DTO.ShopDTO;
 import com.example.restaurant.management.DTO.ShopLocationDTO;
@@ -12,6 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface ShopService {
-    ShopDTO getShopById(Integer shopId);
+
     List<ShopLocationDTO> getAllShopLocations();
 }

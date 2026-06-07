@@ -34,6 +34,7 @@ const endpoints = {
     items: `${API_BASE_URL}/orders/items`,
     active: `${API_BASE_URL}/orders/active`,
     previous: `${API_BASE_URL}/orders/previous`,
+    createRating: `${API_BASE_URL}/orders/create-rating`
   },
   routes: {
     shippingFee: `${API_BASE_URL}/routes/shipping-fee`,

@@ -1,5 +1,6 @@
 package com.example.restaurant.management.Controllers;
 
+import com.example.restaurant.management.DTO.Coordinate;
 import com.example.restaurant.management.DTO.OsrmTableResponse;
 import com.example.restaurant.management.DTO.ShopDTO;
 import com.example.restaurant.management.DTO.ShopLocationDTO;
@@ -39,9 +40,11 @@ public class ShopController {
 
     @GetMapping("/top-6-shops")
     @PreAuthorize("hasAnyRole('ROLE_BUYER')")
-    public ResponseEntity<?> getTop6Shop(){
+    public ResponseEntity<?> getTop6Shop(@RequestParam double fromLongitude,
+                                         @RequestParam double fromLatitude,
+                                         @RequestParam(required = false, defaultValue = "5") double radius){
         ResponseData responseData = new ResponseData();
-        List<ShopDTO> shopDTOList = buyerShopServiceImp.getTop6Shops();
+        List<ShopDTO> shopDTOList = buyerShopServiceImp.getNearbyShops(fromLongitude, fromLatitude, radius);
         responseData.setData(shopDTOList);
         responseData.setStatus(HttpStatus.OK.value());
         responseData.setMessage("Success");
@@ -74,9 +77,11 @@ public class ShopController {
     @GetMapping("/details")
     @PreAuthorize("hasAnyRole('ROLE_BUYER','ROLE_SHOP_MANAGER')")
     public ResponseEntity<?> getShopById(@RequestHeader ("Authorization") String authHeader,
-                                         @RequestParam(required = false) Integer shopId) {
+                                         @RequestParam(required = false) Integer shopId,
+                                         @RequestParam double longitude,
+                                         @RequestParam double latitude) {
         ResponseData responseData = new ResponseData();
-        ShopDTO shopDTO = commonShopService.getShopById(authHeader,shopId);
+        ShopDTO shopDTO = commonShopService.getShopById(authHeader,shopId, longitude, latitude);
         responseData.setData(shopDTO);
         responseData.setStatus(HttpStatus.OK.value());
         responseData.setMessage("Success");
@@ -84,18 +89,18 @@ public class ShopController {
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
-    @GetMapping("/distance")
-    @PreAuthorize("hasAnyRole('ROLE_BUYER')")
-    public ResponseEntity<?> getShopsDistance(@RequestParam double fromLongitude,
-                                              @RequestParam double fromLatitude) {
-        ResponseData responseData = new ResponseData();
-        responseData.setStatus(HttpStatus.OK.value());
-        responseData.setMessage("Success");
-        responseData.setSuccess(true);
-        List<OsrmTableResponse> osrmTableResponseList = buyerShopServiceImp.getLocationsOfTop6Shops(fromLongitude, fromLatitude);
-        responseData.setData(osrmTableResponseList);
-        return new ResponseEntity<>(responseData, HttpStatus.OK);
-    }
+//    @GetMapping("/distance")
+//    @PreAuthorize("hasAnyRole('ROLE_BUYER')")
+//    public ResponseEntity<?> getShopsDistance(@RequestParam double fromLongitude,
+//                                              @RequestParam double fromLatitude) {
+//        ResponseData responseData = new ResponseData();
+//        responseData.setStatus(HttpStatus.OK.value());
+//        responseData.setMessage("Success");
+//        responseData.setSuccess(true);
+//        List<OsrmTableResponse> osrmTableResponseList = buyerShopServiceImp.getLocationsOfTop6Shops(fromLongitude, fromLatitude);
+//        responseData.setData(osrmTableResponseList);
+//        return new ResponseEntity<>(responseData, HttpStatus.OK);
+//    }
 
     @GetMapping("locations")
     @PreAuthorize("hasAnyRole('ROLE_BUYER')")

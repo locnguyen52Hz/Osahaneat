@@ -1,25 +1,66 @@
 .sidebarContainer {
-  width: 224px;
   background: linear-gradient(180deg, #c60021 10%, #224abe 100%);
   display: flex;
   flex-direction: column;
-  transition: width 0.3s ease;
-  height: 100vh;
-  position: sticky;
-  top: 0;
+  height: calc(100vh - 50px);
+  flex-shrink: 0;
+  width: 70px;
   overflow-y: auto;
   overflow-x: hidden;
+  position: sticky;
+  top: 50px;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  transition:
+    width 0.3s ease,
+    transform 0.3s ease,
+    opacity 0.3s ease;
 }
 
-/* Tùy chỉnh thanh cuộn */
+.sidebarHidden {
+  width: 0;
+}
+
+
+.navLink p {
+  display: none;
+}
+
+.navLink {
+  padding: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 10px;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.8);
+  text-transform: uppercase;
+  font-size: 13px;
+  line-height: 22px;
+  text-decoration: none;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    padding-left 0.2s ease;
+}
+
+
+.username {
+  font-size: 0;
+  opacity: 0;
+  padding: 0;
+  margin: 0;
+}
+
+/* scrollbar */
 .sidebarContainer::-webkit-scrollbar {
   width: 6px;
 }
+
 .sidebarContainer::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.3);
   border-radius: 4px;
 }
+
 .sidebarContainer::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.5);
 }
@@ -32,12 +73,8 @@
   box-shadow: 0 2px 6px rgba(58, 59, 69, 0.2);
 }
 
-.logo {
-  width: 40px;
-  transition: transform 0.3s ease;
-}
 .logo:hover {
-  transform: scale(1.1);
+  transform: scale(0.9);
 }
 
 .navItems {
@@ -49,20 +86,6 @@
 
 .navItems li {
   margin-bottom: 6px;
-}
-
-.navLink {
-  padding: 11px 15px;
-  display: flex;
-  align-items: center;
-  column-gap: 10px;
-  border-radius: 8px;
-  color: rgba(255, 255, 255, 0.8);
-  text-transform: uppercase;
-  font-size: 13px;
-  line-height: 22px;
-  text-decoration: none;
-  transition: background 0.3s ease, color 0.3s ease, padding-left 0.2s ease;
 }
 
 .navLink:hover {
@@ -83,42 +106,60 @@
   box-shadow: inset 2px 0 0 #fff;
 }
 
-/* Phần username */
-.username {
-  padding: 12px 15px;
-  text-align: center;
-  color: #fff;
-  font-size: 13px;
-  background: rgba(255, 255, 255, 0.15);
-  margin: 10px;
-  border-radius: 6px;
-  transition: opacity 0.3s ease;
-  letter-spacing: 0.5px;
-}
 
-/* ---------- Responsive ---------- */
-@media (max-width: 768px) {
+
+@media (min-width: 768px) {
   .sidebarContainer {
+    position: sticky;
+    height: calc(100vh - var(--navbar-desktop-heigth));
+    top: var(--navbar-desktop-heigth);
     width: 70px;
   }
 
-  .navLink {
-    justify-content: center;
-    padding: 11px;
-  }
-
   .navLink p {
-    display: none; /* Ẩn text menu */
+    display: none;
   }
 
-  .logo {
-    transform: scale(0.8);
+  .sidebarHidden {
+    width: 0;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .sidebarContainer {
+    width: 224px;
+    /* position: sticky; */
+    max-width: none;
+  }
+
+  .sidebarHidden {
+    width: 0;
+  }
+
+  .navLink {
+    justify-content: flex-start;
+    padding: 11px 15px;
+  }
+
+  .navLink p,
+  .username {
+    display: block;
   }
 
   .username {
-    font-size: 0;
-    opacity: 0;
-    padding: 0;
-    margin: 0;
+    padding: 12px 15px;
+    margin: 10px;
+    font-size: 13px;
+    opacity: 1;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+
+  .logo {
+    transform: scale(1);
   }
 }

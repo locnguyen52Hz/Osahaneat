@@ -47,3 +47,11 @@ export const getOrderItems = async (orderId) => {
   const res = await apiGet(`${endpoints.order.items}?orderId=${orderId}`);
   return res.data.data;
 };
+
+export const createRating = async (request) => {
+  const res = await apiPost(`${endpoints.order.createRating}, ${request}`);
+};
+export const getPreviousOrders = async (page) => {
+  const res = await apiGet(`${endpoints.order.previous}?page=${page}`);
+  return res.data.data;
+};

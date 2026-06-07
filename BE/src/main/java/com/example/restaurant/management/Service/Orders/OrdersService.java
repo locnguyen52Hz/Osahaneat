@@ -25,6 +25,6 @@ public interface OrdersService {
 
     Page<OrderTimeLineDTO> getActiveOrdersWithPage(Integer userId, int page);
 
-    Page<OrderTimeLineDTO> getPreviousOrdersWithPage(Integer userId, int page);
+
 
 }

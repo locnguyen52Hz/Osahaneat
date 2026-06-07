@@ -22,8 +22,8 @@ export const formatTime = (time) => {
   return dateObj.toTimeString().slice(0, 5);
 };
 export const formatDistance = (distance) => {
-  if (!distance) return;
-  return parseFloat(distance.toFixed(1));
+  if (distance == null) return null;
+  return Number((distance/1000).toFixed(1));
 };
 
 export const formatDateTime = (time) =>
@@ -59,3 +59,4 @@ export const timeAgo = (timestamp) => {
 
   return `${year} năm trước`;
 };
+7687.9;

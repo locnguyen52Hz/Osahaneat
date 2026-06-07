@@ -29,6 +29,8 @@ function Nearest() {
     fetchShopLocations();
   }, []);
 
+  
+
   return (
     <div className={styles.container}>
       {!loading && (

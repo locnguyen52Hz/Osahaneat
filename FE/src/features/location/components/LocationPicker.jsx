@@ -42,6 +42,7 @@ function LocationPicker() {
       const { lat, lng } = e.latlng;
       map.flyTo([lat, lng]);
       fetchAddress(lat, lng);
+      console.log(lat,lng)
     },
   });
 

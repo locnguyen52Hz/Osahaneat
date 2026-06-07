@@ -15,6 +15,8 @@ import Categories from "../features/shop-manager/Categories";
 import SearchResults from "../features/search/SearchResults";
 import MessagesPage from "../features/messages/pages/MessagesPage";
 import { icon } from "leaflet";
+import UpcomingOrders from "../features/orders/components/UpcomingOrders";
+import PreviousOrders from "../features/orders/components/PreviousOrders";
 
 const routes = {
   public: [
@@ -28,6 +30,7 @@ const routes = {
     layout: "main",
     children: [
       {
+        type: "item",
         path: "/buyer/home",
         element: <Home />,
         label: "home",
@@ -35,6 +38,7 @@ const routes = {
         showInSideBar: true,
       },
       {
+        type: "item",
         path: "/buyer/favourites",
         element: <Favourites />,
         label: "favourites",
@@ -42,6 +46,7 @@ const routes = {
         showInSideBar: true,
       },
       {
+        type: "item",
         path: "/buyer/explore",
         element: <Explore />,
         label: "explore",
@@ -49,36 +54,59 @@ const routes = {
         showInSideBar: true,
       },
       {
+        type: "group",
         path: "/buyer/orders",
-        element: <Orders />,
         label: "orders",
         icon: "bi bi-bag-fill",
         showInSideBar: true,
         notify: "orders",
+        children: [
+          {
+            type: "item",
+            path: "buyer/orders/upcoming",
+            label: "UpComing",
+            element: <UpcomingOrders />,
+            icon: "bi bi-truck"
+          },
+          {
+            type: "item",
+            path: "buyer/orders/previous",
+            label: "Previous",
+            element: <PreviousOrders />,
+            icon: "bi bi-truck"
+
+          },
+        ],
       },
       {
+        type: "item",
         path: "/buyer/detail/shop/:id",
         element: <ShopDetail />,
         showInSideBar: false,
       },
       {
+        type: "item",
         path: "/buyer/nearest",
         element: <Nearest />,
         showInSideBar: true,
         label: "nearest",
+        icon: "bi bi-globe-americas",
       },
       {
+        type: "item",
         path: "/search",
         element: <SearchResults />,
         showInSideBar: false,
       },
       {
+        type: "item",
         path: "/buyer/messages",
         element: <MessagesPage />,
         label: "messages",
-        icon: '"bi bi-chat-dots-fill"',
+        icon: "bi bi-chat-dots-fill",
         notify: "message",
         showInSideBar: true,
+        badge: "message",
       },
     ],
   },
@@ -87,6 +115,7 @@ const routes = {
     layout: "main",
     children: [
       {
+        type: "item",
         path: "/manager/dashboard",
         element: <Dashboard />,
         label: "dashboard",
@@ -94,6 +123,7 @@ const routes = {
         showInSideBar: true,
       },
       {
+        type: "item",
         path: "/manager/shop-orders",
         element: <Orders />,
         label: "shop orders",
@@ -102,6 +132,7 @@ const routes = {
         notify: "orders",
       },
       {
+        type: "item",
         path: "/manager/categories",
         element: <Categories />,
         label: "categories",
@@ -109,10 +140,11 @@ const routes = {
         showInSideBar: true,
       },
       {
+        type: "item",
         path: "/manager/messages",
         element: <MessagesPage />,
         label: "messages",
-        icon: '"bi bi-chat-dots-fill"',
+        icon: "bi bi-chat-dots-fill",
         notify: "message",
         showInSideBar: true,
       },

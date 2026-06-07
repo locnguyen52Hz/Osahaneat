@@ -1,0 +1,47 @@
+.container {
+    background-color: #FFFFFF;
+    max-width: 342px;
+    height: 154px;
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    border-radius: 8px;
+    justify-content: center;
+    /* gap: 8px; */
+}
+.inputBox{
+    font-size: 14px;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.customInput{
+    border: none;
+    outline: none;
+    margin-left: 12px;
+}
+
+.customInput::placeholder{
+    /* font-size: 14px; */
+
+}
+.container>button {
+    background-color: black;
+    color: white;
+    width: 100%;
+    height: 48px;
+    font-size: 16px;
+}
+
+
+
+@media (min-width : 768px) {
+    .container {
+        width: 370px;
+        height: 87px;
+        flex-direction: row;
+        align-items: center;
+        max-width: none;
+    }
+}

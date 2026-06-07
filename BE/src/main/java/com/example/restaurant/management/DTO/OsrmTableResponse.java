@@ -6,7 +6,7 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OsrmTableResponse {
-private List<List<Double>> distances;
+    private List<List<Double>> distances;
     private Integer shopId;
     private Double distance;
     public Integer getShopId() {

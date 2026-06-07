@@ -5,58 +5,36 @@ import FoodDetail from "./FoodDetail";
 import style from "../../../assets/styles/FoodList.module.css";
 import { useModal } from "../../../contexts/ModalContext";
 import { useNavigate } from "react-router-dom";
-import EditFood from "../../shop-manager/EditFood";
-import InsertFood from "../../shop-manager/InsertFood";
 
 function FoodList({
   foods,
   shopName,
   shopId,
-  onSubmitNewFood,
-  onSubmitEditFood,
-  onDeleteFood,
 }) {
   const { openModal } = useModal();
   const navigate = useNavigate();
-  const role = localStorage.getItem("role");
+
   // console.log(shopName)
 
   const handleOpenModals = (food) => {
     openModal(
-      role === "ROLE_BUYER" ? (
-        <FoodDetail
-          food={food}
-          shopName={shopName}
-          shopId={shopId}
-          navigate={navigate}
-        />
-      ) : (
-        <EditFood
-          food={food}
-          onSubmitEditFood={onSubmitEditFood}
-          onDeleteFood={onDeleteFood}
-        />
-      ),
-      { type: "slide" }
+      <FoodDetail
+        food={food}
+        shopName={shopName}
+        shopId={shopId}
+        navigate={navigate}
+      />,
+      {
+        type: "slide",
+      },
     );
+
     // openModal()
   };
 
   return (
     <>
       <div className={style.foodList}>
-        {role === "ROLE_SHOP_MANAGER" && (
-          <div
-            className={style.insertBox}
-            onClick={() =>
-              openModal(<InsertFood onSubmitNewFood={onSubmitNewFood} />, {
-                type: "slide",
-              })
-            }
-          >
-            <i className="bi bi-plus-circle"></i>{" "}
-          </div>
-        )}
         {foods?.map((food) => (
           <FoodCard
             key={food.foodId}

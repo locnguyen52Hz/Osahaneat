@@ -1,0 +1,97 @@
+.container {
+    display: flex;
+    gap: 1rem;
+    background-color: white;
+    padding: 1rem;
+    position: relative;
+    bottom: 40px;
+    margin: 0 auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+
+/* Avatar */
+.wrapperAvatar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 108px;
+    height: 90px;
+    box-shadow: 0 0.125rem 0.25rem 0 rgba(58, 59, 69, 0.2);
+    border: 1px solid #e3e6f0;
+    padding: 12px;
+    flex-shrink: 0;
+    /* ❗ tránh bị co lại */
+}
+
+.wrapperAvatar div {
+    width: 100%;
+    height: 100%;
+}
+
+.avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Content */
+.content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+
+
+
+
+
+
+
+
+@media (max-width: 480px) {
+    .container {
+        flex-direction: column;
+        /* đổi layout */
+        align-items: center;
+        text-align: center;
+        gap: 0.5rem;
+    }
+
+    .wrapperAvatar {
+        width: 70px;
+        height: 70px;
+    }
+
+    .shopName {
+        font-size: 18px;
+    }
+
+    .description {
+        font-size: 13px;
+    }
+
+    .ratingAndLocation {
+        justify-content: center;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        bottom: 20px;
+        padding: 0.8rem;
+    }
+
+    .shopName {
+        font-size: 22px;
+    }
+
+    .wrapperAvatar {
+        width: 80px;
+        height: 70px;
+    }
+}

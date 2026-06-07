@@ -3,10 +3,7 @@ package com.example.restaurant.management.DTO;
 import com.example.restaurant.management.Enums.OrdersStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import javax.xml.crypto.Data;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -22,6 +19,10 @@ public class OrdersDTO {
     private double subtotal;
     private double distance;
     private Long totalQuantity;
+    private double latitude;
+    private double longitude;
+    private Integer rating;
+
 
     //id người nhận thông báo
     private Integer partnerId;
@@ -30,14 +31,17 @@ public class OrdersDTO {
     private Double partnerLongitude;
     private Integer shopId;
     private String shopName;
-    private double latitude;
-    private double longitude;
+
     private List<OrderItemDTO> foods;
-    public OrdersDTO() {}
+
+    public OrdersDTO() {
+    }
 
     public OrdersDTO(Integer orderId, double totalAmount, OrdersStatus status,
                      String note, Instant createdAt, String address, double shippingFee,
-                     double subtotal, double distance, Integer shopId, String shopName, double  latitude, double longitude) {
+                     double subtotal, double distance, Integer shopId, String shopName, double latitude, double longitude,
+                     Integer rating
+                     ) {
         this.orderId = orderId;
         this.totalAmount = totalAmount;
         this.status = status.toString();
@@ -51,6 +55,7 @@ public class OrdersDTO {
         this.shopName = shopName;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.rating = rating;
     }
 
 
@@ -236,5 +241,13 @@ public class OrdersDTO {
 
     public void setFoods(List<OrderItemDTO> foods) {
         this.foods = foods;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
     }
 }

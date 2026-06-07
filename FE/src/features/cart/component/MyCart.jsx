@@ -55,7 +55,7 @@ function MyCart({ shopId, shopName, navigate }) {
       toast.success("Đặt hàng thành công", {
         onClose: () => {
           closeAllModal();
-          navigate("/buyer/orders");
+          navigate("/buyer/orders/upcoming");
         },
       });
 

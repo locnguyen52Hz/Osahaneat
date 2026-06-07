@@ -6,6 +6,7 @@ import com.example.restaurant.management.DTO.OrderTimeLineDTO;
 import com.example.restaurant.management.DTO.OrdersDTO;
 import com.example.restaurant.management.Entity.OrdersItem;
 import com.example.restaurant.management.Enums.OrdersStatus;
+import com.example.restaurant.management.Payload.Request.CreateRatingRequest;
 import com.example.restaurant.management.Payload.Request.OrdersRequest;
 import com.example.restaurant.management.Payload.ResponseData;
 import com.example.restaurant.management.Service.NotificationService;
@@ -164,6 +165,16 @@ public class OrdersController {
         return new ResponseEntity<>(responseData, HttpStatus.OK );
     }
 
+    @PostMapping("/create-rating")
+    public ResponseEntity<?> createRating(@RequestBody CreateRatingRequest createRatingRequest, @RequestHeader("Authorization") String authorization) {
+        ResponseData responseData = new ResponseData();
+        responseData.setData( buyerOrdersServiceImp.createRating(createRatingRequest, authorization));
+        responseData.setSuccess(true);
+        responseData.setMessage("Rating created successfully");
+        responseData.setStatus(HttpStatus.CREATED.value());
+
+        return new ResponseEntity<>(responseData, HttpStatus.CREATED);
+    }
 
 
 

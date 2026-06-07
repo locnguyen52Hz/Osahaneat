@@ -1,11 +1,14 @@
 package com.example.restaurant.management.Repository;
 
+import com.example.restaurant.management.DTO.ShopCategoryProjection;
 import com.example.restaurant.management.Entity.Categories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Categories, Integer> {
@@ -23,5 +26,19 @@ public interface CategoryRepository extends JpaRepository<Categories, Integer> {
     @Modifying
     @Query(value = "INSERT INTO shops_categories (shop_id, category_id) VALUES (:shopId, :categoryId)", nativeQuery = true)
     void insertShopCategory(@Param("shopId") Integer shopId, @Param("categoryId") Integer categoryId);
+
+
+    @Query("""
+    SELECT
+        s.id as shopId,
+        c.id as categoryId,
+        c.name as categoryName
+    FROM Shops s
+    JOIN s.categories c
+    WHERE s.id IN :shopIds
+    """)
+    List<ShopCategoryProjection> findCategoriesByShopIds(
+            @Param("shopIds") List<Integer> shopIds
+    );
 }
 

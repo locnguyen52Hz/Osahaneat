@@ -12,9 +12,10 @@ import FoodItems from "../../foods/components/FoodItems";
 import TrackStatus from "./TrackStatus";
 import OrderActions from "./OrderActions";
 
+
 function UpcomingOrderCard({ order, updateOrderStatus, handleCancelOrder }) {
   const { openModal } = useModal();
-
+  console.log(order);
   return (
     <div className={styles.cardOrder}>
       {/* Header */}
@@ -45,14 +46,9 @@ function UpcomingOrderCard({ order, updateOrderStatus, handleCancelOrder }) {
               openModal(
                 <OrderDetails
                   key={order.orderId}
-                  orderDetails={order}
-                  updateOrderStatus={updateOrderStatus}
-                  action={
-                    <OrderActions
-                      label={"Cancel order"}
-                      action={() => handleCancelOrder(order.orderId)}
-                    />
-                  }
+                  order={order}
+                  action={() => handleCancelOrder(order.orderId)}
+                  actionsLabel={"Cancel order"}
                 />,
                 { type: "slide" },
               )

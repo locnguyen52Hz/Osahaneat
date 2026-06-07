@@ -9,7 +9,7 @@ import OrderDetails from "./OrderDetails";
 import Rating from "../../review/Rating";
 import Review from "../../review/Review";
 
-function PreviousOrdersCard({ order }) {
+function PreviousOrdersCard({ order, submitRating, loading }) {
   const { openModal } = useModal();
   return (
     <div className={styles.cardOrder}>
@@ -29,7 +29,11 @@ function PreviousOrdersCard({ order }) {
       <div
         onClick={() =>
           openModal(
-            <OrderDetails key={order.orderId} orderDetails={order} action={<Review />} />,
+            <OrderDetails
+              key={order.orderId}
+              order={order}
+              onSubmitRating= {submitRating}
+            />,
             { type: "slide" },
           )
         }

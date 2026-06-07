@@ -14,7 +14,9 @@ import FoodList from "../foods/components/FoodList";
 import endpoints from "../../api/endpoints";
 import { toast } from "react-toastify";
 import { useModal } from "../../contexts/ModalContext";
-import ActiveCategories from "../../components/common/ActiveCategories";
+import ActiveCategories from "../category/components/ActiveCategories";
+import ShopHeader from "./ShopHeader";
+import { useLocation } from "../../contexts/LocationContext";
 
 function ShopDetail() {
   const { id } = useParams();
@@ -24,52 +26,32 @@ function ShopDetail() {
   const [activeCategory, setActiveCategory] = useState(null);
   const [foods, setFoods] = useState([]);
   const { closeAllModal } = useModal();
-
-  const role = localStorage.getItem("role");
+  const { location } = useLocation();
 
   // ===== Lấy thông tin shop + categories =====
   useEffect(() => {
-    if (role === "ROLE_BUYER") {
-      const fetchData = async () => {
-        setLoading(true);
-        try {
-          const [shopRes, categoryResponse] = await Promise.all([
-            apiGet(`${endpoints.shop.details}?shopId=${id}`),
-            apiGet(`${endpoints.category.shopCategories}?shopId=${id}`),
-          ]);
-          setShop(shopRes.data.data);
-          console.log(shopRes.data.data);
-          setCategories(categoryResponse.data.data);
-          setActiveCategory(categoryResponse.data.data[0]);
-        } catch (error) {
-          console.error("Lỗi khi tải dữ liệu shop:", error);
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchData();
-    } else {
-      const fetchData = async () => {
-        setLoading(true);
-        try {
-          const [shopRes, categoryResponse] = await Promise.all([
-            apiGet(`${endpoints.shop.details}`),
-            apiGet(`${endpoints.category.shopCategories}`),
-          ]);
-          console.log(shopRes)
-          console.log(categoryResponse)
-          setShop(shopRes.data.data);
-          setCategories(categoryResponse.data.data);
-          setActiveCategory(categoryResponse.data.data[0]);
-        } catch (error) {
-          console.log(error);
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchData();
-    }
-  }, []);
+    if (!location) return;
+    setLoading(true);
+    const fetchData = async () => {
+      try {
+        const [shopRes, categoryResponse] = await Promise.all([
+          apiGet(
+            `${endpoints.shop.details}?shopId=${id}&longitude=${location.longitude}&latitude=${location.latitude}`,
+          ),
+          apiGet(`${endpoints.category.shopCategories}?shopId=${id}`),
+        ]);
+        setShop(shopRes.data.data);
+        console.log(shopRes.data.data);
+        setCategories(categoryResponse.data.data);
+        setActiveCategory(categoryResponse.data.data[0]);
+      } catch (error) {
+        console.error("Lỗi khi tải dữ liệu shop:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [location]);
   // console.log(shop);
 
   const handleUpdateShop = async (key, newValue) => {
@@ -90,7 +72,7 @@ function ShopDetail() {
       if (!activeCategory) return;
       try {
         const resFood = await apiGet(
-          `${endpoints.food.list}?categoryId=${activeCategory.id}&shopId=${shop.id}`
+          `${endpoints.food.list}?categoryId=${activeCategory.id}&shopId=${shop.id}`,
         );
         setFoods(resFood.data.data);
       } catch (error) {
@@ -107,7 +89,7 @@ function ShopDetail() {
     try {
       await apiDelete(`${endpoints.food.delete}/${foodId}`);
       const resFood = await apiGet(
-        `${endpoints.food.list}?categoryId=${activeCategory.id}&shopId=${shop.id}`
+        `${endpoints.food.list}?categoryId=${activeCategory.id}&shopId=${shop.id}`,
       );
       setFoods(resFood.data.data);
       closeAllModal();
@@ -117,8 +99,6 @@ function ShopDetail() {
       toast.error("Xóa thất bại");
     }
   };
-
-
 
   // ========= thêm mới food ===========
   const onSubmitNewFood = async (newFood) => {
@@ -133,7 +113,7 @@ function ShopDetail() {
     try {
       const res = await apiPostFile(`${endpoints.food.insertFood}`, formData);
       const resFood = await apiGet(
-        `${endpoints.food.list}?categoryId=${activeCategory.id}&shopId=${shop.id}`
+        `${endpoints.food.list}?categoryId=${activeCategory.id}&shopId=${shop.id}`,
       );
       setFoods(resFood.data.data);
       closeAllModal();
@@ -161,7 +141,7 @@ function ShopDetail() {
     try {
       const res = await apiPatchFile(endpoints.food.edit, formData);
       const resFood = await apiGet(
-        `${endpoints.food.list}?categoryId=${activeCategory.id}&shopId=${shop.id}`
+        `${endpoints.food.list}?categoryId=${activeCategory.id}&shopId=${shop.id}`,
       );
 
       setFoods(resFood.data.data);
@@ -174,28 +154,20 @@ function ShopDetail() {
   };
 
   return (
-    <>
+    <div>
       {/* Banner */}
       <div className={style.containerBanner}>
         <img className={style.bannerImg} src="/banner.jpg" alt="Banner" />
       </div>
 
-      {/* Thông tin shop */}
       {loading ? (
         <p>Đang tải dữ liệu...</p>
       ) : shop ? (
-        <ShopCard
-          handleChange={handleUpdateShop}
-          setShop={setShop}
-          shop={shop}
-          type="detail"
-          urlAvatar={endpoints.image.shop}
-        />
+        <ShopHeader shop={shop} />
       ) : (
         <p>Không tìm thấy cửa hàng</p>
       )}
 
-      {/* Danh mục */}
       {!loading && (
         <ActiveCategories
           active={activeCategory?.id}
@@ -206,16 +178,8 @@ function ShopDetail() {
         />
       )}
 
-      {/* Danh sách món ăn */}
-      <FoodList
-        shopName={shop.name}
-        shopId={shop.id}
-        foods={foods}
-        onDeleteFood={handleDeleteFood}
-        onSubmitNewFood={onSubmitNewFood}
-        onSubmitEditFood={onSubmitEditFood}
-      />
-    </>
+      <FoodList shopName={shop.name} shopId={shop.id} foods={foods} />
+    </div>
   );
 }
 

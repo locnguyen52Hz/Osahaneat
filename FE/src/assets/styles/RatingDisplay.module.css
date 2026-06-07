@@ -1,0 +1,27 @@
+.rating {
+    display: flex;
+    align-items: center;
+    column-gap: 3px;
+}
+
+.rating > i {
+    color: #f6c23e;
+    font-weight: bold;
+}
+
+.rating b {
+    color: black;
+}
+
+/* size variants */
+.sm {
+    font-size: 12px;
+}
+
+.md {
+    font-size: 14px;
+}
+
+.lg {
+    font-size: 18px;
+}

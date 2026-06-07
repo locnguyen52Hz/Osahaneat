@@ -102,7 +102,7 @@ public class OrdersHelper {
         }
         OrdersDTO ordersDTO = new OrdersDTO();
         ordersDTO.setSubtotal(subtotal);
-        double shippingFee = routesService.getShippingFee(ordersRequest.getFromLongitude(), ordersRequest.getFromLatitude(), ordersRequest.getShopId());
+        double shippingFee = routesService.getShippingFee(ordersRequest.getFromLongitude(), ordersRequest.getFromLatitude(), shop.getId());
         ordersDTO.setShippingFee(shippingFee);
         ordersDTO.setTotalAmount(shippingFee + subtotal);
 

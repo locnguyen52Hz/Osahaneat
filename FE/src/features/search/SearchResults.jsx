@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import ActiveCategories from "../../components/common/ActiveCategories";
+import ActiveCategories from "../../features/category/components/ActiveCategories";
 import styles from "../../assets/styles/SearchResults.module.css";
 import { apiGet } from "../../api/api";
 import endpoints from "../../api/endpoints";

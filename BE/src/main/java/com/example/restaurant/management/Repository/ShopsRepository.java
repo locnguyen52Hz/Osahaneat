@@ -39,8 +39,37 @@ public interface ShopsRepository extends JpaRepository<Shops, Integer>, JpaSpeci
     List<Shops> findTop6ByOrderByIdDesc();
 
 
-    @Query(value = "SELECT id AS id, longitude AS longitude, latitude AS latitude FROM shops ORDER BY id DESC", nativeQuery = true)
-    List<ShopDTO> findTop6ShopsLocation();
+    @Query("""
+    SELECT new com.example.restaurant.management.DTO.ShopDTO(
+        s.id,
+        s.shopName,
+        s.latitude,
+        s.longitude,
+        s.shopImage,
+        s.address,
+        s.ratingAvg,
+        s.ratingCount
+    )
+    FROM Shops s
+    WHERE s.latitude BETWEEN :minLat AND :maxLat
+      AND s.longitude BETWEEN :minLon AND :maxLon
+    """)
+    List<ShopDTO> findNearbyShops(double minLat, double maxLat, double minLon, double maxLon);
 
+    @Query("""
+    SELECT new com.example.restaurant.management.DTO.ShopDTO(
+        s.id,
+        s.shopName,
+        s.latitude,
+        s.longitude,
+        s.shopImage,
+        s.address,
+        s.ratingAvg,
+        s.ratingCount
+    )
+    FROM Shops s
+    ORDER BY s.ratingAvg DESC
+    """)
+    List<ShopDTO> findTopByRating(Pageable pageable);
 
 }

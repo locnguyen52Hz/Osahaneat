@@ -1,0 +1,25 @@
+.location {
+    align-items: center;
+    font-size: 12px;
+}
+
+.flex {
+    display: flex;
+}
+
+.block {
+    display: block;
+}
+
+.location > p {
+    color: #858796;
+    margin-left: 3px;
+}
+
+.flex > p {
+    margin-left: 3px;
+}
+
+.block > p {
+    margin-top: 2px;
+}

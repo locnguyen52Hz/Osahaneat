@@ -1,57 +1,45 @@
 import React, { useEffect } from "react";
-import style from "../assets/styles/Sidebar.module.css";
-import { NavLink, useNavigate } from "react-router-dom";
-import { useAuth } from "../app/providers/UseContext.jsx";
-
+import style from "../assets/styles/SideBar.module.css";
 import routes from "../routes/config.jsx";
-import { useWebSocketContext } from "../contexts/WebSocketContext.jsx";
-import { useConversationStore } from "../stores/messages/useConversationStore";
+import SidebarItem from "./SidebarItem.jsx";
+import { useConversationStore } from "../stores/messages/useConversationStore.js";
+import { useAuth } from "../app/providers/UseContext.jsx";
+import { useNavigate } from "react-router-dom";
 
-function SideBar() {
+function SideBar({ isOpen }) {
   const role = localStorage.getItem("role");
-  const totalUnreadCount = useConversationStore((s) => s.totalUnreadCount);
-  const fetchUnreadMessage = useConversationStore((s) => s.fetchUnreadMessage);
 
-  useEffect(() => {
-    fetchUnreadMessage();
-  }, []);
+  const totalUnreadCount = useConversationStore((s) => s.totalUnreadCount);
 
   const { username, clearAuthData } = useAuth();
   const navigate = useNavigate();
-  const sideBarItems = routes[role].children.filter(
-    (item) => item.showInSideBar === true,
-  );
 
-  const handleLogout = () => {
-    navigate("/login");
-    clearAuthData();
-  };
+  const items = routes[role].children.filter((item) => item.showInSideBar);
 
   return (
-    <div className={style.sidebarContainer}>
-      <div className={style.header}>
-        <img className={style.logo} src="/logo.png" />
-      </div>
-      <ul className={`${style.navItems} `}>
-        {sideBarItems.map((item) => (
+    <div
+      className={`${style.sidebarContainer} ${
+        !isOpen ? style.sidebarHidden : ""
+      }`}
+    >
+      <ul className={style.navItems}>
+        {items.map((item) => (
           <li key={item.label}>
-            <NavLink
-              to={item.path}
-              className={({ isActive }) =>
-                `${style.navLink} ${isActive ? style.active : ""}`.trim()
-              }
-            >
-              <i className={item.icon}></i>
-              <p>{item.label}</p>
-              {item.notify === "message" && <span>{totalUnreadCount}</span>}
-              {/* {item.notify === 'orders' && <span>{ordersNotify.length}</span>} */}
-            </NavLink>
+            <SidebarItem item={item} totalUnreadCount={totalUnreadCount} />
           </li>
         ))}
       </ul>
 
-      <div>{username ? <p>{username}</p> : ""}</div>
-      <button onClick={() => handleLogout()}>log out</button>
+      <div className={style.username}>{username}</div>
+
+      <button
+        onClick={() => {
+          clearAuthData();
+          navigate("/login");
+        }}
+      >
+        log out
+      </button>
     </div>
   );
 }

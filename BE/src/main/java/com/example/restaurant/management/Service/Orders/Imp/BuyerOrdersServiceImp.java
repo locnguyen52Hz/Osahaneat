@@ -3,6 +3,7 @@ package com.example.restaurant.management.Service.Orders.Imp;
 import com.example.restaurant.management.DTO.*;
 import com.example.restaurant.management.Entity.*;
 import com.example.restaurant.management.Enums.OrdersStatus;
+import com.example.restaurant.management.Payload.Request.CreateRatingRequest;
 import com.example.restaurant.management.Payload.Request.OrdersRequest;
 import com.example.restaurant.management.Repository.*;
 
@@ -57,6 +58,9 @@ public class BuyerOrdersServiceImp implements OrdersService {
     @Autowired
     OrdersHelper  ordersHelper;
 
+    @Autowired
+    RatingRepository ratingRepository;
+
 
     public OrdersDTO createOrder(OrdersRequest ordersRequest, String authHeader) {
         // lấy user từ token
@@ -88,7 +92,7 @@ public class BuyerOrdersServiceImp implements OrdersService {
 
         //set khoảng cách
         double distance = routes.getRoutes().get(0).getDistance();
-        orders.setDistance(distance / 1000);
+        orders.setDistance(distance);
         double shipFee = routesService.calculateShipFee(distance);
         orders.setShipFee(shipFee);
 
@@ -235,14 +239,14 @@ public class BuyerOrdersServiceImp implements OrdersService {
         if (user == null) {
             throw new RuntimeException("User not found");
         }
-        Pageable pageable = PageRequest.of(page, 6);
+        Pageable pageable = PageRequest.of(page, 9);
         return ordersRepository.findPreviousOrdersForBuyer(user.getId(), pageable);
     }
 
 
     @Override
     public Page<OrderTimeLineDTO> getActiveOrdersWithPage(Integer userId,int page) {
-        Pageable pageable = PageRequest.of(page, 3);
+        Pageable pageable = PageRequest.of(page, 9);
         Page<Integer> orderIdPage = ordersRepository.getActiveOrderIdsByUserId(userId, pageable);
         List<Integer> orderIds = orderIdPage.getContent();
         System.out.println(orderIds);
@@ -258,9 +262,48 @@ public class BuyerOrdersServiceImp implements OrdersService {
         return new PageImpl<>(content, pageable, orderIdPage.getTotalElements());
     }
 
-    @Override
-    public Page<OrderTimeLineDTO> getPreviousOrdersWithPage(Integer userId, int page) {
-        return null;
+
+    @Transactional
+    public Integer createRating(CreateRatingRequest createRatingRequest, String authHeader) {
+        Integer userId = jwtHelper.getUserID(authHeader);
+        Orders orders = ordersRepository.findOrdersById(createRatingRequest.getOrderId());
+
+        //validate
+        if (orders == null) {
+            throw new RuntimeException("Orders not found");
+        }
+        if(!orders.getUser().getId().equals(userId)) {
+            throw new RuntimeException("You are not authorized to rate this order");
+        }
+        if (!orders.getStatus().equals(OrdersStatus.COMPLETED)) {
+            throw new RuntimeException("You can only rate completed orders");
+        }
+        if(ratingRepository.existsRatingByOrder_Id(orders.getId())) {
+            throw new RuntimeException("You have already rated this order");
+        }
+
+        // lấy shop
+        Shops shop = shopsRepository.findById(orders.getShops().getId()).orElseThrow(() -> new EntityNotFoundException("Shop not found"));
+
+        // tạo rating
+        Rating rating = new Rating();
+        rating.setOrder(orders);
+        rating.setRating(createRatingRequest.getRating());
+        rating.setUser(userRepository.findUserById(userId));
+        rating.setShop(shop);
+        ratingRepository.save(rating);
+
+        // update shop
+        int count = shop.getRatingCount();
+        double avg = shop.getRatingAvg();
+
+        double newAvg = (avg * count + createRatingRequest.getRating()) / (count + 1);
+        shop.setRatingAvg(newAvg);
+        shop.setRatingCount(count + 1);
+        Integer orderRating = rating.getRating();
+
+        shopsRepository.save(shop);
+        return orderRating;
     }
 
 

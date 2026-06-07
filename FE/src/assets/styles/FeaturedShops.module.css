@@ -10,7 +10,8 @@
 /* Layout chính cho danh sách item */
 .items {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 cột mặc định */
+  grid-template-columns: repeat(3, 1fr);
+  /* 3 cột mặc định */
   gap: 20px;
   width: 100%;
 }
@@ -57,27 +58,6 @@
   border-radius: 50%;
 }
 
-/* Tablet */
-@media (max-width: 1024px) {
-  .items {
-    grid-template-columns: repeat(1, 1fr); /* Giảm còn 1 cột */
-  }
-}
-
-/* Mobile */
-@media (max-width: 768px) {
-
-
-  .shopDesc {
-    margin-left: 10px;
-  }
-
-  .shopAvatar {
-    height: 50px;
-    width: 50px;
-    min-width: 50px;
-  }
-}
 
 /* Mobile nhỏ */
 @media (max-width: 480px) {
@@ -95,5 +75,28 @@
     height: 45px;
     width: 45px;
     min-width: 45px;
+  }
+}
+
+
+/* Mobile */
+@media (max-width: 768px) {
+
+
+  .shopDesc {
+    margin-left: 10px;
+  }
+
+  .shopAvatar {
+    height: 50px;
+    width: 50px;
+    min-width: 50px;
+  }
+}
+
+/* Tablet */
+@media (max-width: 1200px) {
+  .items {
+    grid-template-columns: repeat(1, 1fr);
   }
 }

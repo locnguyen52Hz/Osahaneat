@@ -4,31 +4,26 @@ import { apiGet, apiPost } from "../../../api/api";
 import endpoints from "../../../api/endpoints";
 import OrderDetails from "./OrderDetails";
 import OrderActions from "./OrderActions";
+import OrderDetailsView from "./OrderDetailsView";
 
 function OrderPreview({ currentShop, note, myLocation, createOrder }) {
   const [details, setDetails] = useState(currentShop);
   const [loading, setLoading] = useState(true);
-  console.log(currentShop);
+
   useEffect(() => {
     if (!myLocation) return;
 
     const fetchShippingFee = async () => {
-      const payload = {
-        shopId: currentShop.id,
-        foods: currentShop.foods,
-        fromLatitude: myLocation.latitude,
-        fromLongitude: myLocation.longitude,
-      };
-      console.log(payload);
       try {
-        const resPreview = await apiPost(
-          `${endpoints.order.shippingFee}`,
-          payload,
-        );
-
-        console.log(resPreview.data.data);
+        const resPreview = await apiPost(endpoints.order.shippingFee, {
+          shopId: currentShop.id,
+          foods: currentShop.foods,
+          fromLatitude: myLocation.latitude,
+          fromLongitude: myLocation.longitude,
+        });
 
         const { shippingFee, subtotal, totalAmount } = resPreview.data.data;
+        console.log(resPreview.data.data)
         setDetails((prev) => ({
           ...prev,
           shippingFee,
@@ -37,27 +32,23 @@ function OrderPreview({ currentShop, note, myLocation, createOrder }) {
           note,
           address: myLocation.address,
         }));
-        setLoading(false);
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchShippingFee();
-  }, [myLocation]);
-  // latitude : 21.011484983052767
-  //longitude: 105.65814493445289
+  }, [myLocation, currentShop, note]);
+  if (loading) return <p>Loading...</p>;
   return (
-    <>
-      {!loading && (
-        <>
-          <OrderDetails
-            orderDetails={details}
-            action={<OrderActions action={createOrder} label={"Confirm"} />}
-          />
-        </>
-      )}
-    </>
+    <OrderDetailsView
+      order={details}
+      foods={details.foods}
+      loadingItems={false}
+      footer={<OrderActions action={createOrder} label="Confirm" />}
+    />
   );
 }
 

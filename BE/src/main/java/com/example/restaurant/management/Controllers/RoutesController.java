@@ -35,13 +35,13 @@ public class RoutesController {
 
     }
 
-    @GetMapping("/distance")
-    public ResponseEntity<?> getDistance(@RequestParam double fromLongitude,@RequestParam double fromLatitude,@RequestParam double toLongitude,@RequestParam double toLatitude){
-        OsrmTableResponse distance = routesService.getDistance(fromLongitude,fromLatitude, toLongitude, toLatitude);
-        ResponseData responseData = new ResponseData();
-        responseData.setData(distance);
-        return ResponseEntity.ok(responseData);
-    }
+//    @GetMapping("/distance")
+//    public ResponseEntity<?> getDistance(@RequestParam double fromLongitude,@RequestParam double fromLatitude,@RequestParam double toLongitude,@RequestParam double toLatitude){
+//        OsrmTableResponse distance = routesService.getDistance(fromLongitude,fromLatitude, toLongitude, toLatitude);
+//        ResponseData responseData = new ResponseData();
+//        responseData.setData(distance);
+//        return ResponseEntity.ok(responseData);
+//    }
 
     @GetMapping("/shipping-fee")
     @PreAuthorize("hasAnyRole('ROLE_BUYER')")

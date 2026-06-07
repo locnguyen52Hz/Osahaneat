@@ -1,0 +1,15 @@
+.ratingAndLocation {
+    display: flex;
+    gap: 22px;
+    font-size: 12px;
+    color: #858796;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+
+    .ratingAndLocation {
+        justify-content: center;
+        gap: 10px;
+    }
+}

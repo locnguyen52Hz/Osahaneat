@@ -2,6 +2,8 @@ package com.example.restaurant.management.DTO;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.util.List;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ShopDTO {
     private Integer id;
@@ -13,6 +15,9 @@ public class ShopDTO {
     private double distance;
     private String address;
     private Location location;
+    private double ratingAvg;
+    private Integer ratingCount;
+    private List<CategoryDTO> categories;
 
     //
     public ShopDTO(double longitude, double latitude) {
@@ -20,11 +25,25 @@ public class ShopDTO {
         this.longitude = longitude;
     }
 
-    public ShopDTO(Integer id, Double longitude, Double latitude) {
+    public ShopDTO(Integer id,
+                   String name,
+                   double latitude,
+                   double longitude,
+                   String shopAvatar,
+                   String shopAddress,
+                   double ratingAvg,
+                   Integer ratingCount) {
+
         this.id = id;
-        this.longitude = longitude;
+        this.name = name;
         this.latitude = latitude;
+        this.longitude = longitude;
+        this.shopAvatar = shopAvatar;
+        this.address = shopAddress;
+        this.ratingAvg = ratingAvg;
+        this.ratingCount = ratingCount;
     }
+
 
     public ShopDTO(Integer shopId, String shopName) {
         this.id = shopId;
@@ -32,11 +51,37 @@ public class ShopDTO {
 
     }
 
+
+
+    public ShopDTO(Integer id, String name, String shopAvatar, String address, double ratingAvg, Integer ratingCount) {
+        this.id = id;
+        this.name = name;
+        this.shopAvatar = shopAvatar;
+        this.address = address;
+        this.ratingAvg = ratingAvg;
+        this.ratingCount = ratingCount;
+    }
     //
     public ShopDTO() {}
 
     // Getters & Setters
 
+
+    public double getRatingAvg() {
+        return ratingAvg;
+    }
+
+    public void setRatingAvg(double ratingAvg) {
+        this.ratingAvg = ratingAvg;
+    }
+
+    public Integer getRatingCount() {
+        return ratingCount;
+    }
+
+    public void setRatingCount(Integer ratingCount) {
+        this.ratingCount = ratingCount;
+    }
 
     public Location getLocation() {
         return location;
@@ -101,5 +146,11 @@ public class ShopDTO {
     }
     public void setAddress(String address) {
         this.address = address;
+    }
+    public List<CategoryDTO> getCategories() {
+        return categories;
+    }
+    public void setCategories(List<CategoryDTO> categories) {
+        this.categories = categories;
     }
 }

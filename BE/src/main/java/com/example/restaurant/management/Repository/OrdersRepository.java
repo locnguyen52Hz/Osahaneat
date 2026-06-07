@@ -51,12 +51,14 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer>, JpaSpe
                 s.id,
                 s.shopName,
                 s.latitude,
-                s.longitude
+                s.longitude,
+                r.rating
             )
             FROM Orders od
             JOIN od.user usr
             JOIN od.shops s
             JOIN od.statusHistories odh
+            LEFT JOIN Rating r on r.order.id = od.id
             WHERE usr.id = :userID
               AND odh.endTime IS NULL
               AND odh.status in ('COMPLETED', 'CANCELLED')

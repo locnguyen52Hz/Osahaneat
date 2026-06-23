@@ -2,7 +2,7 @@ import React from "react";
 import { formatCurrency } from "../../../util/format";
 import styles from "../../../assets/styles/FoodItems.module.css";
 import shared from "../../../assets/styles/Shared.module.css";
-function FoodItems({ listItem, isOpen }) {
+function FoodItems({ listItem }) {
   return (
     <>
       {listItem.map((food) => (

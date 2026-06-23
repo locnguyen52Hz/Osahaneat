@@ -7,6 +7,7 @@ import { useAuth } from "./providers/UseContext.jsx";
 import Login from "../features/auth/Common/Login.jsx";
 import { ToastContainer } from "react-toastify";
 import { useConversationStore } from "../stores/messages/useConversationStore.js";
+import { useCartStore } from "../stores/Cart/useCartStore.js";
 
 // helper
 function mapRoutes(routeTree) {
@@ -35,10 +36,11 @@ function App() {
     role && routes[role] ? mapRoutes(routes[role].children) : [];
 
   const fetchUnreadMessage = useConversationStore((s) => s.fetchUnreadMessage);
-
+  const fetchCart = useCartStore((s) => s.fetchCart);
   useEffect(() => {
     if (token) {
       fetchUnreadMessage();
+      fetchCart();
     }
   }, [token]);
   return (

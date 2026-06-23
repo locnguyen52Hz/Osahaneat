@@ -1,12 +1,14 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
-import { MAX_QUANTITY_FOOD, MIN_QUANTITY_FOOD } from "../../../constants/limits";
+import {
+  MAX_QUANTITY_FOOD,
+  MIN_QUANTITY_FOOD,
+} from "../../../constants/limits";
 import { calcCartQuantity, calcCartTotal } from "../../../util/cart";
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [carts, setCarts] = useState([]);
-  // console.log(carts);
 
   const addToCart = (newFood, quantityValue, shopId, shopName) => {
     // console.log(newFood);
@@ -22,7 +24,7 @@ export const CartProvider = ({ children }) => {
         console.log("shop: ", shop);
 
         const foodIndex = shop.foods.findIndex(
-          (food) => food.foodId === newFood.foodId
+          (food) => food.foodId === newFood.foodId,
         );
 
         if (foodIndex !== -1) {
@@ -108,13 +110,15 @@ export const CartProvider = ({ children }) => {
         .map((shop) => {
           if (shop.id === shopId) {
             //tìm nếu shop tồn tại thì lọc bỏ món cần xóa
-            const updateFoods = shop.foods.filter((food) => food.foodId !== foodId);
+            const updateFoods = shop.foods.filter(
+              (food) => food.foodId !== foodId,
+            );
             // giữ nguyên shop, và tạo mảng mới đã lọc bỏ food cần xóa
             return { ...shop, foods: updateFoods };
           } else return shop;
         })
         //nếu ko còn food trong shop thì remove luôn shop
-        .filter((shop) => shop.foods.length > 0)
+        .filter((shop) => shop.foods.length > 0),
     );
   };
 

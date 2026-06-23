@@ -1,9 +1,9 @@
 package com.example.restaurant.management.Service.Message.Imp;
 
-import com.example.restaurant.management.DTO.*;
+import com.example.restaurant.management.dto.*;
 import com.example.restaurant.management.Entity.Conversation;
 import com.example.restaurant.management.Entity.Message;
-import com.example.restaurant.management.Entity.Shops;
+import com.example.restaurant.management.Entity.Shop;
 import com.example.restaurant.management.Entity.User;
 import com.example.restaurant.management.Payload.Request.GetOlderMessagesRequest;
 import com.example.restaurant.management.Payload.Request.MarkReadMessage;
@@ -19,7 +19,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -43,11 +42,11 @@ public class BuyerMessageService implements MessageService {
 
     //    =========================================== SEND MESSAGE ===========================================
     @Override
-    public MessageDTO sendMessage(Integer senderId, Integer shopId, String content) {
+    public MessageDto sendMessage(Integer senderId, Integer shopId, String content) {
         //tìm shop nhận tin nhắn
-        Shops shops = shopsRepository.findById(shopId).orElseThrow(() -> new EntityNotFoundException("Shop not found"));
+        Shop shop = shopsRepository.findById(shopId).orElseThrow(() -> new EntityNotFoundException("Shop not found"));
 
-        User receiver = userRepository.findUserById(shops.getManager().getId());
+        User receiver = userRepository.findUserById(shop.getManager().getId());
 
         //người gửi tin nhắn
         User user = userRepository.findUserById(senderId);
@@ -57,11 +56,11 @@ public class BuyerMessageService implements MessageService {
         }
 
         //kiểm tra cuộc hội thoại đã tôn tại chưa, nếu chưa tạo hội thoại mới
-        Conversation conversation = conversationRepository.getConversationByBuyerIdAndShopsId(senderId, shops.getId());
+        Conversation conversation = conversationRepository.getConversationByBuyerIdAndShopId(senderId, shop.getId());
         if (conversation == null) {
             conversation = new Conversation();
             conversation.setBuyer(user);
-            conversation.setShops(shops);
+            conversation.setShop(shop);
             conversation.setCreatedAt(Instant.now());
             conversation.setLastMessageAt(Instant.now());
             conversation = conversationRepository.save(conversation);
@@ -78,7 +77,7 @@ public class BuyerMessageService implements MessageService {
         conversation.setLastMessageAt(Instant.now());
         conversationRepository.save(conversation);
 
-        MessageDTO messageDTO = new MessageDTO(message.getId(), message.getContent(), message.getSender().getId(), message.getSender().getFullName(),message.getCreatedAt(), message.getReadAt(), message.getConversation().getId());
+        MessageDto messageDTO = new MessageDto(message.getId(), message.getContent(), message.getSender().getId(), message.getSender().getFullName(),message.getCreatedAt(), message.getReadAt(), message.getConversation().getId());
 
         //gửi thông báo cho receiver
         simpMessagingTemplate.convertAndSendToUser(String.valueOf(receiver.getId()), "/queue/message", messageDTO);
@@ -91,49 +90,49 @@ public class BuyerMessageService implements MessageService {
 
     //  =========================================== GET CONVERSATION =============================================
     @Override
-    public List<ConversationWithLatestMessageDTO> getLatestMessages(Integer id, Pageable pageable) {
+    public List<ConversationWithLatestMessageDto> getLatestMessages(Integer id, Pageable pageable) {
 
         return conversationRepository.getLastMessageDTOByBuyerId(id, pageable);
     }
 
     @Override
-    public MessagePageResponseDTO latestMessage(Integer userId, Integer conversationId, Integer shopId, Pageable pageable) {
-        Shops shops = shopsRepository.findById(shopId).orElseThrow(() -> new EntityNotFoundException("Shop not found"));
-        Conversation conversation = conversationRepository.getConversationsByIdAndBuyer_IdAndShops_Id(conversationId, userId, shops.getId());
+    public MessagePageResponseDto latestMessage(Integer userId, Integer conversationId, Integer shopId, Pageable pageable) {
+        Shop shop = shopsRepository.findById(shopId).orElseThrow(() -> new EntityNotFoundException("Shop not found"));
+        Conversation conversation = conversationRepository.getConversationsByIdAndBuyer_IdAndShop_Id(conversationId, userId, shop.getId());
         if (conversation == null) {
             throw new RuntimeException("Conversation not found");
         }
 
-        List<MessageDTO> messageDTOList = messageRepository.findMessages(conversation.getId(), pageable);//
+        List<MessageDto> messageDtoList = messageRepository.findMessages(conversation.getId(), pageable);//
 
-        MessagePageResponseDTO messagePageResponseDTO = null;
-        if (!messageDTOList.isEmpty()) {
-            MessageDTO oldestMessage = messageDTOList.get(messageDTOList.size() - 1);// message cũ
-            MessageCursorDTO oldestCursor = messageDTOList.size() < 5 ? null : new MessageCursorDTO(oldestMessage.getCreatedAt(), oldestMessage.getId());// trỏ message cũ
+        MessagePageResponseDto messagePageResponseDTO = null;
+        if (!messageDtoList.isEmpty()) {
+            MessageDto oldestMessage = messageDtoList.get(messageDtoList.size() - 1);// message cũ
+            MessageCursorDto oldestCursor = messageDtoList.size() < 5 ? null : new MessageCursorDto(oldestMessage.getCreatedAt(), oldestMessage.getId());// trỏ message cũ
 
-            MessageDTO latestMessage = messageDTOList.get(0);// message mới nhất
-            MessageCursorDTO latestMessageCursor = messageDTOList.size() < 5 ? null : new MessageCursorDTO(latestMessage.getCreatedAt(), latestMessage.getId());// trỏ message mới nhất
-            messagePageResponseDTO = new MessagePageResponseDTO(messageDTOList, oldestCursor, latestMessageCursor);
+            MessageDto latestMessage = messageDtoList.get(0);// message mới nhất
+            MessageCursorDto latestMessageCursor = messageDtoList.size() < 5 ? null : new MessageCursorDto(latestMessage.getCreatedAt(), latestMessage.getId());// trỏ message mới nhất
+            messagePageResponseDTO = new MessagePageResponseDto(messageDtoList, oldestCursor, latestMessageCursor);
 
         }
         return messagePageResponseDTO;
     }
 
     @Override
-    public MessagePageResponseDTO getOlderMessages(Integer userId, GetOlderMessagesRequest getOlderMessagesRequest, Pageable pageable) {
+    public MessagePageResponseDto getOlderMessages(Integer userId, GetOlderMessagesRequest getOlderMessagesRequest, Pageable pageable) {
 
-        Shops shops = shopsRepository.findById(getOlderMessagesRequest.getPartnerId()).orElseThrow(() -> new EntityNotFoundException("Shop not found"));
-        Conversation conversation = conversationRepository.getConversationsByIdAndBuyer_IdAndShops_Id(getOlderMessagesRequest.getConversationId(), userId, shops.getId());
+        Shop shop = shopsRepository.findById(getOlderMessagesRequest.getPartnerId()).orElseThrow(() -> new EntityNotFoundException("Shop not found"));
+        Conversation conversation = conversationRepository.getConversationsByIdAndBuyer_IdAndShop_Id(getOlderMessagesRequest.getConversationId(), userId, shop.getId());
         Instant lastCreatedAt = getOlderMessagesRequest.getMessageCursor().getCreatedAt();
         Integer lastMessageId = getOlderMessagesRequest.getMessageCursor().getId();
 
-        List<MessageDTO> messageDTOList = messageRepository.loadMoreMessage(conversation.getId(), lastCreatedAt, lastMessageId, pageable);
+        List<MessageDto> messageDtoList = messageRepository.loadMoreMessage(conversation.getId(), lastCreatedAt, lastMessageId, pageable);
 
-        MessagePageResponseDTO messagePageResponseDTO = null;
-        if (!messageDTOList.isEmpty()) {
-            MessageDTO lastMessage = messageDTOList.get(messageDTOList.size() - 1);
-            MessageCursorDTO oldestCursor = messageDTOList.size() < 5 ? null : new MessageCursorDTO(lastMessage.getCreatedAt(), lastMessage.getId());
-            messagePageResponseDTO = new MessagePageResponseDTO(messageDTOList, oldestCursor);
+        MessagePageResponseDto messagePageResponseDTO = null;
+        if (!messageDtoList.isEmpty()) {
+            MessageDto lastMessage = messageDtoList.get(messageDtoList.size() - 1);
+            MessageCursorDto oldestCursor = messageDtoList.size() < 5 ? null : new MessageCursorDto(lastMessage.getCreatedAt(), lastMessage.getId());
+            messagePageResponseDTO = new MessagePageResponseDto(messageDtoList, oldestCursor);
         }
         return messagePageResponseDTO;
     }

@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.Instant;
 
 @Entity
+@Table(name = "ratings")
 public class Rating {
 
     @Id
@@ -32,11 +33,11 @@ public class Rating {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id", nullable = false)
-    private Shops shop;
+    private Shop shop;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false, unique = true)
-    private Orders order;
+    private Order order;
 
     public void setId(Integer id) {
         this.id = id;
@@ -70,19 +71,19 @@ public class Rating {
         this.user = user;
     }
 
-    public Shops getShop() {
+    public Shop getShop() {
         return shop;
     }
 
-    public void setShop(Shops shop) {
+    public void setShop(Shop shop) {
         this.shop = shop;
     }
 
-    public Orders getOrder() {
+    public Order getOrder() {
         return order;
     }
 
-    public void setOrder(Orders order) {
+    public void setOrder(Order order) {
         this.order = order;
     }
 }

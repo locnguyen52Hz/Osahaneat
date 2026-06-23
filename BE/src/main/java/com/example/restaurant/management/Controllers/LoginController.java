@@ -1,8 +1,8 @@
 package com.example.restaurant.management.Controllers;
 
 
-import com.example.restaurant.management.DTO.RoleDTO;
-import com.example.restaurant.management.DTO.UserDTO;
+import com.example.restaurant.management.dto.RoleDto;
+import com.example.restaurant.management.dto.UserDto;
 import com.example.restaurant.management.Payload.Request.LoginRequest;
 import com.example.restaurant.management.Payload.ResponseData;
 import com.example.restaurant.management.Service.LoginService;
@@ -28,7 +28,7 @@ public class LoginController {
     public ResponseEntity<ResponseData> login(@RequestBody LoginRequest loginRequest) {
         ResponseData responseData = new ResponseData();
 
-        UserDTO userDTO = loginService.login(loginRequest.getEmail(), loginRequest.getPassword());
+        UserDto userDTO = loginService.login(loginRequest.getEmail(), loginRequest.getPassword());
 
         String token = jwtHelper.generateToken(userDTO.getEmail(), userDTO.getFullName(), userDTO.getId());
         responseData.setToken(token);
@@ -44,7 +44,7 @@ public class LoginController {
     public ResponseEntity<ResponseData> getRole(@RequestHeader("Authorization") String authorization) {
 
         ResponseData responseData = new ResponseData();
-        RoleDTO roleDTO = loginService.getRoleByToken(authorization);
+        RoleDto roleDTO = loginService.getRoleByToken(authorization);
         responseData.setSuccess(true);
         responseData.setMessage("Get Role Success");
         responseData.setData(roleDTO);

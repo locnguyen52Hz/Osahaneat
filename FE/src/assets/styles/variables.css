@@ -1,5 +1,8 @@
-:root{
+:root {
     --navbar-mobile-heigth: 50px;
     --navbar-desktop-heigth: 70px;
-    
+    --sidebar-mobile-width: 70px;
+    --sidebar-desktop-width: 224px;
+    --checkout-mobile-height: 79px;
 }
+

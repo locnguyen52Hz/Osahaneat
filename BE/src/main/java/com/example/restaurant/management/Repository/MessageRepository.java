@@ -1,7 +1,7 @@
 package com.example.restaurant.management.Repository;
 
-import com.example.restaurant.management.DTO.MessageDTO;
-import com.example.restaurant.management.DTO.UnreadCount;
+import com.example.restaurant.management.dto.MessageDto;
+import com.example.restaurant.management.dto.UnreadCount;
 import com.example.restaurant.management.Entity.Message;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,7 +17,7 @@ import java.util.List;
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Integer> {
     @Query("""
-        SELECT new com.example.restaurant.management.DTO.MessageDTO(
+        SELECT new com.example.restaurant.management.dto.MessageDto(
             m.id,
             m.content,
             m.sender.fullName,
@@ -30,7 +30,10 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
     WHERE m.conversation.id = :conversationId
     ORDER BY m.createdAt DESC
     """)
-    List<MessageDTO> findMessages(Integer conversationId, Pageable pageable);
+    List<MessageDto> findMessages(
+            @Param("conversationId") Integer conversationId,
+            Pageable pageable
+    );
 
     @Query("""
                 SELECT COUNT(m)
@@ -48,14 +51,14 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
                 JOIN m.conversation c
                 WHERE m.sender.id <> :shopManagerId
                   AND m.readAt IS NULL
-                  AND c.shops.id = :shopId
+                  AND c.shop.id = :shopId
             """)
     Integer countUnreadMessagesForShop(@Param("shopManagerId") Integer shopManagerId,
                                        @Param("shopId") Integer shopId);
 
 
     @Query("""
-                SELECT new com.example.restaurant.management.DTO.MessageDTO(
+                SELECT new com.example.restaurant.management.dto.MessageDto(
                     m.id,
                     m.content,
                     m.sender.id,
@@ -72,7 +75,7 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
                   )
                 ORDER BY m.createdAt DESC, m.id DESC
             """)
-    List<MessageDTO> loadMoreMessage(@Param("conversationId") Integer conversationId,
+    List<MessageDto> loadMoreMessage(@Param("conversationId") Integer conversationId,
                                      @Param("lastCreatedAt") Instant lastCreatedAt,
                                      @Param("lastId") Integer lastId, Pageable pageable);
 
@@ -97,7 +100,7 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
 
 
     @Query("""
-    SELECT new com.example.restaurant.management.DTO.UnreadCount(
+    SELECT new com.example.restaurant.management.dto.UnreadCount(
         :conversationId,
         SUM(CASE WHEN c.id = :conversationId THEN 1 ELSE 0 END),
         COUNT(m.id)
@@ -107,13 +110,13 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
     WHERE
         m.sender.id <> :shopManagerId
         AND m.readAt IS NULL
-        AND c.shops.id = :shopId
+        AND c.shop.id = :shopId
     """)
     UnreadCount getUnreadMessageStatsForShopManager(@Param("conversationId") Integer conversationId, @Param("shopManagerId") Integer shopManagerId, @Param("shopId") Integer shopId);
 
 
     @Query("""
-    SELECT new com.example.restaurant.management.DTO.UnreadCount(
+    SELECT new com.example.restaurant.management.dto.UnreadCount(
         :conversationId,
         SUM(CASE WHEN c.id = :conversationId THEN 1 ELSE 0 END),
         COUNT(m.id)

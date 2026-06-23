@@ -1,9 +1,8 @@
 package com.example.restaurant.management.Repository;
 
-import com.example.restaurant.management.DTO.OrderTimeLineDTO;
-import com.example.restaurant.management.DTO.OrderTimeLineRowDTO;
-import com.example.restaurant.management.DTO.OrdersDTO;
-import com.example.restaurant.management.Entity.Orders;
+import com.example.restaurant.management.dto.OrderTimeLineRowDto;
+import com.example.restaurant.management.dto.OrdersDto;
+import com.example.restaurant.management.Entity.Order;
 import com.example.restaurant.management.Enums.OrdersStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,20 +16,20 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface OrdersRepository extends JpaRepository<Orders, Integer>, JpaSpecificationExecutor<Orders> {
-    List<Orders> findAllByShopsId(Integer shopId);
+public interface OrdersRepository extends JpaRepository<Order, Integer>, JpaSpecificationExecutor<Order> {
+    List<Order> findAllByShopId(Integer shopId);
 
     @Query("""
-            SELECT o FROM Orders o
+            SELECT o FROM Order o
             WHERE (:buyerId IS NULL OR o.user.id = :buyerId)
-              AND (:shopManagerId IS NULL OR o.shops.manager.id = :shopManagerId)
+              AND (:shopManagerId IS NULL OR o.shop.manager.id = :shopManagerId)
               AND EXISTS (
                   SELECT h FROM o.statusHistories h
                   WHERE h.status = :status AND h.endTime IS NULL
               )
             ORDER BY o.id DESC
             """)
-    List<Orders> findOrdersByStatusAndRole(
+    List<Order> findOrdersByStatusAndRole(
             @Param("status") OrdersStatus status,
             @Param("buyerId") Integer buyerId,
             @Param("shopManagerId") Integer shopManagerId,
@@ -38,7 +37,7 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer>, JpaSpe
     );
 
     @Query("""
-            SELECT new com.example.restaurant.management.DTO.OrdersDTO(
+            SELECT new com.example.restaurant.management.dto.OrdersDto(
                 od.id,
                 od.totalAmount,
                 odh.status,
@@ -54,9 +53,9 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer>, JpaSpe
                 s.longitude,
                 r.rating
             )
-            FROM Orders od
+            FROM Order od
             JOIN od.user usr
-            JOIN od.shops s
+            JOIN od.shop s
             JOIN od.statusHistories odh
             LEFT JOIN Rating r on r.order.id = od.id
             WHERE usr.id = :userID
@@ -64,26 +63,26 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer>, JpaSpe
               AND odh.status in ('COMPLETED', 'CANCELLED')
             ORDER BY od.id DESC
             """)
-    Page<OrdersDTO> findPreviousOrdersForBuyer(@Param("userID") Integer userId, Pageable pageable);
+    Page<OrdersDto> findPreviousOrdersForBuyer(@Param("userID") Integer userId, Pageable pageable);
 
-    Orders findOrdersByIdAndUserId(Integer ordersId, Integer userId);
+    Order findOrdersByIdAndUserId(Integer ordersId, Integer userId);
 
-    Orders findOrdersByIdAndShops_Id(int id, int shopsId);
+    Order findOrdersByIdAndShop_Id(int id, int shopsId);
 
-    Orders findOrdersById(@Param("ordersId") Integer ordersId);
+    Order findOrderById(@Param("ordersId") Integer ordersId);
 
 
     @Query("""
             SELECT o
-            FROM Orders o
+            FROM Order o
             WHERE o.user.id = :userId
             ORDER BY o.id DESC
             """)
-    Page<Orders> findOrdersByUserId(Integer userId, Pageable pageable);
+    Page<Order> findOrdersByUserId(Integer userId, Pageable pageable);
 
 
     @Query("""
-                SELECT new com.example.restaurant.management.DTO.OrdersDTO(
+                SELECT new com.example.restaurant.management.dto.OrdersDto(
                 od.id,
                 od.totalAmount,
                 odh.status,
@@ -96,20 +95,20 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer>, JpaSpe
                 usr.id,
                 usr.fullName
             )
-            FROM Orders od
+            FROM Order od
             JOIN od.user usr
-            JOIN od.shops s
+            JOIN od.shop s
             JOIN od.statusHistories odh
-            WHERE od.shops.id = :shopId
+            WHERE od.shop.id = :shopId
               AND odh.endTime IS NULL
               AND odh.status in ('COMPLETED', 'CANCELLED')
             ORDER BY od.id DESC
             """)
-    Page<OrdersDTO> findPreviousOrdersForShopManager(@Param("shopId") Integer shopId,Pageable pageable);
+    Page<OrdersDto> findPreviousOrdersForShopManager(@Param("shopId") Integer shopId, Pageable pageable);
 
 
     @Query("""
-                SELECT new com.example.restaurant.management.DTO.OrdersDTO(
+                SELECT new com.example.restaurant.management.dto.OrdersDto(
                     od.id,
                     od.totalAmount,
                     odh.status,
@@ -122,18 +121,18 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer>, JpaSpe
                     s.id,
                     s.shopName
                 )
-                FROM Orders od
+                FROM Order od
                 JOIN od.user usr
-                JOIN od.shops s
+                JOIN od.shop s
                 JOIN od.statusHistories odh
                 WHERE usr.id = :userID
                   AND odh.endTime IS NULL
                 ORDER BY od.id DESC
             """)
-    Page<OrdersDTO> findListOrdersByUserId(@Param("userID") Integer userId, Pageable pageable);
+    Page<OrdersDto> findListOrdersByUserId(@Param("userID") Integer userId, Pageable pageable);
 
     @Query("""
-            SELECT new com.example.restaurant.management.DTO.OrdersDTO(
+            SELECT new com.example.restaurant.management.dto.OrdersDto(
                     od.id
                     ,od.totalAmount
                     ,odh.status
@@ -146,8 +145,8 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer>, JpaSpe
                     ,usr.id
                     ,usr.fullName
                 )
-                    FROM Shops sh
-                    INNER JOIN Orders od ON sh.id = od.shops.id
+                    FROM Shop sh
+                    INNER JOIN Order od ON sh.id = od.shop.id
                     INNER JOIN OrderStatusHistory odh ON odh.order.id = od.id
                     INNER JOIN User usr ON od.user.id = usr.id
                     WHERE
@@ -155,11 +154,11 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer>, JpaSpe
                         AND odh.endTime IS NULL
                     ORDER BY od.id DESC
             """)
-    Page<OrdersDTO> findListOrdersByShopsId(@Param("managerID") Integer managerID, Pageable pageable);
+    Page<OrdersDto> findListOrdersByShopsId(@Param("managerID") Integer managerID, Pageable pageable);
 
     @Query(
             value = """
-        SELECT new com.example.restaurant.management.DTO.OrdersDTO(
+        SELECT new com.example.restaurant.management.dto.OrdersDto(
             od.id,
             od.totalAmount,
             odh.status,
@@ -170,11 +169,11 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer>, JpaSpe
             CAST((
                 SELECT SUM(oi2.quantity)
                 FROM OrdersItem oi2
-                WHERE oi2.orders.id = od.id
+                WHERE oi2.order.id = od.id
             ) AS long)
         )
-        FROM Orders od
-        JOIN od.shops sh
+        FROM Order od
+        JOIN od.shop sh
         JOIN od.user usr
         JOIN od.statusHistories odh
         WHERE sh.manager.id = :managerID
@@ -183,20 +182,20 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer>, JpaSpe
     """,
             countQuery = """
         SELECT COUNT(od)
-        FROM Orders od
-        JOIN od.shops sh
+        FROM Order od
+        JOIN od.shop sh
         JOIN od.statusHistories odh
         WHERE sh.manager.id = :managerID
           AND odh.endTime IS NULL
     """
     )
-    Page<OrdersDTO> findOrdersWithQuantity(@Param("managerID") Integer managerID, Pageable pageable);
+    Page<OrdersDto> findOrdersWithQuantity(@Param("managerID") Integer managerID, Pageable pageable);
 
 
 
     @Query("""
     SELECT o.id
-    FROM Orders o
+    FROM Order o
     JOIN o.user u
 
     JOIN OrderStatusHistory currentOsh
@@ -215,7 +214,7 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer>, JpaSpe
 
 
     @Query("""
-    SELECT new com.example.restaurant.management.DTO.OrderTimeLineRowDTO(
+    SELECT new com.example.restaurant.management.dto.OrderTimeLineRowDto(
         o.id,
         u.id,
         o.totalAmount,
@@ -237,9 +236,9 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer>, JpaSpe
         o.toLocation.longitude,
         o.createdAt
     )
-    FROM Orders o
+    FROM Order o
     JOIN o.user u
-    JOIN o.shops s
+    JOIN o.shop s
     JOIN OrderStatusHistory osh
         ON osh.order.id = o.id
 
@@ -247,7 +246,7 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer>, JpaSpe
 
     ORDER BY o.id DESC, osh.startTime ASC
 """)
-    List<OrderTimeLineRowDTO> getTimelineRowsByOrderIds(
+    List<OrderTimeLineRowDto> getTimelineRowsByOrderIds(
             @Param("orderIds") List<Integer> orderIds
     );
 

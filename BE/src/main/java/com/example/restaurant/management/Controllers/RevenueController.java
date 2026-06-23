@@ -1,6 +1,5 @@
 package com.example.restaurant.management.Controllers;
 
-import com.example.restaurant.management.DTO.ChartResponse;
 import com.example.restaurant.management.Payload.ResponseData;
 import com.example.restaurant.management.Service.Revenue.ShopRevenueService;
 import org.springframework.beans.factory.annotation.Autowired;

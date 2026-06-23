@@ -1,0 +1,82 @@
+.container {
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    flex-direction: column;
+}
+
+.wrapper {
+
+    display: flex;
+    column-gap: 16px;
+}
+
+.shopImage {
+    width: 60px;
+    height: 60px;
+    background-color: aquamarine;
+    border-radius: 8px;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.image {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+    border-radius: 8px;
+}
+
+.details {
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    /* flex-direction: column; */
+    gap: 8px;
+    justify-content: center;
+}
+
+.quantityControls {
+    display: flex;
+}
+
+.foodName {}
+
+
+.removeIcon{
+    position: absolute;
+    cursor: pointer;
+    right: -8px;
+    top: -8px;
+  
+}
+
+.removeIcon:hover{
+    font-size: 18px;
+}
+
+.description {
+    font-size: 12px;
+}
+
+@media (min-width: 768px) {
+    .actions {
+        flex-direction: row;
+    }
+
+    .shopImage {
+        width: 80px;
+        height: 80px;
+    }
+
+    .container {
+        flex-direction: row;
+
+    }
+}

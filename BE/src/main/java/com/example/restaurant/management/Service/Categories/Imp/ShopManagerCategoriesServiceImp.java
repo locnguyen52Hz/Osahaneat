@@ -1,8 +1,8 @@
 package com.example.restaurant.management.Service.Categories.Imp;
 
-import com.example.restaurant.management.DTO.CategoryDTO;
-import com.example.restaurant.management.Entity.Categories;
-import com.example.restaurant.management.Entity.Shops;
+import com.example.restaurant.management.dto.CategoryDto;
+import com.example.restaurant.management.Entity.Category;
+import com.example.restaurant.management.Entity.Shop;
 import com.example.restaurant.management.Repository.CategoryRepository;
 import com.example.restaurant.management.Repository.ShopsRepository;
 import com.example.restaurant.management.Service.Categories.CategoryService;
@@ -29,11 +29,11 @@ public class ShopManagerCategoriesServiceImp implements CategoryService {
     @Transactional
     public String toggleShopCategory(String authHeader, Integer categoryId) {
         Integer userID = jwtHelper.getUserID(authHeader);
-        Shops shop = shopsRepository.findShopsByManager_Id(userID);
+        Shop shop = shopsRepository.findShopsByManager_Id(userID);
         if (shop == null) {
             throw new RuntimeException("Shop not found");
         }
-        Categories category = categoryRepository.getCategoriesById(categoryId);
+        Category category = categoryRepository.getCategoryById(categoryId);
         if (category == null) {
             throw new RuntimeException("Category not found");
         }
@@ -50,21 +50,21 @@ public class ShopManagerCategoriesServiceImp implements CategoryService {
 
 
     @Override
-    public List<CategoryDTO> getCategoriesOfShop(String authHeader, Integer shopId) {
+    public List<CategoryDto> getCategoriesOfShop(String authHeader, Integer shopId) {
         Integer userID = jwtHelper.getUserID(authHeader);
-        Shops shop = shopsRepository.findShopsByManager_Id(userID);
+        Shop shop = shopsRepository.findShopsByManager_Id(userID);
         if (shop == null) {
             throw new RuntimeException("Shop not found");
         }
-        List<Categories> categories = shop.getCategories();
-        List<CategoryDTO> categoryDTOList = new ArrayList<>();
-        for (Categories category : categories) {
-            CategoryDTO categoryDTO = new CategoryDTO();
+        List<Category> categories = shop.getCategories();
+        List<CategoryDto> categoryDtoList = new ArrayList<>();
+        for (Category category : categories) {
+            CategoryDto categoryDTO = new CategoryDto();
             categoryDTO.setName(category.getName());
             categoryDTO.setId(category.getId());
-            categoryDTOList.add(categoryDTO);
+            categoryDtoList.add(categoryDTO);
         }
-        return categoryDTOList;
+        return categoryDtoList;
     }
 
 }

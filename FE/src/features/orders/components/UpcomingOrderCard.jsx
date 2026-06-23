@@ -12,10 +12,9 @@ import FoodItems from "../../foods/components/FoodItems";
 import TrackStatus from "./TrackStatus";
 import OrderActions from "./OrderActions";
 
-
 function UpcomingOrderCard({ order, updateOrderStatus, handleCancelOrder }) {
   const { openModal } = useModal();
-  console.log(order);
+
   return (
     <div className={styles.cardOrder}>
       {/* Header */}

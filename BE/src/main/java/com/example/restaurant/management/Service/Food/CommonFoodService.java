@@ -1,6 +1,6 @@
 package com.example.restaurant.management.Service.Food;
 
-import com.example.restaurant.management.DTO.FoodDTO;
+import com.example.restaurant.management.dto.FoodDto;
 import com.example.restaurant.management.Repository.UserRepository;
 import com.example.restaurant.management.Service.Food.Imp.BuyerFoodServiceImp;
 import com.example.restaurant.management.Service.Food.Imp.ShopManagerFoodServiceImp;
@@ -25,7 +25,7 @@ public class CommonFoodService {
     @Autowired
     BuyerFoodServiceImp buyerFoodServiceImp;
 
-    public List<FoodDTO> findFoodByCategory_Id(Integer categoryId, Integer shopId, String  authHeader) {
+    public List<FoodDto> findFoodByCategory_Id(Integer categoryId, Integer shopId, String  authHeader) {
         Integer userId = jwtHelper.getUserID(authHeader);
         String role = userRepository.findUserById(userId).getRole().getRoleName();
 

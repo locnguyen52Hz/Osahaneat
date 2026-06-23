@@ -1,10 +1,8 @@
 package com.example.restaurant.management.Service.Shops.Imp;
 
-import com.example.restaurant.management.DTO.Coordinate;
-import com.example.restaurant.management.DTO.OsrmTableResponse;
-import com.example.restaurant.management.DTO.ShopDTO;
-import com.example.restaurant.management.DTO.ShopLocationDTO;
-import com.example.restaurant.management.Entity.Shops;
+import com.example.restaurant.management.dto.ShopDto;
+import com.example.restaurant.management.dto.ShopLocationDto;
+import com.example.restaurant.management.Entity.Shop;
 import com.example.restaurant.management.Excetion.FieldValidationException;
 import com.example.restaurant.management.Payload.Request.ShopUpdateRequest;
 import com.example.restaurant.management.Repository.ShopsRepository;
@@ -36,12 +34,12 @@ public class ShopManagerShopServiceImp implements ShopService {
 
 
 
-    public ShopDTO getShopById(Integer shopId ) {
-        Shops shop = shopsRepository.findShopsByManager_Id(shopId);
+    public ShopDto getShopById(Integer shopId ) {
+        Shop shop = shopsRepository.findShopsByManager_Id(shopId);
         if (shop == null) {
             throw new RuntimeException("Shop not found");
         }
-        ShopDTO shopDTO = new ShopDTO();
+        ShopDto shopDTO = new ShopDto();
         shopDTO.setName(shop.getShopName());
         shopDTO.setShopAvatar(shop.getShopImage());
         shopDTO.setId(shop.getId());
@@ -52,7 +50,7 @@ public class ShopManagerShopServiceImp implements ShopService {
 
     public void addShopImgByShopManager(MultipartFile file, String authHeader) {
         Integer userID = jwtHelper.getUserID(authHeader);
-        Shops shop = shopsRepository.findShopsByManager_Id(userID);
+        Shop shop = shopsRepository.findShopsByManager_Id(userID);
         if (shop == null) {
             throw new RuntimeException("Shop not found");
         }
@@ -68,7 +66,7 @@ public class ShopManagerShopServiceImp implements ShopService {
     }
 
     @Override
-    public List<ShopLocationDTO> getAllShopLocations() {
+    public List<ShopLocationDto> getAllShopLocations() {
         return List.of();
     }
 
@@ -78,7 +76,7 @@ public class ShopManagerShopServiceImp implements ShopService {
 
     public void shopUpdate(String authHeader, ShopUpdateRequest shopUpdateRequest) {
         Integer userID = jwtHelper.getUserID(authHeader);
-        Shops shop = shopsRepository.findShopsByManager_Id(userID);
+        Shop shop = shopsRepository.findShopsByManager_Id(userID);
         if (shop == null) {
             throw new RuntimeException("Shops not found");
         }
@@ -100,7 +98,7 @@ public class ShopManagerShopServiceImp implements ShopService {
             throw new FieldValidationException("avatar","File is required", HttpStatus.BAD_REQUEST);
         }
         Integer userID = jwtHelper.getUserID(authHeader);
-        Shops shop = shopsRepository.findShopsByManager_Id(userID);
+        Shop shop = shopsRepository.findShopsByManager_Id(userID);
         if (shop == null) {
             throw new RuntimeException("Shop not found");
         }

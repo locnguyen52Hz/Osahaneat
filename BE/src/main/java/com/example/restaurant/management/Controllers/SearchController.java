@@ -1,12 +1,11 @@
 package com.example.restaurant.management.Controllers;
 
 
-import com.example.restaurant.management.DTO.ShopDTO;
+import com.example.restaurant.management.dto.ShopDto;
 import com.example.restaurant.management.Payload.ResponseData;
 import com.example.restaurant.management.Service.Search.Imp.BuyerSearchServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -35,7 +33,7 @@ public class SearchController {
                                                            @RequestParam int page
     ) {
         ResponseData  responseData = new ResponseData();
-        Page<ShopDTO> shopDTOSPage = buyerSearchServiceImp.findShopsByCategoryWithQuantity(category, userLon,userLat, page);
+        Page<ShopDto> shopDTOSPage = buyerSearchServiceImp.findShopsByCategoryWithQuantity(category, userLon,userLat, page);
         Map<String,Object> map = new HashMap<>();
         map.put("list",shopDTOSPage.getContent());
         map.put("totalElement",shopDTOSPage.getTotalElements());

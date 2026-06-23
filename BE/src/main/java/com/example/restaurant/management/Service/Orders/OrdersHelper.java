@@ -1,6 +1,6 @@
 package com.example.restaurant.management.Service.Orders;
 
-import com.example.restaurant.management.DTO.*;
+import com.example.restaurant.management.dto.*;
 import com.example.restaurant.management.Entity.*;
 import com.example.restaurant.management.Enums.OrdersStatus;
 import com.example.restaurant.management.Payload.Request.OrdersItemRequest;
@@ -38,8 +38,8 @@ public class OrdersHelper {
     @Autowired
     OrdersRepository ordersRepository;
 
-    public OrdersDTO orderPreview(OrdersRequest ordersRequest) {
-        OrdersDTO ordersDTO;
+    public OrdersDto orderPreview(OrdersRequest ordersRequest) {
+        OrdersDto ordersDTO;
         ordersDTO = calculateOrderPrice(ordersRequest);
         return ordersDTO;
     }
@@ -54,7 +54,7 @@ public class OrdersHelper {
     }
 
 
-    public void applyNewStatus(Orders orders,
+    public void applyNewStatus(Order order,
                                OrderStatusHistory currentStatus,
                                OrdersStatus newStatus) {
         Instant now = Instant.now();
@@ -66,16 +66,16 @@ public class OrdersHelper {
         OrderStatusHistory newStatusHistory = new OrderStatusHistory();
         newStatusHistory.setStatus(newStatus);
         newStatusHistory.setStartTime(now);
-        newStatusHistory.setOrder(orders);
+        newStatusHistory.setOrder(order);
 
         // 3. Add vào collection
-        orders.getStatusHistories().add(newStatusHistory);
+        order.getStatusHistories().add(newStatusHistory);
     }
 
-    public List<OrderItemDTO> mapOrderItems(List<OrdersItem> ordersItems) {
+    public List<OrderItemDto> mapOrderItems(List<OrdersItem> ordersItems) {
         return ordersItems.stream()
                 .map(item -> {
-                    OrderItemDTO dto = new OrderItemDTO();
+                    OrderItemDto dto = new OrderItemDto();
                     dto.setFoodId(item.getFood().getId());
                     dto.setName(item.getFood().getName());
                     dto.setQuantity(item.getQuantity());
@@ -85,9 +85,9 @@ public class OrdersHelper {
                 .toList();
     }
 
-    public OrdersDTO calculateOrderPrice(OrdersRequest ordersRequest) {
+    public OrdersDto calculateOrderPrice(OrdersRequest ordersRequest) {
         //lấy thông tin shop
-        Shops shop = shopsRepository.findById(ordersRequest.getShopId()).orElseThrow(() -> new EntityNotFoundException("Shop not found"));
+        Shop shop = shopsRepository.findById(ordersRequest.getShopId()).orElseThrow(() -> new EntityNotFoundException("Shop not found"));
 
         //tính giá món
         double subtotal = 0;
@@ -100,7 +100,7 @@ public class OrdersHelper {
             double itemTotal = food.getPrice() * item.getQuantity();
             subtotal = subtotal + itemTotal;
         }
-        OrdersDTO ordersDTO = new OrdersDTO();
+        OrdersDto ordersDTO = new OrdersDto();
         ordersDTO.setSubtotal(subtotal);
         double shippingFee = routesService.getShippingFee(ordersRequest.getFromLongitude(), ordersRequest.getFromLatitude(), shop.getId());
         ordersDTO.setShippingFee(shippingFee);
@@ -109,14 +109,14 @@ public class OrdersHelper {
         return ordersDTO;
     }
 
-    public List<OrderTimeLineDTO> groupOrders(List<OrderTimeLineRowDTO> rows) {
-        Map<Integer, OrderTimeLineDTO> map = new LinkedHashMap<>();
+    public List<OrderTimeLineDto> groupOrders(List<OrderTimeLineRowDto> rows) {
+        Map<Integer, OrderTimeLineDto> map = new LinkedHashMap<>();
 
-        for (OrderTimeLineRowDTO row : rows) {
-            OrderTimeLineDTO order = map.computeIfAbsent(
+        for (OrderTimeLineRowDto row : rows) {
+            OrderTimeLineDto order = map.computeIfAbsent(
                     row.getOrderId(),
                     id -> {
-                        OrderTimeLineDTO dto = new OrderTimeLineDTO();
+                        OrderTimeLineDto dto = new OrderTimeLineDto();
                         dto.setOrderId(row.getOrderId());
                         dto.setUserId(row.getUserId());
                         dto.setTotalAmount(row.getTotalAmount());
@@ -135,7 +135,7 @@ public class OrdersHelper {
                         return dto;
                     }
             );
-            order.getStatuses().add(new StatusDTO(
+            order.getStatuses().add(new StatusDto(
                             row.getOhsStatus(),
                             row.getStartTime(),
                             row.getEndTime()

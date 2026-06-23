@@ -3,6 +3,7 @@ package com.example.restaurant.management.Entity;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "order_items")
 public class OrdersItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -10,7 +11,7 @@ public class OrdersItem {
 
     @ManyToOne
     @JoinColumn(name = "order_id",nullable = false)
-    private Orders orders;
+    private Order order;
 
     @ManyToOne
     @JoinColumn(name = "food_id", nullable = false)
@@ -27,12 +28,12 @@ public class OrdersItem {
         this.id = id;
     }
 
-    public Orders getOrders() {
-        return orders;
+    public Order getOrder() {
+        return order;
     }
 
-    public void setOrders(Orders orders) {
-        this.orders = orders;
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public Food getFood() {

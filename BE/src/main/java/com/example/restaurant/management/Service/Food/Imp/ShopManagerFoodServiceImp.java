@@ -1,9 +1,9 @@
 package com.example.restaurant.management.Service.Food.Imp;
 
-import com.example.restaurant.management.DTO.FoodDTO;
-import com.example.restaurant.management.Entity.Categories;
+import com.example.restaurant.management.dto.FoodDto;
+import com.example.restaurant.management.Entity.Category;
 import com.example.restaurant.management.Entity.Food;
-import com.example.restaurant.management.Entity.Shops;
+import com.example.restaurant.management.Entity.Shop;
 import com.example.restaurant.management.Entity.User;
 import com.example.restaurant.management.Excetion.FieldValidationException;
 import com.example.restaurant.management.Payload.Request.FoodRequest;
@@ -19,8 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronizationAdapter;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -54,12 +52,12 @@ public class ShopManagerFoodServiceImp implements FoodService {
         Integer userID = jwtHelper.getUserID(authHeader);
 
         // Lấy shop của user
-        Shops shop = shopsRepository.findShopsByManager_Id(userID);
+        Shop shop = shopsRepository.findShopsByManager_Id(userID);
         if (shop == null) {
             throw new FieldValidationException("shop", "Shop not found", HttpStatus.BAD_REQUEST);
         }
 
-        Categories category = categoryRepository.getCategoriesById(foodRequest.getCategoryId());
+        Category category = categoryRepository.getCategoryById(foodRequest.getCategoryId());
 
         //  Kiểm tra category có thuộc shop của user không
         boolean exists = categoryRepository.existsShopCategory(shop.getId(), foodRequest.getCategoryId());
@@ -76,7 +74,7 @@ public class ShopManagerFoodServiceImp implements FoodService {
             food.setPrice(foodRequest.getPrice());
             food.setDescription(foodRequest.getDescription());
             food.setCategory(category);
-            food.setShops(shop);
+            food.setShop(shop);
 
             foodRepository.save(food);
         } catch (IOException e) {
@@ -86,43 +84,43 @@ public class ShopManagerFoodServiceImp implements FoodService {
 
 
     @Override
-    public List<FoodDTO> findFoodByCategory_Id(Integer categoryId, Integer shopId, Integer userId) {
+    public List<FoodDto> findFoodByCategory_Id(Integer categoryId, Integer shopId, Integer userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
 
 
-        Shops shop = shopsRepository.findShopsByManager_Id(user.getId());
+        Shop shop = shopsRepository.findShopsByManager_Id(user.getId());
         if (shop == null) {
             throw new RuntimeException("Shop not found");
         }
 
-        List<Food> foods = foodRepository.findFoodByCategories_IdAndShops_IdAndDeletedFalse(categoryId, shop.getId());
-        List<FoodDTO> foodDTOList = new ArrayList<>();
+        List<Food> foods = foodRepository.findFoodByCategory_IdAndShop_IdAndDeletedFalse(categoryId, shop.getId());
+        List<FoodDto> foodDtoList = new ArrayList<>();
         for(Food food : foods) {
-            FoodDTO foodDTO = new FoodDTO();
-            foodDTO.setName(food.getName());
+            FoodDto foodDTO = new FoodDto();
+            foodDTO.setFoodName(food.getName());
             foodDTO.setImage(food.getImage());
             foodDTO.setPrice(food.getPrice());
             foodDTO.setDescription(food.getDescription());
             foodDTO.setFoodId(food.getId());
-            foodDTOList.add(foodDTO);
+            foodDtoList.add(foodDTO);
         }
 
-        return foodDTOList;
+        return foodDtoList;
     }
 
     public void updateFood(FoodRequest foodRequest, String authHeader) {
         Integer userID = jwtHelper.getUserID(authHeader);
-        Shops shop = shopsRepository.findShopsByManager_Id(userID);
+        Shop shop = shopsRepository.findShopsByManager_Id(userID);
         if (shop == null) {
             throw new FieldValidationException("shop", "Shop not found", HttpStatus.BAD_REQUEST);
         }
 
-        Categories category = categoryRepository.getCategoriesById(foodRequest.getCategoryId());
+        Category category = categoryRepository.getCategoryById(foodRequest.getCategoryId());
         if (category == null) {
             throw new FieldValidationException("category", "Category not found", HttpStatus.BAD_REQUEST);
         }
 
-        Food food = foodRepository.findByIdAndShops_IdAndCategories_IdAndDeletedFalse(
+        Food food = foodRepository.findByIdAndShop_IdAndCategory_IdAndDeletedFalse(
                 foodRequest.getFoodId(), shop.getId(), category.getId());
         if (food == null) {
             throw new FieldValidationException("food", "Food not found", HttpStatus.BAD_REQUEST);
@@ -167,11 +165,11 @@ public class ShopManagerFoodServiceImp implements FoodService {
     @Transactional
     public void deleteFoodById(Integer foodId, @RequestHeader("Authorization") String authHeader) {
         Integer userID = jwtHelper.getUserID(authHeader);
-        Shops shop = shopsRepository.findShopsByManager_Id(userID);
+        Shop shop = shopsRepository.findShopsByManager_Id(userID);
         if (shop == null) {
             throw new FieldValidationException("shop", "Shop not found", HttpStatus.BAD_REQUEST);
         }
-        Food food = foodRepository.findByIdAndShops_Id(foodId, shop.getId());
+        Food food = foodRepository.findByIdAndShop_Id(foodId, shop.getId());
         if (food == null) {
             throw new FieldValidationException("food", "Food not found", HttpStatus.BAD_REQUEST);
         }

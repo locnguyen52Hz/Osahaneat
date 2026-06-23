@@ -1,10 +1,10 @@
 package com.example.restaurant.management.Controllers;
 
 
-import com.example.restaurant.management.DTO.ConversationWithLatestMessageDTO;
-import com.example.restaurant.management.DTO.MessageDTO;
-import com.example.restaurant.management.DTO.MessagePageResponseDTO;
-import com.example.restaurant.management.DTO.UnreadCount;
+import com.example.restaurant.management.dto.ConversationWithLatestMessageDto;
+import com.example.restaurant.management.dto.MessageDto;
+import com.example.restaurant.management.dto.MessagePageResponseDto;
+import com.example.restaurant.management.dto.UnreadCount;
 import com.example.restaurant.management.Payload.Request.GetOlderMessagesRequest;
 import com.example.restaurant.management.Payload.Request.MarkReadMessage;
 import com.example.restaurant.management.Payload.Request.MessageRequest;
@@ -29,7 +29,7 @@ public class MessageController {
     @PreAuthorize("hasAnyRole('ROLE_BUYER','ROLE_SHOP_MANAGER')")
     public ResponseEntity<?> sendMessage(@RequestHeader("Authorization") String authorization, @RequestBody MessageRequest messageRequest) {
         ResponseData responseData = new ResponseData();
-        MessageDTO messageDTO = commonMessageService.sendMessage(authorization, messageRequest);
+        MessageDto messageDTO = commonMessageService.sendMessage(authorization, messageRequest);
         responseData.setData(messageDTO);
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
@@ -38,7 +38,7 @@ public class MessageController {
     @PreAuthorize("hasAnyRole('ROLE_BUYER','ROLE_SHOP_MANAGER')")
     public ResponseEntity<?> getLatestMessages(@RequestHeader("Authorization") String authorization, @RequestParam int page) {
         ResponseData responseData = new ResponseData();
-        List<ConversationWithLatestMessageDTO> conversations = commonMessageService.getConversations(authorization, page);
+        List<ConversationWithLatestMessageDto> conversations = commonMessageService.getConversations(authorization, page);
         responseData.setData(conversations);
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
@@ -48,7 +48,7 @@ public class MessageController {
     public ResponseEntity<?> latestMessage(@RequestHeader("Authorization") String authorization, @RequestParam Integer conversationId,
                                            @RequestParam Integer partnerId) {
         ResponseData responseData = new ResponseData();
-        MessagePageResponseDTO messageDTOS = commonMessageService.latestMessage(authorization, conversationId, partnerId);
+        MessagePageResponseDto messageDTOS = commonMessageService.latestMessage(authorization, conversationId, partnerId);
         responseData.setData(messageDTOS);
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
@@ -57,7 +57,7 @@ public class MessageController {
     @PreAuthorize("hasAnyRole('ROLE_BUYER','ROLE_SHOP_MANAGER')")
     public ResponseEntity<?> getOlderMessages(@RequestHeader("Authorization") String authorization, @RequestBody GetOlderMessagesRequest getOlderMessagesRequest) {
         ResponseData responseData = new ResponseData();
-        MessagePageResponseDTO messageDTOS = commonMessageService.getOlderMessages(authorization, getOlderMessagesRequest);
+        MessagePageResponseDto messageDTOS = commonMessageService.getOlderMessages(authorization, getOlderMessagesRequest);
         responseData.setData(messageDTOS);
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }

@@ -1,8 +1,8 @@
 package com.example.restaurant.management.Service.Categories;
 
 
-import com.example.restaurant.management.DTO.CategoryDTO;
-import com.example.restaurant.management.Entity.Categories;
+import com.example.restaurant.management.dto.CategoryDto;
+import com.example.restaurant.management.Entity.Category;
 import com.example.restaurant.management.Entity.User;
 import com.example.restaurant.management.Repository.CategoryRepository;
 import com.example.restaurant.management.Repository.ShopsRepository;
@@ -39,20 +39,20 @@ public class CommonCategoryService {
     UserRepository userRepository;
 
 
-    public List<CategoryDTO> getAllCategories() {
-        List<Categories> categoryList = categoryRepository.findAll();
-        List<CategoryDTO> categoryDTOList = new ArrayList<>();
-        for (Categories category : categoryList) {
-            CategoryDTO categoryDTO = new CategoryDTO();
+    public List<CategoryDto> getAllCategories() {
+        List<Category> categoryList = categoryRepository.findAll();
+        List<CategoryDto> categoryDtoList = new ArrayList<>();
+        for (Category category : categoryList) {
+            CategoryDto categoryDTO = new CategoryDto();
             categoryDTO.setName(category.getName());
             categoryDTO.setId(category.getId());
-            categoryDTOList.add(categoryDTO);
+            categoryDtoList.add(categoryDTO);
         }
-        return categoryDTOList;
+        return categoryDtoList;
     }
 
 
-    public List<CategoryDTO> getCategoriesOfShop(@RequestHeader("Authorization") String authHeader, Integer shopId) {
+    public List<CategoryDto> getCategoriesOfShop(@RequestHeader("Authorization") String authHeader, Integer shopId) {
 
         Integer userId = jwtHelper.getUserID(authHeader);
         User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));

@@ -1,9 +1,8 @@
-
 .spinnerContainer {
   display: flex;
   justify-content: center;
   align-items: center;
- 
+  line-height: inherit;
   /* padding: 0.5rem; */
 }
 

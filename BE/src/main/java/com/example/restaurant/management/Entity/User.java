@@ -14,39 +14,50 @@ public class User {
     @Column(name = "email", nullable = false, unique = true, length = 50)
     private String email;
 
-    @Column(name = "full_mame", nullable = false, length = 255)
+    @Column(name = "full_name", nullable = false, length = 255)
     private String fullName;
 
     @Column(name = "password", nullable = false, length = 2083)
     private String password;
 
     @OneToOne(mappedBy = "manager", cascade = CascadeType.ALL)
-    private Shops shop;
+    private Shop shop;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", nullable = false)
-    private Roles role;
+    private Role role;
 
     @OneToMany(mappedBy = "user")
-    private List<Orders> orders;
+    private List<Order> orders;
 
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Cart> carts;
 
     //Constructors
     public User() {
     }
 
-    public User(String email, String fullName, String password, Roles role) {
+    public User(String email, String fullName, String password, Role role) {
         this.email = email;
         this.fullName = fullName;
         this.password = password;
         this.role = role;
     }
 
-    public List<Orders> getOrders() {
+    public List<Cart> getCarts() {
+        return carts;
+    }
+
+    public void setCarts(List<Cart> carts) {
+        this.carts = carts;
+    }
+
+    public List<Order> getOrders() {
         return orders;
     }
 
-    public void setOrders(List<Orders> orders) {
+    public void setOrders(List<Order> orders) {
         this.orders = orders;
     }
 
@@ -83,31 +94,20 @@ public class User {
         this.password = password;
     }
 
-    public Roles getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(Roles role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
-    public Shops getShop() {
+    public Shop getShop() {
         return shop;
     }
 
-    public void setShop(Shops shop) {
+    public void setShop(Shop shop) {
         this.shop = shop;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                ", fullName='" + fullName + '\'' +
-                ", password='" + password + '\'' +
-                ", shop=" + shop +
-                ", role=" + role.getRoleName() +
-                '}';
-    }
 }

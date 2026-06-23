@@ -6,15 +6,10 @@ import style from "../../../assets/styles/FoodList.module.css";
 import { useModal } from "../../../contexts/ModalContext";
 import { useNavigate } from "react-router-dom";
 
-function FoodList({
-  foods,
-  shopName,
-  shopId,
-}) {
+function FoodList({ foods, shopName, shopId }) {
   const { openModal } = useModal();
   const navigate = useNavigate();
-
-  // console.log(shopName)
+  // console.log(foods);
 
   const handleOpenModals = (food) => {
     openModal(

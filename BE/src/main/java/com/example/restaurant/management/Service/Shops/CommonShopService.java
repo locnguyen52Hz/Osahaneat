@@ -1,7 +1,6 @@
 package com.example.restaurant.management.Service.Shops;
 
-import com.example.restaurant.management.DTO.Coordinate;
-import com.example.restaurant.management.DTO.ShopDTO;
+import com.example.restaurant.management.dto.ShopDto;
 import com.example.restaurant.management.Repository.ShopsRepository;
 import com.example.restaurant.management.Repository.UserRepository;
 import com.example.restaurant.management.Service.FileService;
@@ -36,7 +35,7 @@ public class CommonShopService {
     @Autowired
     BuyerShopServiceImp  buyerShopServiceImp;
 
-    public ShopDTO getShopById(String authHeader, Integer shopId, double longitude, double latitude ) {
+    public ShopDto getShopById(String authHeader, Integer shopId, double longitude, double latitude ) {
 
         Integer userId = jwtHelper.getUserID(authHeader);
         String role = userRepository.findUserById(userId).getRole().getRoleName();

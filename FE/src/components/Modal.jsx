@@ -15,14 +15,17 @@ function Modal({ isOpen, onClose, children, zIndex, type }) {
     };
   }, [isOpen]);
 
-  const handleClose = (e) => {
-    e?.stopPropagation?.();
+const handleClose = (e) => {
+  e?.stopPropagation?.();
 
-    if (closing) return;
+  if (closing) return;
 
-    setClosing(true);
-    onClose(); // gọi callback
-  };
+  setClosing(true);
+
+  setTimeout(() => {
+    onClose();
+  }, 300); // bằng thời gian animation
+};
 
 
   if (!isOpen) return null;

@@ -38,26 +38,6 @@
 
 }
 
-.foodList::-webkit-scrollbar {
-    width: 3px;
-    /* Độ dày của thanh cuộn dọc */
-}
-
-
-.foodList::-webkit-scrollbar-track {
-    background: none;
-}
-
-.foodList::-webkit-scrollbar-thumb {
-    background: #f1f1f1;
-    border-radius: 4px;
-}
-
-/* Khi hover */
-.foodList::-webkit-scrollbar-thumb:hover {
-    background: #999292;
-}
-
 .foodList {
     display: flex;
     flex-direction: column;

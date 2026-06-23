@@ -1,10 +1,10 @@
 package com.example.restaurant.management.Service.Message;
 
 
-import com.example.restaurant.management.DTO.ConversationWithLatestMessageDTO;
-import com.example.restaurant.management.DTO.MessageDTO;
-import com.example.restaurant.management.DTO.MessagePageResponseDTO;
-import com.example.restaurant.management.DTO.UnreadCount;
+import com.example.restaurant.management.dto.ConversationWithLatestMessageDto;
+import com.example.restaurant.management.dto.MessageDto;
+import com.example.restaurant.management.dto.MessagePageResponseDto;
+import com.example.restaurant.management.dto.UnreadCount;
 import com.example.restaurant.management.Payload.Request.GetOlderMessagesRequest;
 import com.example.restaurant.management.Payload.Request.MarkReadMessage;
 import com.example.restaurant.management.Payload.Request.MessageRequest;
@@ -49,7 +49,7 @@ public class CommonMessageService {
     @Autowired
     ShopsRepository  shopsRepository;
 
-    public MessageDTO sendMessage(@RequestHeader("Authorization") String authHeader, MessageRequest messageRequest) {
+    public MessageDto sendMessage(@RequestHeader("Authorization") String authHeader, MessageRequest messageRequest) {
         Integer senderId = jwtHelper.getUserID(authHeader);
         String role = userRepository.findUserById(senderId).getRole().getRoleName();
 
@@ -63,7 +63,7 @@ public class CommonMessageService {
 
     }
 
-    public List<ConversationWithLatestMessageDTO> getConversations(@RequestHeader("Authorization") String authHeader, int page) {
+    public List<ConversationWithLatestMessageDto> getConversations(@RequestHeader("Authorization") String authHeader, int page) {
         Integer userId = jwtHelper.getUserID(authHeader);
         String role = userRepository.findUserById(userId).getRole().getRoleName();
         Pageable pageable = PageRequest.of(page, 10);
@@ -75,7 +75,7 @@ public class CommonMessageService {
 
     }
 
-    public MessagePageResponseDTO latestMessage(@RequestHeader("Authorization") String authHeader, Integer conversationId, Integer partnerId) {
+    public MessagePageResponseDto latestMessage(@RequestHeader("Authorization") String authHeader, Integer conversationId, Integer partnerId) {
         Integer userId = jwtHelper.getUserID(authHeader);
         String role = userRepository.findUserById(userId).getRole().getRoleName();
         Pageable pageable = PageRequest.ofSize(10);
@@ -90,7 +90,7 @@ public class CommonMessageService {
 
     }
 
-    public MessagePageResponseDTO getOlderMessages(@RequestHeader("Authorization") String authHeader,
+    public MessagePageResponseDto getOlderMessages(@RequestHeader("Authorization") String authHeader,
                                                    GetOlderMessagesRequest getOlderMessagesRequest) {
         Integer userId = jwtHelper.getUserID(authHeader);
         String role = userRepository.findUserById(userId).getRole().getRoleName();

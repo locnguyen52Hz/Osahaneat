@@ -34,7 +34,8 @@ const endpoints = {
     items: `${API_BASE_URL}/orders/items`,
     active: `${API_BASE_URL}/orders/active`,
     previous: `${API_BASE_URL}/orders/previous`,
-    createRating: `${API_BASE_URL}/orders/create-rating`
+    createRating: `${API_BASE_URL}/orders/create-rating`,
+    buyNow: `${API_BASE_URL}/orders/buy-now`,
   },
   routes: {
     shippingFee: `${API_BASE_URL}/routes/shipping-fee`,
@@ -61,6 +62,10 @@ const endpoints = {
   chart: {
     monthlyRevenue: `${API_BASE_URL}/revenue/monthly`,
     dailyRevenue: `${API_BASE_URL}/revenue/daily`,
+  },
+  cart: {
+    listCart: `${API_BASE_URL}/cart/list-cart`,
+    syncCart: `${API_BASE_URL}/cart/sync-cart`
   },
 };
 export default endpoints;

@@ -1,13 +1,13 @@
 package com.example.restaurant.management.Payload.Request;
 
-import com.example.restaurant.management.DTO.MessageCursorDTO;
+import com.example.restaurant.management.dto.MessageCursorDto;
 
 public class GetOlderMessagesRequest {
     private Integer conversationId;
     private Integer partnerId;
-    private MessageCursorDTO messageCursor;
+    private MessageCursorDto messageCursor;
 
-    public GetOlderMessagesRequest(Integer conversationId, Integer partnerId, MessageCursorDTO messageCursor) {
+    public GetOlderMessagesRequest(Integer conversationId, Integer partnerId, MessageCursorDto messageCursor) {
         this.conversationId = conversationId;
         this.partnerId = partnerId;
         this.messageCursor = messageCursor;
@@ -29,11 +29,11 @@ public class GetOlderMessagesRequest {
         this.partnerId = partnerId;
     }
 
-    public MessageCursorDTO getMessageCursor() {
+    public MessageCursorDto getMessageCursor() {
         return messageCursor;
     }
 
-    public void setMessageCursor(MessageCursorDTO messageCursor) {
+    public void setMessageCursor(MessageCursorDto messageCursor) {
         this.messageCursor = messageCursor;
     }
 }

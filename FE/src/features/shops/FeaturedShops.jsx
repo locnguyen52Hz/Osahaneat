@@ -23,7 +23,7 @@ function FeaturedShops() {
         const response = await apiGet(
           `${endpoints.shop.top6Shop}?fromLongitude=${location.longitude}&fromLatitude=${location.latitude}`,
         );
-        console.log(response.data.data);
+
         setShops(response.data.data);
       } catch (error) {
         console.error(error);
@@ -32,7 +32,6 @@ function FeaturedShops() {
     fetchShops();
   }, [loading]);
 
-  console.log(shops);
   return (
     <>
       <div className={style.header}>

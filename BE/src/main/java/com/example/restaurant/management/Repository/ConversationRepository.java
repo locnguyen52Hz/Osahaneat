@@ -1,6 +1,6 @@
 package com.example.restaurant.management.Repository;
 
-import com.example.restaurant.management.DTO.ConversationWithLatestMessageDTO;
+import com.example.restaurant.management.dto.ConversationWithLatestMessageDto;
 import com.example.restaurant.management.Entity.Conversation;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,12 +11,12 @@ import java.util.List;
 
 @Repository
 public interface ConversationRepository extends JpaRepository<Conversation, Integer> {
-    Conversation getConversationByBuyerIdAndShopsId(Integer buyerId, Integer shopsId);
+    Conversation getConversationByBuyerIdAndShopId(Integer buyerId, Integer shopsId);
 
-    Conversation getConversationsByIdAndBuyer_IdAndShops_Id(Integer conversationId, Integer buyerId, Integer shopsId);
+    Conversation getConversationsByIdAndBuyer_IdAndShop_Id(Integer conversationId, Integer buyerId, Integer shopsId);
 
     @Query("""
-            SELECT new com.example.restaurant.management.DTO.ConversationWithLatestMessageDTO(
+            SELECT new com.example.restaurant.management.dto.ConversationWithLatestMessageDto(
                 c.id,
                 m.content,
                 m.createdAt,
@@ -44,7 +44,7 @@ public interface ConversationRepository extends JpaRepository<Conversation, Inte
             )
             FROM Conversation c
             JOIN c.buyer b
-            JOIN c.shops s
+            JOIN c.shop s
             JOIN s.manager sm
             JOIN c.messages m
             JOIN m.sender u
@@ -56,10 +56,10 @@ public interface ConversationRepository extends JpaRepository<Conversation, Inte
             AND c.buyer.id = :userId
             ORDER BY m.createdAt DESC
             """)
-    List<ConversationWithLatestMessageDTO> getLastMessageDTOByBuyerId(Integer userId, Pageable pageable);
+    List<ConversationWithLatestMessageDto> getLastMessageDTOByBuyerId(Integer userId, Pageable pageable);
 
     @Query("""
-            SELECT new com.example.restaurant.management.DTO.ConversationWithLatestMessageDTO(
+            SELECT new com.example.restaurant.management.dto.ConversationWithLatestMessageDto(
                 c.id,m.content,m.createdAt,
                 CASE
                     WHEN m.sender.id = b.id THEN b.fullName
@@ -85,7 +85,7 @@ public interface ConversationRepository extends JpaRepository<Conversation, Inte
             )
             FROM Conversation c
             JOIN c.buyer b
-            JOIN c.shops s
+            JOIN c.shop s
             JOIN s.manager sm
             JOIN c.messages m
             JOIN m.sender u
@@ -97,7 +97,7 @@ public interface ConversationRepository extends JpaRepository<Conversation, Inte
             AND s.id = :shopsId
             ORDER BY m.createdAt DESC
             """)
-    List<ConversationWithLatestMessageDTO> getConversationsByShopsId(Integer shopsId, Pageable pageable);
+    List<ConversationWithLatestMessageDto> getConversationsByShopsId(Integer shopsId, Pageable pageable);
 }
 
 

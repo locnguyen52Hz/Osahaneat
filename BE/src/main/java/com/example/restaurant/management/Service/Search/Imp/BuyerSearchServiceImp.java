@@ -1,13 +1,11 @@
 package com.example.restaurant.management.Service.Search.Imp;
-import com.example.restaurant.management.DTO.FoodDTO;
-import com.example.restaurant.management.DTO.OsrmTableResponse;
-import com.example.restaurant.management.DTO.ShopDTO;
-import com.example.restaurant.management.Entity.Food;
-import com.example.restaurant.management.Entity.Shops;
+import com.example.restaurant.management.dto.FoodDto;
+import com.example.restaurant.management.dto.OsrmTableResponse;
+import com.example.restaurant.management.dto.ShopDto;
+import com.example.restaurant.management.Entity.Shop;
 import com.example.restaurant.management.Repository.FoodRepository;
 import com.example.restaurant.management.Repository.ShopsRepository;
 import com.example.restaurant.management.Service.Search.SearchService;
-import com.example.restaurant.management.Specifications.FoodSpecifications;
 import com.example.restaurant.management.Specifications.ShopSpecifications;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,18 +33,18 @@ public class BuyerSearchServiceImp implements SearchService {
     @Autowired
     FoodRepository foodRepository;
 
-    public Page<ShopDTO> findShopsByCategoryWithQuantity(
+    public Page<ShopDto> findShopsByCategoryWithQuantity(
             String name, double userLon, double userLat, int page) {
 
         if (name == null || name.isEmpty()) {
             return Page.empty(); // trả về page rỗng
         }
 
-        Specification<Shops> spec = ShopSpecifications.hasCategoryName(name);
+        Specification<Shop> spec = ShopSpecifications.hasCategoryName(name);
         Pageable pageable = PageRequest.of(page, 10);
 
-        Page<Shops> shopsPage = shopsRepository.findAll(spec, pageable);
-        List<Shops> shopList = shopsPage.getContent();
+        Page<Shop> shopsPage = shopsRepository.findAll(spec, pageable);
+        List<Shop> shopList = shopsPage.getContent();
 
         if (shopList.isEmpty()) {
             return Page.empty(pageable);
@@ -55,7 +53,7 @@ public class BuyerSearchServiceImp implements SearchService {
         // Ghép tọa độ user + các shop
         StringBuilder coords = new StringBuilder();
         coords.append(String.format("%f,%f", userLon, userLat));
-        for (Shops shop : shopList) {
+        for (Shop shop : shopList) {
             coords.append(";").append(String.format("%f,%f", shop.getLongitude(), shop.getLatitude()));
         }
 
@@ -79,12 +77,12 @@ public class BuyerSearchServiceImp implements SearchService {
         }
 
         // Map Shops -> ShopDTO
-        List<ShopDTO> shopDTOs = new ArrayList<>();
+        List<ShopDto> shopDtos = new ArrayList<>();
         for (int i = 0; i < shopList.size(); i++) {
-            Shops shop = shopList.get(i);
+            Shop shop = shopList.get(i);
             double distanceInKm = distanceRow.get(i + 1) / 1000.0;
 
-            ShopDTO dto = new ShopDTO();
+            ShopDto dto = new ShopDto();
             dto.setId(shop.getId());
             dto.setName(shop.getShopName());
             dto.setShopAvatar(shop.getShopImage());
@@ -92,12 +90,12 @@ public class BuyerSearchServiceImp implements SearchService {
             dto.setLatitude(shop.getLatitude());
             dto.setLongitude(shop.getLongitude());
 
-            shopDTOs.add(dto);
+            shopDtos.add(dto);
         }
 
         // Trả về Page<ShopDTO> bằng cách map từ Page<Shops>
         return new PageImpl<>(
-                shopDTOs,
+                shopDtos,
                 pageable,
                 shopsPage.getTotalElements() // tổng số shop
         );
@@ -105,7 +103,7 @@ public class BuyerSearchServiceImp implements SearchService {
 
     public Map<String, Object> searchFoods(String name, int page) {
         Pageable pageable = PageRequest.of(page, 10);
-        Page<FoodDTO> result = foodRepository.searchFoodsByName(name, pageable);
+        Page<FoodDto> result = foodRepository.searchFoodsByName(name, pageable);
         Map<String, Object> response = new HashMap<>();
         response.put("list", result.getContent());
         response.put("totalElement", result.getTotalElements());
@@ -117,7 +115,7 @@ public class BuyerSearchServiceImp implements SearchService {
 
     public Map<String, Object> searchFoodsByCategoryName(String name, int page) {
         Pageable pageable = PageRequest.of(page, 10);
-        Page<FoodDTO> result = foodRepository.findFoodByCategoryName(name, pageable);
+        Page<FoodDto> result = foodRepository.findFoodByCategoryName(name, pageable);
         Map<String, Object> response = new HashMap<>();
         response.put("list", result.getContent());
         response.put("totalElement", result.getTotalElements());

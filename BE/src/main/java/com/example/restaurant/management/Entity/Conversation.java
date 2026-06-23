@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "conversation", uniqueConstraints = @UniqueConstraint(columnNames = {"buyer_id", "shop_id"}))
+@Table(name = "conversations", uniqueConstraints = @UniqueConstraint(columnNames = {"buyer_id", "shop_id"}))
 public class Conversation {
 
     @Id
@@ -23,7 +23,7 @@ public class Conversation {
     //shop manager
     @ManyToOne
     @JoinColumn(name = "shop_id")
-    private Shops shops;
+    private Shop shop;
 
     @OneToMany(mappedBy = "conversation", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Message> messages;
@@ -48,12 +48,12 @@ public class Conversation {
         this.buyer = buyer;
     }
 
-    public Shops getShops() {
-        return shops;
+    public Shop getShop() {
+        return shop;
     }
 
-    public void setShops(Shops shops) {
-        this.shops = shops;
+    public void setShop(Shop shop) {
+        this.shop = shop;
     }
 
     public Instant getCreatedAt() {

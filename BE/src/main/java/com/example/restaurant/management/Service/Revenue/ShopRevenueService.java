@@ -1,9 +1,9 @@
 package com.example.restaurant.management.Service.Revenue;
 
-import com.example.restaurant.management.DTO.ChartResponse;
-import com.example.restaurant.management.DTO.DailyRevenueProjection;
-import com.example.restaurant.management.DTO.MonthlyRevenueProjection;
-import com.example.restaurant.management.Entity.Shops;
+import com.example.restaurant.management.dto.ChartResponse;
+import com.example.restaurant.management.dto.DailyRevenueProjection;
+import com.example.restaurant.management.dto.MonthlyRevenueProjection;
+import com.example.restaurant.management.Entity.Shop;
 import com.example.restaurant.management.Repository.RevenueRepository;
 import com.example.restaurant.management.Repository.ShopsRepository;
 import com.example.restaurant.management.Util.JwtHelper;
@@ -25,7 +25,7 @@ public class ShopRevenueService {
 
     public ChartResponse getMonthlyRevenueByShop(String authHeader, String startMonth) {
         Integer userId = jwtHelper.getUserID(authHeader);
-        Shops shop = shopsRepository.findShopsByManager_Id(userId);
+        Shop shop = shopsRepository.findShopsByManager_Id(userId);
         if (shop == null) {
             throw new RuntimeException("Shop not found");
         }
@@ -43,7 +43,7 @@ public class ShopRevenueService {
 
     public ChartResponse getDailyRevenueByShop(String authHeader, String startDate){
         Integer userId = jwtHelper.getUserID(authHeader);
-        Shops shop = shopsRepository.findShopsByManager_Id(userId);
+        Shop shop = shopsRepository.findShopsByManager_Id(userId);
         if (shop == null) {
             throw new RuntimeException("Shop not found");
         }

@@ -1,7 +1,7 @@
 package com.example.restaurant.management.Controllers;
 
 
-import com.example.restaurant.management.DTO.CategoryDTO;
+import com.example.restaurant.management.dto.CategoryDto;
 import com.example.restaurant.management.Payload.Request.CategoryRequest;
 import com.example.restaurant.management.Payload.ResponseData;
 import com.example.restaurant.management.Service.Categories.Imp.AdminCategoriesServiceImp;
@@ -43,10 +43,10 @@ public class CategoryController {
     @GetMapping("all-categories")
     public ResponseEntity<?> getAllCategories() {
         ResponseData responseData = new ResponseData();
-        List<CategoryDTO>  categoryDTOS = commonService.getAllCategories();
+        List<CategoryDto> categoryDtos = commonService.getAllCategories();
         responseData.setSuccess(true);
         responseData.setMessage("All Categories");
-        responseData.setData(categoryDTOS);
+        responseData.setData(categoryDtos);
         responseData.setStatus(HttpStatus.OK.value());
         return new ResponseEntity<>(responseData,HttpStatus.OK);
     }
@@ -55,10 +55,10 @@ public class CategoryController {
     @PreAuthorize("hasAnyRole('ROLE_SHOP_MANAGER','ROLE_BUYER')")
     public ResponseEntity<?> getShopCategories(@RequestHeader ("Authorization") String authHeader, @RequestParam(required = false) Integer shopId) {
         ResponseData responseData = new ResponseData();
-        List<CategoryDTO> categoryDTOS = commonService.getCategoriesOfShop(authHeader, shopId);
+        List<CategoryDto> categoryDtos = commonService.getCategoriesOfShop(authHeader, shopId);
         responseData.setSuccess(true);
         responseData.setMessage("Shop Categories");
-        responseData.setData(categoryDTOS);
+        responseData.setData(categoryDtos);
         responseData.setStatus(HttpStatus.OK.value());
         return new ResponseEntity<>(responseData,HttpStatus.OK);
     }

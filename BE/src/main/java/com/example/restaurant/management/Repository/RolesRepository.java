@@ -1,14 +1,14 @@
 package com.example.restaurant.management.Repository;
 
-import com.example.restaurant.management.Entity.Roles;
+import com.example.restaurant.management.Entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface RolesRepository extends JpaRepository<Roles,Integer> {
-    Roles findByRoleName(String roleName);
+public interface RolesRepository extends JpaRepository<Role,Integer> {
+    Role findByRoleName(String roleName);
 
-    Optional<Roles> findById(Integer id);
+    Optional<Role> findById(Integer id);
 }

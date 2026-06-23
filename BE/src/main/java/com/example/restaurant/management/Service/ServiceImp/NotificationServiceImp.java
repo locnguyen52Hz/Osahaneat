@@ -1,7 +1,7 @@
 package com.example.restaurant.management.Service.ServiceImp;
 
-import com.example.restaurant.management.DTO.Notification;
-import com.example.restaurant.management.DTO.OrdersDTO;
+import com.example.restaurant.management.dto.Notification;
+import com.example.restaurant.management.dto.OrdersDto;
 import com.example.restaurant.management.Service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -14,8 +14,8 @@ public class NotificationServiceImp implements NotificationService {
     private SimpMessagingTemplate simpMessagingTemplate;
 
     @Override
-    public void notifyOrderUpdate(OrdersDTO ordersDTO) {
-        Notification<OrdersDTO> notification = new Notification<>();
+    public void notifyOrderUpdate(OrdersDto ordersDTO) {
+        Notification<OrdersDto> notification = new Notification<>();
         notification.setData(ordersDTO);
         notification.setMessage("Order " +ordersDTO.getStatus() + " by " + ordersDTO.getPartnerName());
         simpMessagingTemplate.convertAndSendToUser(String.valueOf(ordersDTO.getPartnerId()),

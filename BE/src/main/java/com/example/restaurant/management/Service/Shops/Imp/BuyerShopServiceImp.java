@@ -1,10 +1,10 @@
 package com.example.restaurant.management.Service.Shops.Imp;
 
-import com.example.restaurant.management.DTO.Coordinate;
-import com.example.restaurant.management.DTO.OsrmTableResponse;
-import com.example.restaurant.management.DTO.ShopDTO;
-import com.example.restaurant.management.DTO.ShopLocationDTO;
-import com.example.restaurant.management.Entity.Shops;
+import com.example.restaurant.management.dto.Coordinate;
+import com.example.restaurant.management.dto.OsrmTableResponse;
+import com.example.restaurant.management.dto.ShopDto;
+import com.example.restaurant.management.dto.ShopLocationDto;
+import com.example.restaurant.management.Entity.Shop;
 import com.example.restaurant.management.Repository.ShopsRepository;
 import com.example.restaurant.management.Service.RoutesService;
 import com.example.restaurant.management.Service.Shops.ShopHelper;
@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class BuyerShopServiceImp implements ShopService {
     @Autowired
     ShopHelper shopHelper;
 
-    public List<ShopDTO> getNearbyShops(double userLon, double userLat, double radius) {
+    public List<ShopDto> getNearbyShops(double userLon, double userLat, double radius) {
 
         // 1. Bounding box
         double deltaLat = radius / 111.0;
@@ -46,7 +45,7 @@ public class BuyerShopServiceImp implements ShopService {
         double maxLon = userLon + deltaLon;
 
         //2. Query DB
-        List<ShopDTO> shops = shopsRepository.findNearbyShops(minLat, maxLat, minLon, maxLon);
+        List<ShopDto> shops = shopsRepository.findNearbyShops(minLat, maxLat, minLon, maxLon);
         Pageable pageable = PageRequest.of(0, 10);
         if (shops.isEmpty()) {
             shops = shopsRepository.findTopByRating(pageable);
@@ -66,15 +65,15 @@ public class BuyerShopServiceImp implements ShopService {
             shops.get(i).setDistance(distances.get(0).get(i + 1));
         }
         // 5. Sort
-        shops.sort(Comparator.comparingDouble(ShopDTO::getDistance));
+        shops.sort(Comparator.comparingDouble(ShopDto::getDistance));
         return shops;
     }
 
 
-    public ShopDTO getShopById(Integer shopId, double longitude, double latitude) {
-        Shops shop = shopsRepository.findById(shopId).orElseThrow(() -> new EntityNotFoundException("Shop not found"));
+    public ShopDto getShopById(Integer shopId, double longitude, double latitude) {
+        Shop shop = shopsRepository.findById(shopId).orElseThrow(() -> new EntityNotFoundException("Shop not found"));
 
-        ShopDTO shopDTO = new ShopDTO();
+        ShopDto shopDTO = new ShopDto();
         shopDTO.setName(shop.getShopName());
         shopDTO.setShopAvatar(shop.getShopImage());
         shopDTO.setId(shop.getId());
@@ -90,7 +89,7 @@ public class BuyerShopServiceImp implements ShopService {
 
 
     @Override
-    public List<ShopLocationDTO> getAllShopLocations() {
+    public List<ShopLocationDto> getAllShopLocations() {
         return shopsRepository.getAllShopsLocations();
     }
 

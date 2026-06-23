@@ -38,5 +38,10 @@ export const getFormattedCartTotal = (foods = []) => {
   return formatCurrency(total);
 };
 
+export function getTotalCartItems(carts) {
+  return carts.reduce((sum, cart) => sum + cart.cartItems.length, 0);
+}
 
 
+export const calculateCartTotal = (cartItems) =>
+  cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);

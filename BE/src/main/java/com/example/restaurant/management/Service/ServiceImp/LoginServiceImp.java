@@ -1,8 +1,8 @@
 package com.example.restaurant.management.Service.ServiceImp;
 
-import com.example.restaurant.management.DTO.RoleDTO;
-import com.example.restaurant.management.DTO.UserDTO;
-import com.example.restaurant.management.Entity.Roles;
+import com.example.restaurant.management.dto.RoleDto;
+import com.example.restaurant.management.dto.UserDto;
+import com.example.restaurant.management.Entity.Role;
 import com.example.restaurant.management.Entity.User;
 import com.example.restaurant.management.Excetion.FieldValidationException;
 import com.example.restaurant.management.Repository.RolesRepository;
@@ -31,7 +31,7 @@ public class LoginServiceImp implements com.example.restaurant.management.Servic
     JwtHelper jwtHelper;
 
     @Override
-    public UserDTO login(String email, String password) {
+    public UserDto login(String email, String password) {
         User user = userRepository.findUserByEmail(email);
 
         if (user == null) {
@@ -40,7 +40,7 @@ public class LoginServiceImp implements com.example.restaurant.management.Servic
         if(!passwordEncoder.matches(password,user.getPassword())) {
             throw new FieldValidationException("password","Password not match", HttpStatus.BAD_REQUEST);
         }
-        UserDTO userDTO = new UserDTO();
+        UserDto userDTO = new UserDto();
         userDTO.setFullName(user.getFullName());
         userDTO.setPassword(passwordEncoder.encode(password));
         userDTO.setId(user.getId());
@@ -50,7 +50,7 @@ public class LoginServiceImp implements com.example.restaurant.management.Servic
     }
 
     @Override
-    public RoleDTO getRoleByToken(String authorization) {
+    public RoleDto getRoleByToken(String authorization) {
         if(authorization != null && authorization.startsWith("Bearer ")) {
 
             String token = authorization.substring(7);
@@ -59,10 +59,10 @@ public class LoginServiceImp implements com.example.restaurant.management.Servic
 
             System.out.println("email: " + email);
             User user = userRepository.findUserByEmail(email);
-            Roles roles = user.getRole();
-            RoleDTO roleDTO = new RoleDTO();
-            roleDTO.setRoleName(roles.getRoleName());
-            roleDTO.setDescription(roles.getDescription());
+            Role role = user.getRole();
+            RoleDto roleDTO = new RoleDto();
+            roleDTO.setRoleName(role.getRoleName());
+            roleDTO.setDescription(role.getDescription());
 
             return roleDTO;
         }

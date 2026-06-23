@@ -1,8 +1,7 @@
 package com.example.restaurant.management.Controllers;
 
 
-import com.example.restaurant.management.DTO.OsrmResponse;
-import com.example.restaurant.management.DTO.OsrmTableResponse;
+import com.example.restaurant.management.dto.OsrmResponse;
 import com.example.restaurant.management.Payload.ResponseData;
 import com.example.restaurant.management.Service.RoutesService;
 import org.springframework.beans.factory.annotation.Autowired;

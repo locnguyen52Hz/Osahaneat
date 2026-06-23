@@ -1,10 +1,8 @@
 package com.example.restaurant.management.Repository;
 
-import com.example.restaurant.management.DTO.OrdersDTO;
-import com.example.restaurant.management.DTO.ShopDTO;
-import com.example.restaurant.management.DTO.ShopLocationDTO;
-import com.example.restaurant.management.Entity.Shops;
-import org.springframework.data.domain.Page;
+import com.example.restaurant.management.dto.ShopDto;
+import com.example.restaurant.management.dto.ShopLocationDto;
+import com.example.restaurant.management.Entity.Shop;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,30 +15,30 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ShopsRepository extends JpaRepository<Shops, Integer>, JpaSpecificationExecutor<Shops> {
-    Shops findByShopName(String shopName);
+public interface ShopsRepository extends JpaRepository<Shop, Integer>, JpaSpecificationExecutor<Shop> {
+    Shop findByShopName(String shopName);
 
 
-    @Query("SELECT s FROM Shops s JOIN s.categories c WHERE c.id = :categoryId")
-    List<Shops> findShopsByCategoryId(@Param("categoryId") Integer categoryId, PageRequest pageRequest);
+    @Query("SELECT s FROM Shop s JOIN s.categories c WHERE c.id = :categoryId")
+    List<Shop> findShopsByCategoryId(@Param("categoryId") Integer categoryId, PageRequest pageRequest);
 
-    Optional<Shops> findById(Integer id);
+    Optional<Shop> findById(Integer id);
 
-    Shops findShopsByManager_Id(Integer managerId);
+    Shop findShopsByManager_Id(Integer managerId);
 
 
-    @Query("SELECT new com.example.restaurant.management.DTO.ShopLocationDTO(s.shopName, s.latitude, s.longitude, s.address, s.id) FROM Shops s")
-    List<ShopLocationDTO> getAllShopsLocations();
+    @Query("SELECT new com.example.restaurant.management.dto.ShopLocationDto(s.shopName, s.latitude, s.longitude, s.address, s.id) FROM Shop s")
+    List<ShopLocationDto> getAllShopsLocations();
 
-    @Query("select new com.example.restaurant.management.DTO.ShopDTO(s.longitude, s.latitude) " +
-            "from Shops s where s.id = :shopId")
-    ShopDTO findShopLocationById(@Param("shopId") Integer shopId);
+    @Query("select new com.example.restaurant.management.dto.ShopDto(s.longitude, s.latitude) " +
+            "from Shop s where s.id = :shopId")
+    ShopDto findShopLocationById(@Param("shopId") Integer shopId);
 
-    List<Shops> findTop6ByOrderByIdDesc();
+    List<Shop> findTop6ByOrderByIdDesc();
 
 
     @Query("""
-    SELECT new com.example.restaurant.management.DTO.ShopDTO(
+    SELECT new com.example.restaurant.management.dto.ShopDto(
         s.id,
         s.shopName,
         s.latitude,
@@ -50,14 +48,14 @@ public interface ShopsRepository extends JpaRepository<Shops, Integer>, JpaSpeci
         s.ratingAvg,
         s.ratingCount
     )
-    FROM Shops s
+    FROM Shop s
     WHERE s.latitude BETWEEN :minLat AND :maxLat
       AND s.longitude BETWEEN :minLon AND :maxLon
     """)
-    List<ShopDTO> findNearbyShops(double minLat, double maxLat, double minLon, double maxLon);
+    List<ShopDto> findNearbyShops(double minLat, double maxLat, double minLon, double maxLon);
 
     @Query("""
-    SELECT new com.example.restaurant.management.DTO.ShopDTO(
+    SELECT new com.example.restaurant.management.dto.ShopDto(
         s.id,
         s.shopName,
         s.latitude,
@@ -67,9 +65,9 @@ public interface ShopsRepository extends JpaRepository<Shops, Integer>, JpaSpeci
         s.ratingAvg,
         s.ratingCount
     )
-    FROM Shops s
+    FROM Shop s
     ORDER BY s.ratingAvg DESC
     """)
-    List<ShopDTO> findTopByRating(Pageable pageable);
+    List<ShopDto> findTopByRating(Pageable pageable);
 
 }

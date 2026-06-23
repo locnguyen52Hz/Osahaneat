@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import shared from "../../../assets/styles/Shared.module.css";
 
 function ActiveCategories({ array, btnColor, btnActive, active, setActive }) {
-  console.log(active)
+
   return (
     <>
       {array.length > 0 ? (

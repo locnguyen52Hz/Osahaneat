@@ -2,8 +2,8 @@ package com.example.restaurant.management.Service.ServiceImp;
 
 import com.example.restaurant.management.Payload.Request.RegisterRequest;
 import com.example.restaurant.management.Payload.Request.ShopManagerRegister;
-import com.example.restaurant.management.Entity.Roles;
-import com.example.restaurant.management.Entity.Shops;
+import com.example.restaurant.management.Entity.Role;
+import com.example.restaurant.management.Entity.Shop;
 import com.example.restaurant.management.Entity.User;
 import com.example.restaurant.management.Excetion.FieldValidationException;
 import com.example.restaurant.management.Repository.RolesRepository;
@@ -37,7 +37,7 @@ public class RegisterServiceImp implements com.example.restaurant.management.Ser
         if (userRepository.findUserByEmail(registerRequest.getEmail()) != null) {
             throw new FieldValidationException("email","Email already exists", HttpStatus.CONFLICT);
         }
-        Roles defaultRole = rolesRepository.findByRoleName("ROLE_BUYER");
+        Role defaultRole = rolesRepository.findByRoleName("ROLE_BUYER");
 
         User user = new User();
         user.setEmail(registerRequest.getEmail().trim());
@@ -56,9 +56,9 @@ public class RegisterServiceImp implements com.example.restaurant.management.Ser
         if (shopsRepository.findByShopName(shopManagerRegister.getShopName()) != null) {
             throw new FieldValidationException("shopName","Shop already exists", HttpStatus.CONFLICT);
         }
-        Roles role  = rolesRepository.findByRoleName("ROLE_SHOP_MANAGER");
+        Role role  = rolesRepository.findByRoleName("ROLE_SHOP_MANAGER");
         User user = new User();
-        Shops shop = new Shops();
+        Shop shop = new Shop();
         user.setEmail(shopManagerRegister.getEmail().trim());
         user.setPassword(passwordEncoder.encode(shopManagerRegister.getPassword()));
         user.setRole(role);

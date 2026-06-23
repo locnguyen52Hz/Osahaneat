@@ -21,9 +21,6 @@
 }
 
 
-.navLink p {
-  display: none;
-}
 
 .navLink {
   padding: 11px;
@@ -43,6 +40,9 @@
     padding-left 0.2s ease;
 }
 
+.label {
+  display: none;
+}
 
 .username {
   font-size: 0;
@@ -116,7 +116,7 @@
     width: 70px;
   }
 
-  .navLink p {
+  .label {
     display: none;
   }
 
@@ -142,7 +142,7 @@
     padding: 11px 15px;
   }
 
-  .navLink p,
+  .label,
   .username {
     display: block;
   }

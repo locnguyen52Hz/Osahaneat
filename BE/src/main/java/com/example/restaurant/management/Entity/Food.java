@@ -3,6 +3,7 @@ package com.example.restaurant.management.Entity;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "foods")
 public class Food {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,20 +24,17 @@ public class Food {
     @Column(name = "price")
     private double price;
 
-    @Column(name = "ratting")
-    private double ratting = 0;
+    @Column(name = "rating")
+    private double rating = 0;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
-    private Categories categories;
+    private Category category;
 
     @ManyToOne
     @JoinColumn(name = "shop_id", nullable = false)
-    private Shops shops;
+    private Shop shop;
 
-    public Categories getCategories() {
-        return categories;
-    }
 
     public boolean isDeleted() {
         return deleted;
@@ -46,16 +44,20 @@ public class Food {
         this.deleted = deleted;
     }
 
-    public void setCategories(Categories categories) {
-        this.categories = categories;
+    public Category getCategory() {
+        return category;
     }
 
-    public Shops getShops() {
-        return shops;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
-    public void setShops(Shops shops) {
-        this.shops = shops;
+    public Shop getShop() {
+        return shop;
+    }
+
+    public void setShop(Shop shop) {
+        this.shop = shop;
     }
 
     public Integer getId() {
@@ -66,12 +68,12 @@ public class Food {
         return image;
     }
 
-    public double getRatting() {
-        return ratting;
+    public double getRating() {
+        return rating;
     }
 
-    public void setRatting(double ratting) {
-        this.ratting = ratting;
+    public void setRating(double rating) {
+        this.rating = rating;
     }
 
     public void setImage(String image) {
@@ -106,11 +108,4 @@ public class Food {
         this.price = price;
     }
 
-    public Categories getCategory() {
-        return categories;
-    }
-
-    public void setCategory(Categories categories) {
-        this.categories = categories;
-    }
 }

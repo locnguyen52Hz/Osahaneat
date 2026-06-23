@@ -1,8 +1,8 @@
 package com.example.restaurant.management.Repository;
 
-import com.example.restaurant.management.DTO.DailyRevenueProjection;
-import com.example.restaurant.management.DTO.MonthlyRevenueProjection;
-import com.example.restaurant.management.Entity.Orders;
+import com.example.restaurant.management.dto.DailyRevenueProjection;
+import com.example.restaurant.management.dto.MonthlyRevenueProjection;
+import com.example.restaurant.management.Entity.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface RevenueRepository extends JpaRepository<Orders, Integer> {
+public interface RevenueRepository extends JpaRepository<Order, Integer> {
 
     @Query(value = """
         WITH RECURSIVE months AS (

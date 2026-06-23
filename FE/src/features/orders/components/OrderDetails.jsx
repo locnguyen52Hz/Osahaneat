@@ -21,6 +21,7 @@ function OrderDetails({ order, onSubmitRating, action, actionsLabel }) {
     const fetch = async () => {
       try {
         const res = await getOrderItems(orderDetails.orderId);
+        console.log(res);
         setFoods(res);
       } catch (err) {
         console.log(err);

@@ -1,7 +1,7 @@
 package com.example.restaurant.management.Repository;
 
-import com.example.restaurant.management.DTO.ShopCategoryProjection;
-import com.example.restaurant.management.Entity.Categories;
+import com.example.restaurant.management.dto.ShopCategoryProjection;
+import com.example.restaurant.management.Entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -11,12 +11,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CategoryRepository extends JpaRepository<Categories, Integer> {
-    Categories findByName(String name);
+public interface CategoryRepository extends JpaRepository<Category, Integer> {
+    Category findByName(String name);
 
-    Categories getCategoriesById(Integer id);
 
-    @Query("SELECT COUNT(c) > 0 FROM Shops s JOIN s.categories c WHERE s.id = :shopId AND c.id = :categoryId")
+    @Query("SELECT COUNT(c) > 0 FROM Shop s JOIN s.categories c WHERE s.id = :shopId AND c.id = :categoryId")
     boolean existsShopCategory(@Param("shopId") Integer shopId, @Param("categoryId") Integer categoryId);
 
     @Modifying
@@ -33,12 +32,14 @@ public interface CategoryRepository extends JpaRepository<Categories, Integer> {
         s.id as shopId,
         c.id as categoryId,
         c.name as categoryName
-    FROM Shops s
+    FROM Shop s
     JOIN s.categories c
     WHERE s.id IN :shopIds
     """)
     List<ShopCategoryProjection> findCategoriesByShopIds(
             @Param("shopIds") List<Integer> shopIds
     );
+
+    Category getCategoryById(Integer id);
 }
 

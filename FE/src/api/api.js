@@ -37,11 +37,17 @@ export const apiPost = async (url, data = {}) => {
   return axiosInstance.post(url, data);
 };
 
+// put
+export const apiPut = async (url, data = {}) => {
+  const axiosInstance = createAuthorizedAxios();
+  return axiosInstance.put(url, data);
+};
+
 // post file
-export const apiPostFile = async (url, data = {}) =>{
+export const apiPostFile = async (url, data = {}) => {
   const axiosInstance = createAuthorizedAxiosFile();
-  return axiosInstance.post(url, data)
-}
+  return axiosInstance.post(url, data);
+};
 
 // path
 export const apiPatch = async (url, data = {}) => {
@@ -55,9 +61,8 @@ export const apiPatchFile = async (url, data = {}) => {
   return axiosInstance.patch(url, data);
 };
 
-
 // delete
-export const apiDelete = async (url, data = {}) =>{
-  const axiosInstance = createAuthorizedAxios()
-  return axiosInstance.delete(url, data)
-}
+export const apiDelete = async (url, data = {}) => {
+  const axiosInstance = createAuthorizedAxios();
+  return axiosInstance.delete(url, data);
+};

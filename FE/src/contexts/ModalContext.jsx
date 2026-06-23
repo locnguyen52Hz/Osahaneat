@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+} from "react";
 import Modal from "../components/Modal";
 import { v4 as uuidv4 } from "uuid";
 import { MODAL_ANIMATION_DURATION } from "../constants";
@@ -7,6 +13,7 @@ const ModalContext = createContext();
 
 export const ModalProvider = ({ children }) => {
   const [modalStack, setModalStack] = useState([]);
+
 
   const openModal = useCallback((content, props = {}) => {
     const id = uuidv4(); // ID duy nhất cho modal
@@ -18,8 +25,6 @@ export const ModalProvider = ({ children }) => {
   const closeModal = useCallback((id) => {
     setModalStack((prev) => prev.filter((modal) => modal.id !== id));
   }, []);
-
-
 
   const closeAllModal = () => {
     setModalStack([]);
@@ -33,16 +38,14 @@ export const ModalProvider = ({ children }) => {
 
   return (
     <ModalContext.Provider
-      value={{ openModal, closeModal, closeAllModal, closeModalWithDelay }}
+      value={{ openModal, closeModal, closeAllModal, closeModalWithDelay, modalStack }}
     >
       {children}
       {modalStack.map((modal, index) => (
         <Modal
           key={modal.id}
           isOpen={true}
-          onClose={() =>
-            closeModalWithDelay(modal.id, MODAL_ANIMATION_DURATION)
-          }
+          onClose={() => closeAllModal()}
           zIndex={1000 + index} // modal sau nằm trên modal trước
           {...modal.props}
         >

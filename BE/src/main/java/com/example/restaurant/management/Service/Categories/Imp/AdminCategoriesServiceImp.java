@@ -1,6 +1,6 @@
 package com.example.restaurant.management.Service.Categories.Imp;
 
-import com.example.restaurant.management.Entity.Categories;
+import com.example.restaurant.management.Entity.Category;
 import com.example.restaurant.management.Excetion.FieldValidationException;
 import com.example.restaurant.management.Payload.Request.CategoryRequest;
 import com.example.restaurant.management.Repository.CategoryRepository;
@@ -22,11 +22,11 @@ public class AdminCategoriesServiceImp {
     JwtHelper jwtHelper;
 
     public void createCategory(CategoryRequest categoryRequest) {
-        Categories category = categoryRepository.findByName(categoryRequest.getName());
+        Category category = categoryRepository.findByName(categoryRequest.getName());
         if (category != null) {
             throw new FieldValidationException("name","Category already exists", HttpStatus.BAD_REQUEST);
         }
-        category = new Categories();
+        category = new Category();
         category.setName(categoryRequest.getName());
         categoryRepository.save(category);
     }

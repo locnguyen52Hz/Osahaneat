@@ -17,6 +17,7 @@ import MessagesPage from "../features/messages/pages/MessagesPage";
 import { icon } from "leaflet";
 import UpcomingOrders from "../features/orders/components/UpcomingOrders";
 import PreviousOrders from "../features/orders/components/PreviousOrders";
+import MyCartPage from "../features/buyer/pages/MyCartPage";
 
 const routes = {
   public: [
@@ -34,7 +35,17 @@ const routes = {
         path: "/buyer/home",
         element: <Home />,
         label: "home",
-        icon: "bi bi-house-door-fill",
+        icon: <i className="bi bi-house-door-fill" />,
+        showInSideBar: true,
+      },
+      {
+        type: "item",
+        path: "/buyer/mycart",
+        element: <MyCartPage />,
+        label: "my cart",
+        icon: <i className="bi bi-cart-fill"></i>,
+        badge: "cart",
+
         showInSideBar: true,
       },
       {
@@ -42,7 +53,8 @@ const routes = {
         path: "/buyer/favourites",
         element: <Favourites />,
         label: "favourites",
-        icon: "bi bi-bookmark-fill",
+        icon: <i className="bi bi-bookmark-fill"></i>,
+
         showInSideBar: true,
       },
       {
@@ -50,14 +62,16 @@ const routes = {
         path: "/buyer/explore",
         element: <Explore />,
         label: "explore",
-        icon: "bi bi-border-all",
+        icon: <i className="bi bi-microsoft"></i>,
+
         showInSideBar: true,
       },
       {
         type: "group",
         path: "/buyer/orders",
         label: "orders",
-        icon: "bi bi-bag-fill",
+        icon: <i className="bi bi-cart-fill"></i>,
+
         showInSideBar: true,
         notify: "orders",
         children: [
@@ -66,15 +80,14 @@ const routes = {
             path: "buyer/orders/upcoming",
             label: "UpComing",
             element: <UpcomingOrders />,
-            icon: "bi bi-truck"
+            icon: <i className="bi bi-truck"></i>,
           },
           {
             type: "item",
             path: "buyer/orders/previous",
             label: "Previous",
             element: <PreviousOrders />,
-            icon: "bi bi-truck"
-
+            icon: <i className="bi bi-truck"></i>,
           },
         ],
       },
@@ -90,7 +103,7 @@ const routes = {
         element: <Nearest />,
         showInSideBar: true,
         label: "nearest",
-        icon: "bi bi-globe-americas",
+        icon: <i className="bi bi-radar"></i>,
       },
       {
         type: "item",
@@ -103,7 +116,8 @@ const routes = {
         path: "/buyer/messages",
         element: <MessagesPage />,
         label: "messages",
-        icon: "bi bi-chat-dots-fill",
+        icon: <i className="bi bi-envelope-fill"></i>,
+
         notify: "message",
         showInSideBar: true,
         badge: "message",
@@ -119,7 +133,8 @@ const routes = {
         path: "/manager/dashboard",
         element: <Dashboard />,
         label: "dashboard",
-        icon: "bi bi-menu-button-wide",
+        icon: <i className="bi bi-table"></i>,
+
         showInSideBar: true,
       },
       {
@@ -127,7 +142,8 @@ const routes = {
         path: "/manager/shop-orders",
         element: <Orders />,
         label: "shop orders",
-        icon: "bi bi-bag-fill",
+        icon: <i class="bi bi-minecart"></i>,
+
         showInSideBar: true,
         notify: "orders",
       },
@@ -136,7 +152,8 @@ const routes = {
         path: "/manager/categories",
         element: <Categories />,
         label: "categories",
-        icon: "bi bi-bag-fill",
+        icon: <i className="bi bi-menu-button-wide-fill"></i>,
+
         showInSideBar: true,
       },
       {
@@ -144,7 +161,9 @@ const routes = {
         path: "/manager/messages",
         element: <MessagesPage />,
         label: "messages",
-        icon: "bi bi-chat-dots-fill",
+        icon: <i className="bi bi-envelope-fill"></i>,
+        badge: "message",
+
         notify: "message",
         showInSideBar: true,
       },

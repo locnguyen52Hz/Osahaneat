@@ -22,8 +22,7 @@ function Home() {
         </div>
       </div>
       <div className={style.main}>
-        <FeaturedShops />   
-        <FeaturedShops />   
+        <FeaturedShops />
       </div>
     </>
   );

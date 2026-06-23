@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import style from "../assets/styles/SideBar.module.css";
+import IconBadge from "./common/IconBadge";
 
-function SidebarItem({ item, level = 0, totalUnreadCount }) {
+function SidebarItem({ item, level = 0, badgeCounts }) {
   const [open, setOpen] = useState(false);
   const location = useLocation();
 
@@ -11,9 +12,9 @@ function SidebarItem({ item, level = 0, totalUnreadCount }) {
   // auto open nếu đang ở route con
   useEffect(() => {
     if (isGroup) {
-      const match = item.children?.some((child) =>
-        location.pathname.startsWith(child.path || ""),
-      );
+      const match = item.children?.some((child) => {
+        return location.pathname.startsWith(child.path || "");
+      });
       if (match) setOpen(true);
     }
   }, [location.pathname]);
@@ -28,8 +29,10 @@ function SidebarItem({ item, level = 0, totalUnreadCount }) {
           style={{ paddingLeft }}
           onClick={() => setOpen(!open)}
         >
-          <i className={`${item.icon} ${style.navLinkIcon}`}></i>
-          <p>{item.label}</p>
+          <div className={style.navLinkIcon}>
+            <IconBadge icon={item.icon} />
+          </div>
+          <p className={style.label}>{item.label}</p>
         </div>
 
         {/* dropdown */}
@@ -39,7 +42,7 @@ function SidebarItem({ item, level = 0, totalUnreadCount }) {
               key={child.label}
               item={child}
               level={level + 1}
-              totalUnreadCount={totalUnreadCount}
+              badgeCounts={badgeCounts}
             />
           ))}
       </>
@@ -54,12 +57,11 @@ function SidebarItem({ item, level = 0, totalUnreadCount }) {
       }
       style={{ paddingLeft }}
     >
-      {item.icon && <i className={`${item.icon} ${style.navLinkIcon}`}></i>}
-      <p>{item.label}</p>
+      <div className={style.navLinkIcon}>
+        <IconBadge icon={item.icon} count={badgeCounts?.[item.badge] || 0} />
+      </div>
 
-      {item.badge === "message" && totalUnreadCount > 0 && (
-        <span className={style.badge}>{totalUnreadCount}</span>
-      )}
+      <p className={style.label}>{item.label}</p>
     </NavLink>
   );
 }

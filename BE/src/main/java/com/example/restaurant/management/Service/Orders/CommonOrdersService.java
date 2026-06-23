@@ -1,5 +1,5 @@
 package com.example.restaurant.management.Service.Orders;
-import com.example.restaurant.management.DTO.*;
+import com.example.restaurant.management.dto.*;
 import com.example.restaurant.management.Entity.*;
 import com.example.restaurant.management.Enums.OrdersStatus;
 import com.example.restaurant.management.Repository.*;
@@ -37,7 +37,7 @@ public class CommonOrdersService {
     ShopManagerOrderServiceImp shopManagerOrderServiceImp;
 
 
-    public Page<OrdersDTO> getOrders(String authHeader, int page, int pageSize, boolean includeTotalQuantity) {
+    public Page<OrdersDto> getOrders(String authHeader, int page, int pageSize, boolean includeTotalQuantity) {
         Integer userId = jwtHelper.getUserID(authHeader);
         User user = userRepository.findUserById(userId);
         if (user == null) {
@@ -58,7 +58,7 @@ public class CommonOrdersService {
     }
 
 
-    public Page<OrderTimeLineDTO> getActiveOrders(String authHeader , int page){
+    public Page<OrderTimeLineDto> getActiveOrders(String authHeader , int page){
         Integer userId = jwtHelper.getUserID(authHeader);
         User user = userRepository.findUserById(userId);
         if (user == null) {
@@ -75,7 +75,7 @@ public class CommonOrdersService {
 
 
 
-    public Page<OrdersDTO> getPreviousOrders(String authHeader, int page) {
+    public Page<OrdersDto> getPreviousOrders(String authHeader, int page) {
         Integer userId = jwtHelper.getUserID(authHeader);
         User user = userRepository.findUserById(userId);
         if (user == null) {
@@ -93,34 +93,34 @@ public class CommonOrdersService {
 
 
 
-    public OrdersDTO updateOrderStatus(String authHeader, OrdersStatus newStatus, Integer orderId) {
+    public OrdersDto updateOrderStatus(String authHeader, OrdersStatus newStatus, Integer orderId) {
         Integer userId = jwtHelper.getUserID(authHeader);
         User user = userRepository.findUserById(userId);
         if (user == null) {
             throw new RuntimeException("User not found");
         }
         String role = user.getRole().getRoleName();
-        Orders orders = ordersRepository.findOrdersById(orderId);
-        if (orders == null) {
+        Order order = ordersRepository.findOrderById(orderId);
+        if (order == null) {
             throw new RuntimeException("Orders not found");
         }
-        OrderStatusHistory currentStatus = orderStatusHistoryRepository.findCurrentStatus(orders.getId());
+        OrderStatusHistory currentStatus = orderStatusHistoryRepository.findCurrentStatus(order.getId());
         if (currentStatus == null) {
             throw new RuntimeException("Order status history not found");
         }
-        OrdersDTO ordersDTO;
+        OrdersDto ordersDTO;
         switch (role) {
             case "ROLE_BUYER" ->
-                    ordersDTO = buyerOrdersServiceImp.updateOrderStatus( newStatus, orders);
+                    ordersDTO = buyerOrdersServiceImp.updateOrderStatus( newStatus, order);
             case "ROLE_SHOP_MANAGER" ->
-                    ordersDTO = shopManagerOrderServiceImp.updateOrderStatus( newStatus, orders);
+                    ordersDTO = shopManagerOrderServiceImp.updateOrderStatus( newStatus, order);
             default -> throw new RuntimeException("Role not found" + role);
         }
         return ordersDTO;
     }
 
 
-    public List<OrderItemDTO> getOrdersItems(String authHeader,  Integer orderId) {
+    public List<OrderItemDto> getOrdersItems(String authHeader, Integer orderId) {
         Integer userId = jwtHelper.getUserID(authHeader);
         String role = userRepository.findUserById(userId).getRole().getRoleName();
         return switch (role) {

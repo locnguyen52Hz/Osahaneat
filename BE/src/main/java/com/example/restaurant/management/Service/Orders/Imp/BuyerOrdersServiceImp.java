@@ -1,10 +1,9 @@
 package com.example.restaurant.management.Service.Orders.Imp;
 
-import com.example.restaurant.management.DTO.*;
+import com.example.restaurant.management.Payload.Request.*;
+import com.example.restaurant.management.dto.*;
 import com.example.restaurant.management.Entity.*;
 import com.example.restaurant.management.Enums.OrdersStatus;
-import com.example.restaurant.management.Payload.Request.CreateRatingRequest;
-import com.example.restaurant.management.Payload.Request.OrdersRequest;
 import com.example.restaurant.management.Repository.*;
 
 import com.example.restaurant.management.Service.Orders.OrdersHelper;
@@ -61,47 +60,67 @@ public class BuyerOrdersServiceImp implements OrdersService {
     @Autowired
     RatingRepository ratingRepository;
 
+    public OrdersDto buyNow(BuyNowRequest request, String authHeader) {
 
-    public OrdersDTO createOrder(OrdersRequest ordersRequest, String authHeader) {
+        OrdersRequest ordersRequest = new OrdersRequest();
+
+        OrdersItemRequest foodRequest = new OrdersItemRequest();
+        foodRequest.setFoodId(request.getFoodId());
+        foodRequest.setQuantity(request.getQuantity());
+
+        ordersRequest.setFoods(List.of(foodRequest));
+
+        Food food = foodRepository.findFoodById(request.getFoodId());
+
+        ordersRequest.setShopId(food.getShop().getId());
+        ordersRequest.setAddress(request.getAddress());
+        ordersRequest.setNote(request.getNote());
+        ordersRequest.setFromLatitude(request.getFromLatitude());
+        ordersRequest.setFromLongitude(request.getFromLongitude());
+
+        return createOrder(ordersRequest, authHeader);
+    }
+
+
+    public OrdersDto createOrder(OrdersRequest ordersRequest, String authHeader) {
         // lấy user từ token
-        String token = authHeader.replace("Bearer ", "");
-        Claims claims = jwtHelper.getClaimsFromToken(token);
-        Integer buyerId = claims.get("userID", Integer.class);
+
+        Integer buyerId = jwtHelper.getUserID(authHeader);
 
         User user = userRepository.findUserById(buyerId);
         if (user == null) {
             throw new RuntimeException("User not found");
         }
 
-        Shops shop = shopsRepository.findById(ordersRequest.getShopId()).orElseThrow(() -> new EntityNotFoundException("Shop not found"));
+        Shop shop = shopsRepository.findById(ordersRequest.getShopId()).orElseThrow(() -> new EntityNotFoundException("Shop not found"));
 
         // Tạo order
-        Orders orders = new Orders();
-        orders.setUser(user);
-        orders.setShops(shop);
-        orders.setAddress(ordersRequest.getAddress());
-        orders.setNote(ordersRequest.getNote());
-        orders.setFromLocation(new Location(ordersRequest.getFromLongitude(), ordersRequest.getFromLatitude()));
-        orders.setToLocation(new Location(shop.getLongitude(), shop.getLatitude()));
-        orders.setCreatedAt(Instant.now());
-        orders.setStatus(OrdersStatus.PENDING);
+        Order order = new Order();
+        order.setUser(user);
+        order.setShops(shop);
+        order.setAddress(ordersRequest.getAddress());
+        order.setNote(ordersRequest.getNote());
+        order.setFromLocation(new Location(ordersRequest.getFromLongitude(), ordersRequest.getFromLatitude()));
+        order.setToLocation(new Location(shop.getLongitude(), shop.getLatitude()));
+        order.setCreatedAt(Instant.now());
+        order.setStatus(OrdersStatus.PENDING);
 
 
-        OsrmResponse routes = routesService.getRoutes(orders.getFromLocation(), orders.getToLocation());
+        OsrmResponse routes = routesService.getRoutes(order.getFromLocation(), order.getToLocation());
 
 
         //set khoảng cách
         double distance = routes.getRoutes().get(0).getDistance();
-        orders.setDistance(distance);
+        order.setDistance(distance);
         double shipFee = routesService.calculateShipFee(distance);
-        orders.setShipFee(shipFee);
+        order.setShipFee(shipFee);
 
         // set status
         OrderStatusHistory orderStatusHistory = new OrderStatusHistory();
         orderStatusHistory.setStatus(OrdersStatus.PENDING);
         orderStatusHistory.setStartTime(Instant.now());
-        orderStatusHistory.setOrder(orders);
-        orders.getStatusHistories().add(orderStatusHistory);
+        orderStatusHistory.setOrder(order);
+        order.getStatusHistories().add(orderStatusHistory);
 
         // Map OrderItemRequests -> OrderItems
         List<OrdersItem> ordersItems = ordersRequest.getFoods().stream().map(itemReq -> {
@@ -112,11 +131,11 @@ public class BuyerOrdersServiceImp implements OrdersService {
             OrdersItem ordersItem = new OrdersItem();
             ordersItem.setFood(food);
             ordersItem.setQuantity(itemReq.getQuantity());
-            ordersItem.setOrders(orders);
+            ordersItem.setOrder(order);
 
             return ordersItem;
         }).toList();
-        orders.setOrderItems(ordersItems);
+        order.setOrderItems(ordersItems);
 
         // Tính tiền
 
@@ -127,27 +146,26 @@ public class BuyerOrdersServiceImp implements OrdersService {
             double total = price * quantity;
             subTotal += total;
         }
-        orders.setSubtotal(subTotal);
-        orders.setTotalAmount(subTotal + shipFee);
+        order.setSubtotal(subTotal);
+        order.setTotalAmount(subTotal + shipFee);
 
         // Lưu order (cascading sẽ tự lưu items nếu entity đã cấu hình CascadeType.ALL)
-        ordersRepository.save(orders);
+        ordersRepository.save(order);
 
         //Map sang dto
-        OrdersDTO ordersDTO = new OrdersDTO();
+        OrdersDto ordersDTO = new OrdersDto();
         ordersDTO.setPartnerId(shop.getManager().getId());
-        ordersDTO.setPartnerName(orders.getUser().getFullName());
+        ordersDTO.setPartnerName(order.getUser().getFullName());
 
-        ordersDTO.setOrderId(orders.getId());
-        ordersDTO.setNote(orders.getNote());
-        ordersDTO.setAddress(orders.getAddress());
+        ordersDTO.setOrderId(order.getId());
+        ordersDTO.setNote(order.getNote());
+        ordersDTO.setAddress(order.getAddress());
         ordersDTO.setStatus(orderStatusHistory.getStatus().toString());
-        OrderStatusHistory currentStatusHistory = orderStatusHistoryRepository.findCurrentStatus(orders.getId());
-        ordersDTO.setSubtotal(orders.getSubtotal());
-        ordersDTO.setDistance(orders.getDistance());
-        ordersDTO.setShippingFee(orders.getShipFee());
-        ordersDTO.setCreatedAt(orders.getCreatedAt());
-        ordersDTO.setTotalAmount(orders.getTotalAmount());
+        ordersDTO.setSubtotal(order.getSubtotal());
+        ordersDTO.setDistance(order.getDistance());
+        ordersDTO.setShippingFee(order.getShipFee());
+        ordersDTO.setCreatedAt(order.getCreatedAt());
+        ordersDTO.setTotalAmount(order.getTotalAmount());
         ordersDTO.setFoods(ordersHelper.mapOrderItems(ordersItems));
 
         return ordersDTO;
@@ -156,9 +174,9 @@ public class BuyerOrdersServiceImp implements OrdersService {
 
     @Override
     @Transactional
-    public OrdersDTO updateOrderStatus(OrdersStatus newStatus, Orders orders) {
+    public OrdersDto updateOrderStatus(OrdersStatus newStatus, Order orders) {
 
-        OrdersDTO ordersDTO = new OrdersDTO();
+        OrdersDto ordersDTO = new OrdersDto();
 
         // 1. Lấy current status trong transaction
         OrderStatusHistory currentStatus = orderStatusHistoryRepository.findCurrentStatus(orders.getId());
@@ -175,10 +193,10 @@ public class BuyerOrdersServiceImp implements OrdersService {
             ordersRepository.save(orders);
 
             // 5. Build DTO
-            ordersDTO.setPartnerName(orders.getShops().getShopName());
-            ordersDTO.setPartnerId(orders.getShops().getManager().getId());
+            ordersDTO.setPartnerName(orders.getShop().getShopName());
+            ordersDTO.setPartnerId(orders.getShop().getManager().getId());
 
-            List<OrdersItem> ordersItems = ordersItemRepository.findByOrdersId(orders.getId());
+            List<OrdersItem> ordersItems = ordersItemRepository.findByOrderId(orders.getId());
 
             ordersDTO.setFoods(ordersHelper.mapOrderItems(ordersItems));
             ordersDTO.setOrderId(orders.getId());
@@ -191,15 +209,15 @@ public class BuyerOrdersServiceImp implements OrdersService {
         return ordersDTO;
     }
 
-    public OrdersDTO getShippingFee(OrdersRequest ordersRequest) {
-        OrdersDTO ordersDTO;
+    public OrdersDto getShippingFee(OrdersRequest ordersRequest) {
+        OrdersDto ordersDTO;
         ordersDTO = ordersHelper.calculateOrderPrice(ordersRequest);
         return ordersDTO;
     }
 
 
     @Override
-    public Page<OrdersDTO> getOrdersWithPage(Integer userId, int page, int pageSize) {
+    public Page<OrdersDto> getOrdersWithPage(Integer userId, int page, int pageSize) {
         User user = userRepository.findUserById(userId);
         if (user == null) {
             throw new RuntimeException("User not found");
@@ -214,27 +232,27 @@ public class BuyerOrdersServiceImp implements OrdersService {
 
 
     @Override
-    public List<OrderItemDTO> getListOrderItems(Integer userId, Integer orderId) {
-        Orders orders = ordersRepository.findOrdersByIdAndUserId(orderId, userId);
-        if (orders == null) {
+    public List<OrderItemDto> getListOrderItems(Integer userId, Integer orderId) {
+        Order order = ordersRepository.findOrdersByIdAndUserId(orderId, userId);
+        if (order == null) {
             throw new RuntimeException("Orders not found");
         }
-        List<OrdersItem> ordersItems = ordersItemRepository.findByOrdersId(orders.getId());
-        List<OrderItemDTO> orderItemDTOList = new ArrayList<>();
+        List<OrdersItem> ordersItems = ordersItemRepository.findByOrderId(order.getId());
+        List<OrderItemDto> orderItemDtoList = new ArrayList<>();
         for (OrdersItem ordersItem : ordersItems) {
-            OrderItemDTO orderItemDTO = new OrderItemDTO();
+            OrderItemDto orderItemDTO = new OrderItemDto();
             orderItemDTO.setName(ordersItem.getFood().getName());
             orderItemDTO.setQuantity(ordersItem.getQuantity());
             orderItemDTO.setFoodId(ordersItem.getFood().getId());
             orderItemDTO.setPrice(ordersItem.getFood().getPrice());
-            orderItemDTOList.add(orderItemDTO);
+            orderItemDtoList.add(orderItemDTO);
 
         }
-        return orderItemDTOList;
+        return orderItemDtoList;
     }
 
     @Override
-    public Page<OrdersDTO> getPreviousOrders( Integer userId,  int page) {
+    public Page<OrdersDto> getPreviousOrders(Integer userId, int page) {
         User user = userRepository.findUserById(userId);
         if (user == null) {
             throw new RuntimeException("User not found");
@@ -245,7 +263,7 @@ public class BuyerOrdersServiceImp implements OrdersService {
 
 
     @Override
-    public Page<OrderTimeLineDTO> getActiveOrdersWithPage(Integer userId,int page) {
+    public Page<OrderTimeLineDto> getActiveOrdersWithPage(Integer userId, int page) {
         Pageable pageable = PageRequest.of(page, 9);
         Page<Integer> orderIdPage = ordersRepository.getActiveOrderIdsByUserId(userId, pageable);
         List<Integer> orderIds = orderIdPage.getContent();
@@ -255,9 +273,9 @@ public class BuyerOrdersServiceImp implements OrdersService {
             return Page.empty(pageable);
         }
 
-        List<OrderTimeLineRowDTO> rows = ordersRepository.getTimelineRowsByOrderIds(orderIds);
+        List<OrderTimeLineRowDto> rows = ordersRepository.getTimelineRowsByOrderIds(orderIds);
 
-        List<OrderTimeLineDTO> content = ordersHelper.groupOrders(rows);
+        List<OrderTimeLineDto> content = ordersHelper.groupOrders(rows);
 
         return new PageImpl<>(content, pageable, orderIdPage.getTotalElements());
     }
@@ -266,7 +284,7 @@ public class BuyerOrdersServiceImp implements OrdersService {
     @Transactional
     public Integer createRating(CreateRatingRequest createRatingRequest, String authHeader) {
         Integer userId = jwtHelper.getUserID(authHeader);
-        Orders orders = ordersRepository.findOrdersById(createRatingRequest.getOrderId());
+        Order orders = ordersRepository.findOrderById(createRatingRequest.getOrderId());
 
         //validate
         if (orders == null) {
@@ -283,7 +301,7 @@ public class BuyerOrdersServiceImp implements OrdersService {
         }
 
         // lấy shop
-        Shops shop = shopsRepository.findById(orders.getShops().getId()).orElseThrow(() -> new EntityNotFoundException("Shop not found"));
+        Shop shop = shopsRepository.findById(orders.getShop().getId()).orElseThrow(() -> new EntityNotFoundException("Shop not found"));
 
         // tạo rating
         Rating rating = new Rating();

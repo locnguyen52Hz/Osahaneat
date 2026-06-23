@@ -1,10 +1,10 @@
 package com.example.restaurant.management.Controllers;
 
 
-import com.example.restaurant.management.DTO.OrderItemDTO;
-import com.example.restaurant.management.DTO.OrderTimeLineDTO;
-import com.example.restaurant.management.DTO.OrdersDTO;
-import com.example.restaurant.management.Entity.OrdersItem;
+import com.example.restaurant.management.Payload.Request.BuyNowRequest;
+import com.example.restaurant.management.dto.OrderItemDto;
+import com.example.restaurant.management.dto.OrderTimeLineDto;
+import com.example.restaurant.management.dto.OrdersDto;
 import com.example.restaurant.management.Enums.OrdersStatus;
 import com.example.restaurant.management.Payload.Request.CreateRatingRequest;
 import com.example.restaurant.management.Payload.Request.OrdersRequest;
@@ -20,7 +20,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,11 +48,9 @@ public class OrdersController {
           ) {
 
         ResponseData responseData = new ResponseData();
-        OrdersDTO ordersDTO = buyerOrdersServiceImp.createOrder(ordersRequest, authorization);
+        OrdersDto ordersDTO = buyerOrdersServiceImp.createOrder(ordersRequest, authorization);
 
         // sau khi tạo order, gửi thông báo cho shop_manager
-        System.out.println("📌 ShopManagerId (từ ordersDTO): " + ordersDTO.getPartnerId());
-
         simpMessagingTemplate.convertAndSendToUser(
                 String.valueOf( ordersDTO.getPartnerId()),
                 "/queue/notify",
@@ -66,13 +63,32 @@ public class OrdersController {
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
+    @PostMapping("/buy-now")
+    @PreAuthorize("hasAnyRole('ROLE_BUYER')")
+    public ResponseEntity<?> buyNowOrder(@RequestBody BuyNowRequest buyNowRequest, @RequestHeader("Authorization") String authorization) {
+        ResponseData responseData = new ResponseData();
+        OrdersDto ordersDto = buyerOrdersServiceImp.buyNow(buyNowRequest, authorization);
+
+        simpMessagingTemplate.convertAndSendToUser(
+                String.valueOf( ordersDto.getPartnerId()),
+                "/queue/notify",
+                ordersDto
+        );
+
+        responseData.setData(ordersDto);
+        responseData.setSuccess(true);
+        responseData.setMessage("Order created successfully");
+        responseData.setStatus(HttpStatus.CREATED.value());
+        return new ResponseEntity<>(responseData, HttpStatus.OK);
+    }
+
     @PatchMapping("/{orderId}/status/{status}")
     @PreAuthorize("hasAnyRole('ROLE_BUYER','ROLE_SHOP_MANAGER')")
     public ResponseEntity<?> updateStatusOrder(@RequestHeader("Authorization") String authorization,
                                                @PathVariable OrdersStatus status,
                                                @PathVariable Integer orderId) {
         ResponseData responseData = new ResponseData();
-        OrdersDTO ordersDTO = commonOrdersService.updateOrderStatus(authorization, status, orderId);
+        OrdersDto ordersDTO = commonOrdersService.updateOrderStatus(authorization, status, orderId);
         notificationService.notifyOrderUpdate(ordersDTO);
         responseData.setData(ordersDTO);
         responseData.setMessage("Order updated successfully");
@@ -86,7 +102,7 @@ public class OrdersController {
     public ResponseEntity<?> getOrdersByStatus(@RequestHeader("Authorization") String authorization,
                                                @RequestParam int page) {
         ResponseData responseData = new ResponseData();
-        Page<OrdersDTO> ordersDTO = commonOrdersService.getPreviousOrders(authorization, page);
+        Page<OrdersDto> ordersDTO = commonOrdersService.getPreviousOrders(authorization, page);
         Map<String, Object> map = new HashMap<>();
         map.put("list", ordersDTO.getContent());
         map.put("totalElement", ordersDTO.getTotalElements());
@@ -107,7 +123,7 @@ public class OrdersController {
             @RequestParam(required = false, defaultValue = "false") boolean includeTotalQuantity
     ) {
 
-        Page<OrdersDTO> ordersDTOS = commonOrdersService.getOrders(authorization, page, pageSize, includeTotalQuantity);
+        Page<OrdersDto> ordersDTOS = commonOrdersService.getOrders(authorization, page, pageSize, includeTotalQuantity);
         ResponseData responseData = new ResponseData();
         Map<String,Object> map = new HashMap<>();
         map.put("list",ordersDTOS.getContent());
@@ -127,7 +143,7 @@ public class OrdersController {
     @PreAuthorize("hasAnyRole('ROLE_BUYER')")
     public ResponseEntity<?> getShippingFee(@RequestBody OrdersRequest ordersRequest) {
         ResponseData responseData = new ResponseData();
-        OrdersDTO ordersDTO = buyerOrdersServiceImp.getShippingFee(ordersRequest);
+        OrdersDto ordersDTO = buyerOrdersServiceImp.getShippingFee(ordersRequest);
         responseData.setData(ordersDTO);
         responseData.setSuccess(true);
         responseData.setMessage("Previous orders successfully");
@@ -139,7 +155,7 @@ public class OrdersController {
     @PreAuthorize("hasAnyRole('ROLE_BUYER', 'ROLE_SHOP_MANAGER')")
     public ResponseEntity<?> getOrdersItems(@RequestHeader("Authorization") String authorization, @RequestParam Integer orderId) {
         ResponseData responseData = new ResponseData();
-        List<OrderItemDTO> ordersItemList = commonOrdersService.getOrdersItems(authorization, orderId);
+        List<OrderItemDto> ordersItemList = commonOrdersService.getOrdersItems(authorization, orderId);
         responseData.setData(ordersItemList);
         responseData.setSuccess(true);
         responseData.setMessage("Orders items successfully");
@@ -150,7 +166,7 @@ public class OrdersController {
 
     @GetMapping("/active")
     public ResponseEntity<?> getActiveOrders (@RequestHeader("Authorization") String authorization , int page){
-        Page<OrderTimeLineDTO> result = commonOrdersService.getActiveOrders(authorization ,page);
+        Page<OrderTimeLineDto> result = commonOrdersService.getActiveOrders(authorization ,page);
         ResponseData responseData = new ResponseData();
         Map<String,Object> map = new HashMap<>();
         map.put("list",result.getContent());

@@ -1,10 +1,10 @@
 package com.example.restaurant.management.Service;
 
-import com.example.restaurant.management.DTO.Location;
-import com.example.restaurant.management.DTO.OsrmResponse;
-import com.example.restaurant.management.DTO.OsrmTableResponse;
-import com.example.restaurant.management.DTO.ShopDTO;
-import com.example.restaurant.management.Entity.Shops;
+import com.example.restaurant.management.dto.Location;
+import com.example.restaurant.management.dto.OsrmResponse;
+import com.example.restaurant.management.dto.OsrmTableResponse;
+import com.example.restaurant.management.dto.ShopDto;
+import com.example.restaurant.management.Entity.Shop;
 import com.example.restaurant.management.Repository.ShopsRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,14 +35,14 @@ public class RoutesService {
 
 
 
-    public OsrmTableResponse getDistance(double fromLongitude, double fromLatitude, List<ShopDTO> shops) {
+    public OsrmTableResponse getDistance(double fromLongitude, double fromLatitude, List<ShopDto> shops) {
         StringBuilder coordinates = new StringBuilder();
 
         // source (client)
         coordinates.append(fromLongitude).append(",").append(fromLatitude);
 
         // destinations (shops)
-        for (ShopDTO shop : shops) {
+        for (ShopDto shop : shops) {
             coordinates.append(";")
                     .append(shop.getLongitude())
                     .append(",")
@@ -72,7 +72,7 @@ public class RoutesService {
 
 
     public double getShippingFee(double fromLongitude, double fromLatitude, Integer shopID) {
-        Shops shop = shopsRepository.findById(shopID).orElseThrow(()-> new EntityNotFoundException("Shop not found"));
+        Shop shop = shopsRepository.findById(shopID).orElseThrow(()-> new EntityNotFoundException("Shop not found"));
 
         double distance = getDistanceToShop(fromLongitude, fromLatitude, shop.getLongitude(), shop.getLatitude());
 

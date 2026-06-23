@@ -1,8 +1,8 @@
 package com.example.restaurant.management.Service.Shops;
 
-import com.example.restaurant.management.DTO.CategoryDTO;
-import com.example.restaurant.management.DTO.ShopCategoryProjection;
-import com.example.restaurant.management.DTO.ShopDTO;
+import com.example.restaurant.management.dto.CategoryDto;
+import com.example.restaurant.management.dto.ShopCategoryProjection;
+import com.example.restaurant.management.dto.ShopDto;
 import com.example.restaurant.management.Repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,24 +21,24 @@ public class ShopHelper {
 
 
 
-    public void attachCategories(List<ShopDTO> shops) {
+    public void attachCategories(List<ShopDto> shops) {
         if (shops.isEmpty()) {
             return;
         }
 
         List<Integer> shopIds = shops.stream()
-                .map(ShopDTO::getId)
+                .map(ShopDto::getId)
                 .toList();
 
         List<ShopCategoryProjection> rows =
                 categoryRepository.findCategoriesByShopIds(shopIds);
 
-        Map<Integer, List<CategoryDTO>> categoriesByShop =
+        Map<Integer, List<CategoryDto>> categoriesByShop =
                 rows.stream()
                         .collect(Collectors.groupingBy(
                                 ShopCategoryProjection::getShopId,
                                 Collectors.mapping(
-                                        row -> new CategoryDTO(
+                                        row -> new CategoryDto(
                                                 row.getCategoryId(),
                                                 row.getCategoryName()
                                         ),

@@ -1,10 +1,9 @@
 package com.example.restaurant.management.Service.Food.Imp;
 
-import com.example.restaurant.management.DTO.FoodDTO;
-import com.example.restaurant.management.Entity.Categories;
+import com.example.restaurant.management.dto.FoodDto;
+import com.example.restaurant.management.Entity.Category;
 import com.example.restaurant.management.Entity.Food;
-import com.example.restaurant.management.Entity.Shops;
-import com.example.restaurant.management.Payload.Request.FoodRequest;
+import com.example.restaurant.management.Entity.Shop;
 import com.example.restaurant.management.Repository.CategoryRepository;
 import com.example.restaurant.management.Repository.FoodRepository;
 import com.example.restaurant.management.Repository.ShopsRepository;
@@ -29,24 +28,24 @@ public class BuyerFoodServiceImp implements FoodService {
     FoodRepository foodRepository;
 
     @Override
-    public List<FoodDTO> findFoodByCategory_Id(Integer categoryId, Integer shopId, Integer userId) {
-        Shops shops = shopsRepository.findById(shopId).orElseThrow(() -> new EntityNotFoundException("Shop not found"));
+    public List<FoodDto> findFoodByCategory_Id(Integer categoryId, Integer shopId, Integer userId) {
+        Shop shop = shopsRepository.findById(shopId).orElseThrow(() -> new EntityNotFoundException("Shop not found"));
 
-        Categories category = categoryRepository.getCategoriesById(categoryId);
+        Category category = categoryRepository.getCategoryById(categoryId);
         if (category == null) {
             throw new RuntimeException("Category not found");
         }
-        List<FoodDTO> foodDTOList = new ArrayList<>();
-        List<Food> foodList = foodRepository.findFoodByCategories_IdAndShops_IdAndDeletedFalse(category.getId(), shops.getId());
+        List<FoodDto> foodDtoList = new ArrayList<>();
+        List<Food> foodList = foodRepository.findFoodByCategory_IdAndShop_IdAndDeletedFalse(category.getId(), shop.getId());
         for (Food food : foodList) {
-            FoodDTO foodDTO = new FoodDTO();
-            foodDTO.setName(food.getName());
+            FoodDto foodDTO = new FoodDto();
+            foodDTO.setFoodName(food.getName());
             foodDTO.setPrice(food.getPrice());
             foodDTO.setImage(food.getImage());
             foodDTO.setDescription(food.getDescription());
             foodDTO.setFoodId(food.getId());
-            foodDTOList.add(foodDTO);
+            foodDtoList.add(foodDTO);
         }
-        return foodDTOList;
+        return foodDtoList;
     }
 }

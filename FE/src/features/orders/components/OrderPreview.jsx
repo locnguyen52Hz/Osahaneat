@@ -6,48 +6,49 @@ import OrderDetails from "./OrderDetails";
 import OrderActions from "./OrderActions";
 import OrderDetailsView from "./OrderDetailsView";
 
-function OrderPreview({ currentShop, note, myLocation, createOrder }) {
-  const [details, setDetails] = useState(currentShop);
-  const [loading, setLoading] = useState(true);
+function OrderPreview({ orderInfo, createOrder, loading, location }) {
+  const [details, setDetails] = useState(orderInfo);
+  const [loadShippingFee, setLoadShippingFee] = useState(false);
+
+  console.log(orderInfo);
 
   useEffect(() => {
-    if (!myLocation) return;
-
+    if (!location) return;
+    setLoadShippingFee(true);
     const fetchShippingFee = async () => {
       try {
         const resPreview = await apiPost(endpoints.order.shippingFee, {
-          shopId: currentShop.id,
-          foods: currentShop.foods,
-          fromLatitude: myLocation.latitude,
-          fromLongitude: myLocation.longitude,
+          shopId: orderInfo.shopId,
+          foods: orderInfo.foods,
+          fromLatitude: location.latitude,
+          fromLongitude: location.longitude,
         });
 
         const { shippingFee, subtotal, totalAmount } = resPreview.data.data;
-        console.log(resPreview.data.data)
+
         setDetails((prev) => ({
           ...prev,
           shippingFee,
           subtotal,
           totalAmount,
-          note,
-          address: myLocation.address,
+          address: location.address,
         }));
       } catch (error) {
         console.log(error);
       } finally {
-        setLoading(false);
+        setLoadShippingFee(false);
       }
     };
 
     fetchShippingFee();
-  }, [myLocation, currentShop, note]);
-  if (loading) return <p>Loading...</p>;
+  }, [location, orderInfo]);
+  if (loadShippingFee) return <p>Loading...</p>;
   return (
     <OrderDetailsView
       order={details}
       foods={details.foods}
-      loadingItems={false}
-      footer={<OrderActions action={createOrder} label="Confirm" />}
+      loadingItems={loading}
+      footer={<OrderActions action={createOrder} label="Đặt hàng" />}
     />
   );
 }

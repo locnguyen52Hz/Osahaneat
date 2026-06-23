@@ -1,7 +1,7 @@
 package com.example.restaurant.management.Service.ServiceImp;
 
 
-import com.example.restaurant.management.DTO.UserDTO;
+import com.example.restaurant.management.dto.UserDto;
 
 import com.example.restaurant.management.Entity.User;
 
@@ -26,18 +26,18 @@ public class UserServiceImp implements com.example.restaurant.management.Service
 
 
     @Override
-    public List<UserDTO> getAllUsers() {
+    public List<UserDto> getAllUsers() {
         List<User> users = userRepository.findAll();
-        List<UserDTO> userDTOs = new ArrayList<>();
+        List<UserDto> userDtos = new ArrayList<>();
         for (User user : users) {
-            UserDTO userDTO = new UserDTO();
+            UserDto userDTO = new UserDto();
             userDTO.setId(user.getId());
             userDTO.setEmail(user.getEmail());
             userDTO.setFullName(user.getFullName());
             userDTO.setRole(user.getRole().toString());
             userDTO.setPassword(passwordEncoder.encode(user.getPassword()));
-            userDTOs.add(userDTO);
+            userDtos.add(userDTO);
         }
-        return userDTOs;
+        return userDtos;
     }
 }

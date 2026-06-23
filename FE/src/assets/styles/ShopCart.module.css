@@ -1,0 +1,86 @@
+.wrapper {
+    border-radius: 8px;
+    border: 2px solid #C6C6CD;
+
+
+
+}
+
+.isSelected,
+.wrapper:hover {
+    border: 2px solid #d8503c;
+
+}
+
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
+    column-gap: 20px;
+    background-color: #f3f4f6;
+    border-bottom: 1px solid #c5c6ca;
+    align-items: center;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.shopAddress {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.name {}
+
+.address {}
+
+.addNewItem {
+    display: flex;
+    column-gap: 5px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.addNewItem>p {
+    display: none;
+}
+
+
+
+.body {
+    background-color: white;
+
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
+    border-top: 1px solid #C6C6CD;
+    align-items: center;
+}
+
+.total>p:first-child {
+    font-size: 12px;
+}
+
+.total>p:last-child {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.trashIcon:hover{
+    color: red;
+    cursor: pointer;
+}
+
+@media (min-width: 768px) {
+    .addNewItem>p {
+        display: block;
+    }
+
+    .addNewItem:hover {
+        text-decoration: underline;
+    }
+
+}

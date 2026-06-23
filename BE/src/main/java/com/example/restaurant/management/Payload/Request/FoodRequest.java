@@ -25,6 +25,7 @@ public class FoodRequest {
 
     private Integer shopId;
 
+    private int quantity;
 
     private Integer foodId;
 
@@ -85,5 +86,13 @@ public class FoodRequest {
 
     public void setImage(MultipartFile image) {
         this.image = image;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public int getQuantity() {
+        return quantity;
     }
 }

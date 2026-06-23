@@ -1,16 +1,13 @@
 package com.example.restaurant.management.Controllers;
 
-import com.example.restaurant.management.DTO.Coordinate;
-import com.example.restaurant.management.DTO.OsrmTableResponse;
-import com.example.restaurant.management.DTO.ShopDTO;
-import com.example.restaurant.management.DTO.ShopLocationDTO;
+import com.example.restaurant.management.dto.ShopDto;
+import com.example.restaurant.management.dto.ShopLocationDto;
 import com.example.restaurant.management.Payload.Request.ShopUpdateRequest;
 import com.example.restaurant.management.Payload.ResponseData;
 import com.example.restaurant.management.Service.FileService;
 import com.example.restaurant.management.Service.Shops.CommonShopService;
 import com.example.restaurant.management.Service.Shops.Imp.BuyerShopServiceImp;
 import com.example.restaurant.management.Service.Shops.Imp.ShopManagerShopServiceImp;
-import com.example.restaurant.management.Service.Shops.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -44,8 +41,8 @@ public class ShopController {
                                          @RequestParam double fromLatitude,
                                          @RequestParam(required = false, defaultValue = "5") double radius){
         ResponseData responseData = new ResponseData();
-        List<ShopDTO> shopDTOList = buyerShopServiceImp.getNearbyShops(fromLongitude, fromLatitude, radius);
-        responseData.setData(shopDTOList);
+        List<ShopDto> shopDtoList = buyerShopServiceImp.getNearbyShops(fromLongitude, fromLatitude, radius);
+        responseData.setData(shopDtoList);
         responseData.setStatus(HttpStatus.OK.value());
         responseData.setMessage("Success");
         responseData.setSuccess(true);
@@ -81,7 +78,7 @@ public class ShopController {
                                          @RequestParam double longitude,
                                          @RequestParam double latitude) {
         ResponseData responseData = new ResponseData();
-        ShopDTO shopDTO = commonShopService.getShopById(authHeader,shopId, longitude, latitude);
+        ShopDto shopDTO = commonShopService.getShopById(authHeader,shopId, longitude, latitude);
         responseData.setData(shopDTO);
         responseData.setStatus(HttpStatus.OK.value());
         responseData.setMessage("Success");
@@ -106,8 +103,8 @@ public class ShopController {
     @PreAuthorize("hasAnyRole('ROLE_BUYER')")
     public ResponseEntity<?> getShopLocations() {
         ResponseData responseData = new ResponseData();
-        List<ShopLocationDTO> shopLocationDTOS = buyerShopServiceImp.getAllShopLocations();
-        responseData.setData(shopLocationDTOS);
+        List<ShopLocationDto> shopLocationDtos = buyerShopServiceImp.getAllShopLocations();
+        responseData.setData(shopLocationDtos);
         responseData.setStatus(HttpStatus.OK.value());
         responseData.setMessage("Success");
         responseData.setSuccess(true);

@@ -7,7 +7,7 @@ import NavBar from "./NavBar";
 
 function MainLayout() {
   const [showSideBar, setShowSideBar] = useState(true);
-  console.log(showSideBar);
+
   return (
     <div className={style.layout}>
       <NavBar onToggleSideBar={() => setShowSideBar((prev) => !prev)} />
@@ -16,7 +16,7 @@ function MainLayout() {
         <SideBar isOpen={showSideBar} />
 
         <div className={style.content}>
-          <Outlet />
+          <Outlet  context={{showSideBar}}/>
         </div>
       </div>
     </div>

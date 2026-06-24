@@ -118,11 +118,43 @@
 }
 
 .addToCart {
-  /* flex: 1; */
+  flex: 1;
   color: red;
   text-align: right;
   font-size: 20px;
-
+  user-select: none;
   cursor: pointer;
+  display: inline-block;
+}
 
+.addToCart:active {
+  transform: scale(0.97);
+
+}
+
+/* +1 */
+.addEffect {
+  position: absolute;
+  pointer-events: none;
+  animation: flyUp 800ms ease-out forwards;
+  z-index: 199;
+  right: 0;
+
+}
+
+@keyframes flyUp {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.8);
+  }
+
+  15% {
+    opacity: 1;
+    transform: translateY(-5px) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-50px) scale(1.2);
+  }
 }

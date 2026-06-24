@@ -12,6 +12,7 @@ function FeaturedShops() {
   const navigate = useNavigate();
   const [shops, setShops] = useState([]);
   const { location, loading } = useLocation();
+
   const shopDetailPage = (id) => {
     navigate(`/buyer/detail/shop/${id}`);
   };
@@ -47,15 +48,15 @@ function FeaturedShops() {
       <div className={style.items}>
         {shops.map((shop) => (
           <ShopCard
-            key={shop.id}
-            name={shop.name}
+            key={shop.shopId}
+            name={shop.shopName}
             avatar={`${endpoints.image.shop}/${shop.shopAvatar}`}
             rating={shop.ratingAvg}
             ratingCount={shop.ratingCount}
             address={shop.address}
             distance={shop.distance}
             formatDistance={formatDistance}
-            onClick={() => shopDetailPage(shop.id)}
+            onClick={() => shopDetailPage(shop.shopId)}
           />
         ))}
       </div>

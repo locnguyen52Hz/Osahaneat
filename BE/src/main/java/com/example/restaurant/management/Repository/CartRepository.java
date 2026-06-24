@@ -1,7 +1,7 @@
 package com.example.restaurant.management.Repository;
 
 import com.example.restaurant.management.Entity.Cart;
-
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -12,8 +12,9 @@ import java.util.Set;
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Integer> {
     Cart findByUser_IdAndShop_Id(Integer userId, Integer shopId);
-    Cart findByUser_Id(Integer userId);
 
+
+    List<Cart> findByUser_IdOrderByCreatedAtDesc(Integer userId);
 
 
     @Query("""
@@ -23,7 +24,7 @@ public interface CartRepository extends JpaRepository<Cart, Integer> {
             LEFT JOIN FETCH ci.food
             LEFT JOIN FETCH c.shop
             WHERE c.user.id = :userId
-            ORDER BY c.updatedAt desc
+            ORDER BY c.createdAt desc
             """)
     List<Cart> findAllByUserIdWithItems(Integer userId);
 

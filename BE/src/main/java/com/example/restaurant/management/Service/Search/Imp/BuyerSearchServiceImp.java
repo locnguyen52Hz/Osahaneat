@@ -83,8 +83,8 @@ public class BuyerSearchServiceImp implements SearchService {
             double distanceInKm = distanceRow.get(i + 1) / 1000.0;
 
             ShopDto dto = new ShopDto();
-            dto.setId(shop.getId());
-            dto.setName(shop.getShopName());
+            dto.setShopId(shop.getId());
+            dto.setShopName(shop.getShopName());
             dto.setShopAvatar(shop.getShopImage());
             dto.setDistance(distanceInKm);
             dto.setLatitude(shop.getLatitude());

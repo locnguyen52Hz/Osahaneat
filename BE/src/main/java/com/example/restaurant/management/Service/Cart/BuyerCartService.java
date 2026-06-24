@@ -190,11 +190,12 @@ public class BuyerCartService {
 
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
-        // =========================
-        // 1. VALIDATE INPUT (DTO LEVEL)
-        // =========================
+        // ==========================
+        // 1. VALIDATE REQUEST
+        // ==========================
+
         if (request.getCarts() == null || request.getCarts().isEmpty()) {
-            throw new RuntimeException("Cart list must not be null or empty");
+            throw new RuntimeException("Cart list must not be empty");
         }
 
         for (CartRequest cartReq : request.getCarts()) {
@@ -204,7 +205,7 @@ public class BuyerCartService {
             }
 
             if (cartReq.getItems() == null) {
-                throw new RuntimeException("Cart items must not be null");
+                throw new RuntimeException("Items must not be null");
             }
 
             for (CartItemRequest item : cartReq.getItems()) {
@@ -213,107 +214,127 @@ public class BuyerCartService {
                     throw new RuntimeException("FoodId must not be null");
                 }
 
-                if ((item.getQuantity() <= 0)) {
-                    throw new RuntimeException("Quantity must be greater than 0 for foodId: " + item.getFoodId());
+                if (item.getQuantity() <= 0) {
+                    throw new RuntimeException("Quantity must > 0");
                 }
             }
         }
 
-        // =========================
-        // 2. COLLECT DATA
-        // =========================
+        // ==========================
+        // 2. COLLECT IDS
+        // ==========================
+
         Set<Integer> foodIds = request.getCarts().stream().flatMap(c -> c.getItems().stream()).map(CartItemRequest::getFoodId).collect(Collectors.toSet());
 
-        List<Food> foods = foodRepository.findAllById(foodIds);
-
-        if (foods.size() != foodIds.size()) {
-            throw new RuntimeException("Some food not found");
-        }
-
-        Map<Integer, Food> foodMap = foods.stream().collect(Collectors.toMap(Food::getId, Function.identity()));
-
-        // =========================
-        // 3. VALIDATE BUSINESS RULE
-        // =========================
-        for (CartRequest cartReq : request.getCarts()) {
-            for (CartItemRequest item : cartReq.getItems()) {
-
-                Food food = foodMap.get(item.getFoodId());
-
-                if (!food.getShop().getId().equals(cartReq.getShopId())) {
-                    throw new RuntimeException("Invalid shop-food mapping");
-                }
-            }
-        }
-
-        // =========================
-        // 4. LOAD EXISTING CARTS
-        // =========================
         Set<Integer> shopIds = request.getCarts().stream().map(CartRequest::getShopId).collect(Collectors.toSet());
+
+        // ==========================
+        // 3. LOAD DATA
+        // ==========================
+
+        Map<Integer, Food> foodMap = foodRepository.findAllById(foodIds).stream().collect(Collectors.toMap(Food::getId, Function.identity()));
+
+        Map<Integer, Shop> shopMap = shopsRepository.findAllById(shopIds).stream().collect(Collectors.toMap(Shop::getId, Function.identity()));
 
         List<Cart> existingCarts = cartRepository.findByUser_IdAndShop_IdIn(userId, shopIds);
 
         Map<Integer, Cart> cartMap = existingCarts.stream().collect(Collectors.toMap(c -> c.getShop().getId(), Function.identity()));
 
-        // =========================
-        // 5. RECONCILE STATE
-        // =========================
+        List<Cart> cartsToDelete = new ArrayList<>();
+
         List<Cart> cartsToSave = new ArrayList<>();
 
 
-        for (CartRequest cartReq : request.getCarts()) {
+        // ==========================
+        // 4. RECONCILE
+        // ==========================
 
-            Instant now = Instant.now();
+        for (CartRequest cartReq : request.getCarts()) {
 
             Cart cart = cartMap.get(cartReq.getShopId());
 
+            Instant now = Instant.now();
+
+            // cart mới
             if (cart == null) {
-                Shop shop = shopsRepository.findById(cartReq.getShopId()).orElseThrow(() -> new RuntimeException("Shop not found"));
 
                 cart = new Cart();
+
                 cart.setUser(user);
-                cart.setShop(shop);
+
+                cart.setShop(shopMap.get(cartReq.getShopId()));
+
                 cart.setCreatedAt(now);
+
+                cart.setCartItems(new ArrayList<>());
             }
 
             cart.setUpdatedAt(now);
 
-            List<CartItem> newItems = new ArrayList<>();
+            // map item hiện tại
+            Map<Integer, CartItem> existingItemMap = cart.getCartItems().stream().collect(Collectors.toMap(i -> i.getFood().getId(), Function.identity()));
 
+
+            Set<Integer> requestFoodIds = cartReq.getItems().stream().map(CartItemRequest::getFoodId).collect(Collectors.toSet());
+
+            // remove item cũ
+            cart.getCartItems().removeIf(item -> !requestFoodIds.contains(item.getFood().getId()));
+
+            // add/update
             for (CartItemRequest itemReq : cartReq.getItems()) {
 
                 Food food = foodMap.get(itemReq.getFoodId());
 
-                CartItem cartItem = new CartItem();
-                cartItem.setCart(cart);
-                cartItem.setFood(food);
-                cartItem.setQuantity(itemReq.getQuantity());
+                if (!food.getShop().getId().equals(cartReq.getShopId())) {
 
-                newItems.add(cartItem);
+                    throw new RuntimeException("Food does not belong to shop");
+                }
+
+                CartItem cartItem = existingItemMap.get(food.getId());
+
+                if (cartItem == null) {
+
+                    cartItem = new CartItem();
+
+                    cartItem.setCart(cart);
+
+                    cartItem.setFood(food);
+
+                    cart.getCartItems().add(cartItem);
+                }
+
+                cartItem.setQuantity(itemReq.getQuantity());
             }
 
-            // overwrite strategy (STATE FINAL)
-            cart.setCartItems(newItems);
+            // cart rỗng
+            if (cart.getCartItems().isEmpty()) {
+
+                if (cart.getId() != null) {
+                    cartsToDelete.add(cart);
+                }
+
+                continue;
+            }
 
             cartsToSave.add(cart);
         }
 
-        // =========================
-        // 6. SAVE (CASCADE nếu setup đúng)
-        // =========================
-        List<Cart> saved = cartRepository.saveAll(cartsToSave);
-        List<CartDto> result = new ArrayList<>();
 
-        for (Cart cart : saved) {
-            CartDto dto = toCartDto(cart);
-            result.add(dto);
+        // ==========================
+        // 5. SAVE
+        // ==========================
+
+        if (!cartsToDelete.isEmpty()) {
+            cartRepository.deleteAll(cartsToDelete);
         }
 
-        // =========================
-        // 7. MAP RESPONSE
-        // =========================
-        return result;
+        cartRepository.saveAll(cartsToSave);
 
+        // ==========================
+        // 6. RESPONSE
+        // ==========================
+
+        return cartRepository.findByUser_IdOrderByCreatedAtDesc(userId).stream().map(this::toCartDto).toList();
     }
 
     public List<CartDto> getCarts(String auth) {
@@ -370,9 +391,7 @@ public class BuyerCartService {
         dto.setUpdatedAt(cart.getUpdatedAt());
         dto.setCreatedAt(cart.getCreatedAt());
 
-        List<CartItemResponseDto> items = cart.getCartItems().stream()
-                .map(this::toCartItemDto)
-                .toList();
+        List<CartItemResponseDto> items = cart.getCartItems().stream().map(this::toCartItemDto).toList();
 
         dto.setCartItems(items);
 

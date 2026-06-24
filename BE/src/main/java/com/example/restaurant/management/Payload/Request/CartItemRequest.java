@@ -9,7 +9,7 @@ public class CartItemRequest {
     Integer foodId;
 
     @NotNull
-            @Min(0)
+            @Min(1)
             @Max(99)
     int quantity;
 

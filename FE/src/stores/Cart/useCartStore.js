@@ -3,6 +3,7 @@ import { apiGet, apiPost, apiPut } from "../../api/api";
 import endpoints from "../../api/endpoints";
 import { getTotalCartItems } from "../../util/cart";
 import { debounce, isEqual } from "lodash";
+import { v4 as uuidv4 } from "uuid";
 
 export const useCartStore = create((set, get) => ({
   carts: [],
@@ -78,29 +79,87 @@ export const useCartStore = create((set, get) => ({
   },
 
   addItem: (shop, food, quantity = 1) => {
-    get().updateCartByShop(
-      shop.shopId,
-      (items) => {
-        const index = items.findIndex((i) => i.foodId === food.foodId);
+    console.log(shop);
+    set((state) => {
+      const carts = [...state.carts];
 
-        if (index === -1) {
-          return [
-            ...items,
+      let cartIndex = carts.findIndex((c) => c.shopId === shop.shopId);
+
+      // chưa có cart → tạo mới
+      if (cartIndex === -1) {
+        carts.unshift({
+          id: uuidv4(),
+          shopId: shop.shopId,
+          shopName: shop.shopName,
+          address: shop.address,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          cartItems: [
             {
               ...food,
               quantity,
             },
-          ];
-        }
+          ],
+        });
 
-        return items.map((i) =>
-          i.foodId === food.foodId
-            ? { ...i, quantity: i.quantity + quantity }
-            : i,
-        );
-      },
-      shop,
-    );
+        const dirtyShopIds = new Set(state.dirtyShopIds);
+        dirtyShopIds.add(shop.shopId);
+
+        return {
+          carts,
+          dirtyShopIds,
+          hasPendingChanges: true,
+          totalCartItem: getTotalCartItems(carts),
+        };
+      }
+
+      // cart đã tồn tại
+      const cart = carts[cartIndex];
+
+      const itemIndex = cart.cartItems.findIndex(
+        (item) => item.foodId === food.foodId,
+      );
+
+      let updatedItems = [...cart.cartItems];
+
+      // food đã tồn tại → cộng quantity
+      if (itemIndex !== -1) {
+        updatedItems[itemIndex] = {
+          ...updatedItems[itemIndex],
+          quantity: updatedItems[itemIndex].quantity + quantity,
+        };
+      }
+
+      // food chưa tồn tại → thêm mới
+      else {
+        updatedItems.push({
+          ...food,
+          quantity,
+        });
+      }
+
+      const updatedCart = {
+        ...cart,
+        cartItems: updatedItems,
+        updatedAt: new Date().toISOString(),
+      };
+
+      // bỏ cart cũ
+      carts.splice(cartIndex, 1);
+
+      // đưa lên đầu
+      carts.unshift(updatedCart);
+
+      const dirtyShopIds = new Set(state.dirtyShopIds);
+      dirtyShopIds.add(shop.shopId);
+
+      return {
+        carts,
+        dirtyShopIds,
+        hasPendingChanges: true,
+        totalCartItem: getTotalCartItems(carts),
+      };
+    });
 
     get().scheduleSync();
   },
@@ -135,7 +194,6 @@ export const useCartStore = create((set, get) => ({
     // Lấy state hiện tại
     const state = get();
 
-    // B1:
     // Nếu đang sync thì không cho gọi tiếp
     // tránh spam API hoặc race condition
     if (state.isSyncing) return;
@@ -144,16 +202,13 @@ export const useCartStore = create((set, get) => ({
     // Không có thay đổi thì không cần sync
     if (!state.hasPendingChanges) return;
 
-    // B3:
     // Đánh dấu bắt đầu sync
     set({
       isSyncing: true,
     });
 
     try {
-      // B4:
       // Chuyển state FE thành payload tối thiểu
-      // Chỉ gửi dữ liệu BE thực sự cần
 
       const dirtyCarts = state.carts.filter((cart) =>
         state.dirtyShopIds.has(cart.shopId),
@@ -169,22 +224,19 @@ export const useCartStore = create((set, get) => ({
         })),
       };
 
-      // B5:
       // Gửi trạng thái cuối lên server
       const res = await apiPut(endpoints.cart.syncCart, payload);
-      console.log(res);
 
-      // B6:
       // Server trả cart mới nhất
       // (đã validate + đồng bộ DB)
-      // const carts = res.data.data;
+      const carts = res.data.data;
+      console.log(carts);
 
-      // B7:
       // Replace toàn bộ state local
       // FE luôn lấy server làm nguồn dữ liệu thật
       set({
-        // carts,
-        // totalCartItem: getTotalCartItems(carts),
+        carts,
+        totalCartItem: getTotalCartItems(carts),
         dirtyShopIds: new Set(),
         hasPendingChanges: false,
         isSyncing: false,
@@ -213,5 +265,5 @@ export const useCartStore = create((set, get) => ({
 
   scheduleSync: debounce(() => {
     useCartStore.getState().syncCart();
-  }, 3000),
+  }, 1000),
 }));

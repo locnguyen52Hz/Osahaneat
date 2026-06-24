@@ -1,9 +1,16 @@
 package com.example.restaurant.management.Payload.Request;
 
 import com.example.restaurant.management.dto.Location;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 public class BuyNowRequest {
     Integer foodId;
+
+    @Valid
+            @Min(1)
+            @Max(99)
     int quantity;
     String address;
     String note;

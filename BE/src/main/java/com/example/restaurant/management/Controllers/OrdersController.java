@@ -1,17 +1,17 @@
 package com.example.restaurant.management.Controllers;
 
 
-import com.example.restaurant.management.Payload.Request.BuyNowRequest;
-import com.example.restaurant.management.dto.OrderItemDto;
-import com.example.restaurant.management.dto.OrderTimeLineDto;
-import com.example.restaurant.management.dto.OrdersDto;
 import com.example.restaurant.management.Enums.OrdersStatus;
+import com.example.restaurant.management.Payload.Request.BuyNowRequest;
 import com.example.restaurant.management.Payload.Request.CreateRatingRequest;
 import com.example.restaurant.management.Payload.Request.OrdersRequest;
 import com.example.restaurant.management.Payload.ResponseData;
 import com.example.restaurant.management.Service.NotificationService;
 import com.example.restaurant.management.Service.Orders.CommonOrdersService;
 import com.example.restaurant.management.Service.Orders.Imp.BuyerOrdersServiceImp;
+import com.example.restaurant.management.dto.OrderItemDto;
+import com.example.restaurant.management.dto.OrderTimeLineDto;
+import com.example.restaurant.management.dto.OrdersDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -42,20 +42,13 @@ public class OrdersController {
 
     @PostMapping("/create-orders")
     @PreAuthorize("hasAnyRole('ROLE_BUYER')")
-    public ResponseEntity<?> createOrder(
-            @RequestBody OrdersRequest ordersRequest,
-            @RequestHeader("Authorization") String authorization
-          ) {
+    public ResponseEntity<?> createOrder(@RequestBody OrdersRequest ordersRequest, @RequestHeader("Authorization") String authorization) {
 
         ResponseData responseData = new ResponseData();
         OrdersDto ordersDTO = buyerOrdersServiceImp.createOrder(ordersRequest, authorization);
 
         // sau khi tạo order, gửi thông báo cho shop_manager
-        simpMessagingTemplate.convertAndSendToUser(
-                String.valueOf( ordersDTO.getPartnerId()),
-                "/queue/notify",
-                ordersDTO
-        );
+        simpMessagingTemplate.convertAndSendToUser(String.valueOf(ordersDTO.getPartnerId()), "/queue/notify", ordersDTO);
         responseData.setData(ordersDTO);
         responseData.setSuccess(true);
         responseData.setMessage("Order created successfully");
@@ -69,11 +62,7 @@ public class OrdersController {
         ResponseData responseData = new ResponseData();
         OrdersDto ordersDto = buyerOrdersServiceImp.buyNow(buyNowRequest, authorization);
 
-        simpMessagingTemplate.convertAndSendToUser(
-                String.valueOf( ordersDto.getPartnerId()),
-                "/queue/notify",
-                ordersDto
-        );
+        simpMessagingTemplate.convertAndSendToUser(String.valueOf(ordersDto.getPartnerId()), "/queue/notify", ordersDto);
 
         responseData.setData(ordersDto);
         responseData.setSuccess(true);
@@ -84,9 +73,7 @@ public class OrdersController {
 
     @PatchMapping("/{orderId}/status/{status}")
     @PreAuthorize("hasAnyRole('ROLE_BUYER','ROLE_SHOP_MANAGER')")
-    public ResponseEntity<?> updateStatusOrder(@RequestHeader("Authorization") String authorization,
-                                               @PathVariable OrdersStatus status,
-                                               @PathVariable Integer orderId) {
+    public ResponseEntity<?> updateStatusOrder(@RequestHeader("Authorization") String authorization, @PathVariable OrdersStatus status, @PathVariable Integer orderId) {
         ResponseData responseData = new ResponseData();
         OrdersDto ordersDTO = commonOrdersService.updateOrderStatus(authorization, status, orderId);
         notificationService.notifyOrderUpdate(ordersDTO);
@@ -99,8 +86,7 @@ public class OrdersController {
 
     @GetMapping("/previous")
     @PreAuthorize("hasAnyRole('ROLE_BUYER','ROLE_SHOP_MANAGER')")
-    public ResponseEntity<?> getOrdersByStatus(@RequestHeader("Authorization") String authorization,
-                                               @RequestParam int page) {
+    public ResponseEntity<?> getOrdersByStatus(@RequestHeader("Authorization") String authorization, @RequestParam int page) {
         ResponseData responseData = new ResponseData();
         Page<OrdersDto> ordersDTO = commonOrdersService.getPreviousOrders(authorization, page);
         Map<String, Object> map = new HashMap<>();
@@ -116,21 +102,16 @@ public class OrdersController {
 
     @GetMapping("/all")
     @PreAuthorize("hasAnyRole('ROLE_SHOP_MANAGER','ROLE_BUYER')")
-    public ResponseEntity<ResponseData> getOrders(
-            @RequestHeader("Authorization") String authorization,
-            @RequestParam int page,
-            @RequestParam( required = false,defaultValue = "10") int pageSize,
-            @RequestParam(required = false, defaultValue = "false") boolean includeTotalQuantity
-    ) {
+    public ResponseEntity<ResponseData> getOrders(@RequestHeader("Authorization") String authorization, @RequestParam int page, @RequestParam(required = false, defaultValue = "10") int pageSize, @RequestParam(required = false, defaultValue = "false") boolean includeTotalQuantity) {
 
         Page<OrdersDto> ordersDTOS = commonOrdersService.getOrders(authorization, page, pageSize, includeTotalQuantity);
         ResponseData responseData = new ResponseData();
-        Map<String,Object> map = new HashMap<>();
-        map.put("list",ordersDTOS.getContent());
-        map.put("totalElement",ordersDTOS.getTotalElements());
-        map.put("page",ordersDTOS.getNumber());
-        map.put("size",ordersDTOS.getSize());
-        map.put("totalPages",ordersDTOS.getTotalPages());
+        Map<String, Object> map = new HashMap<>();
+        map.put("list", ordersDTOS.getContent());
+        map.put("totalElement", ordersDTOS.getTotalElements());
+        map.put("page", ordersDTOS.getNumber());
+        map.put("size", ordersDTOS.getSize());
+        map.put("totalPages", ordersDTOS.getTotalPages());
         responseData.setData(map);
         responseData.setSuccess(true);
 //        responseData.setData(ordersDTOS);
@@ -165,33 +146,32 @@ public class OrdersController {
 
 
     @GetMapping("/active")
-    public ResponseEntity<?> getActiveOrders (@RequestHeader("Authorization") String authorization , int page){
-        Page<OrderTimeLineDto> result = commonOrdersService.getActiveOrders(authorization ,page);
+    public ResponseEntity<?> getActiveOrders(@RequestHeader("Authorization") String authorization, int page) {
+        Page<OrderTimeLineDto> result = commonOrdersService.getActiveOrders(authorization, page);
         ResponseData responseData = new ResponseData();
-        Map<String,Object> map = new HashMap<>();
-        map.put("list",result.getContent());
-        map.put("totalElement",result.getTotalElements());
-        map.put("page",result.getNumber());
-        map.put("size",result.getSize());
-        map.put("totalPages",result.getTotalPages());
+        Map<String, Object> map = new HashMap<>();
+        map.put("list", result.getContent());
+        map.put("totalElement", result.getTotalElements());
+        map.put("page", result.getNumber());
+        map.put("size", result.getSize());
+        map.put("totalPages", result.getTotalPages());
         responseData.setData(map);
         responseData.setSuccess(true);
         responseData.setMessage("Active orders successfully");
         responseData.setStatus(HttpStatus.OK.value());
-        return new ResponseEntity<>(responseData, HttpStatus.OK );
+        return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
     @PostMapping("/create-rating")
     public ResponseEntity<?> createRating(@RequestBody CreateRatingRequest createRatingRequest, @RequestHeader("Authorization") String authorization) {
         ResponseData responseData = new ResponseData();
-        responseData.setData( buyerOrdersServiceImp.createRating(createRatingRequest, authorization));
+        responseData.setData(buyerOrdersServiceImp.createRating(createRatingRequest, authorization));
         responseData.setSuccess(true);
         responseData.setMessage("Rating created successfully");
         responseData.setStatus(HttpStatus.CREATED.value());
 
         return new ResponseEntity<>(responseData, HttpStatus.CREATED);
     }
-
 
 
 }

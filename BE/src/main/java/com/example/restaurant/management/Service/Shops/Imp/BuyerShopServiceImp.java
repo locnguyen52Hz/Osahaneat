@@ -74,9 +74,9 @@ public class BuyerShopServiceImp implements ShopService {
         Shop shop = shopsRepository.findById(shopId).orElseThrow(() -> new EntityNotFoundException("Shop not found"));
 
         ShopDto shopDTO = new ShopDto();
-        shopDTO.setName(shop.getShopName());
+        shopDTO.setShopName(shop.getShopName());
         shopDTO.setShopAvatar(shop.getShopImage());
-        shopDTO.setId(shop.getId());
+        shopDTO.setShopId(shop.getId());
         shopDTO.setDescription(shop.getDescription());
         shopDTO.setRatingAvg(shop.getRatingAvg());
         shopDTO.setRatingCount(shop.getRatingCount());

@@ -54,9 +54,8 @@ function FoodDetail({ food, shopName, shopId, navigate }) {
     },
   ];
 
-
-
   const normalize = { shopName, shopId, note, foods };
+  console.log(normalize);
 
   const createOrderBuyNow = async () => {
     if (!isReady) return;
@@ -152,6 +151,7 @@ function FoodDetail({ food, shopName, shopId, navigate }) {
         <button
           onClick={() => handleBuyNow(normalize)}
           className={style.addToCartBtn}
+          disabled={quantity <= 0}
         >
           <i className="bi bi-cart-fill"></i> Xác nhận
         </button>

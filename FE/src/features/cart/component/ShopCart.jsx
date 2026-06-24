@@ -47,7 +47,7 @@ function ShopCart({
         {items.map((item) => (
           <CartItem
             item={item}
-            key={item.id}
+            key={item.foodId}
             onUpdateQuantity={handleUpdateQuantity}
             onRemoveItem={handleRemoveItem}
           />

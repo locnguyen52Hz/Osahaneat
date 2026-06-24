@@ -27,7 +27,7 @@ public class ShopHelper {
         }
 
         List<Integer> shopIds = shops.stream()
-                .map(ShopDto::getId)
+                .map(ShopDto::getShopId)
                 .toList();
 
         List<ShopCategoryProjection> rows =
@@ -48,7 +48,7 @@ public class ShopHelper {
         shops.forEach(shop ->
                 shop.setCategories(
                         categoriesByShop.getOrDefault(
-                                shop.getId(),
+                                shop.getShopId(),
                                 Collections.emptyList()
                         )
                 )

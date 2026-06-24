@@ -40,9 +40,9 @@ public class ShopManagerShopServiceImp implements ShopService {
             throw new RuntimeException("Shop not found");
         }
         ShopDto shopDTO = new ShopDto();
-        shopDTO.setName(shop.getShopName());
+        shopDTO.setShopName(shop.getShopName());
         shopDTO.setShopAvatar(shop.getShopImage());
-        shopDTO.setId(shop.getId());
+        shopDTO.setShopId(shop.getId());
         shopDTO.setDescription(shop.getDescription());
         return shopDTO;
     }

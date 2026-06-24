@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   apiDelete,
   apiGet,
@@ -17,16 +17,24 @@ import { useModal } from "../../contexts/ModalContext";
 import ActiveCategories from "../category/components/ActiveCategories";
 import ShopHeader from "./ShopHeader";
 import { useLocation } from "../../contexts/LocationContext";
+import FoodDetail from "../foods/components/FoodDetail";
+import { useCartStore } from "../../stores/Cart/useCartStore";
 
 function ShopDetail() {
   const { id } = useParams();
+
   const [categories, setCategories] = useState([]);
   const [shop, setShop] = useState({});
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState(null);
   const [foods, setFoods] = useState([]);
-  const { closeAllModal } = useModal();
+
   const { location } = useLocation();
+  const { closeAllModal, openModal } = useModal();
+  const navigate = useNavigate();
+
+  const addItem = useCartStore((s) => s.addItem);
+
 
   // ===== Lấy thông tin shop + categories =====
   useEffect(() => {
@@ -41,6 +49,7 @@ function ShopDetail() {
           apiGet(`${endpoints.category.shopCategories}?shopId=${id}`),
         ]);
         setShop(shopRes.data.data);
+
         // console.log(shopRes.data.data);
         setCategories(categoryResponse.data.data);
         setActiveCategory(categoryResponse.data.data[0]);
@@ -52,6 +61,38 @@ function ShopDetail() {
     };
     fetchData();
   }, [location]);
+
+  useEffect(() => {
+    const fetchFoods = async () => {
+      if (!activeCategory) return;
+      try {
+        const resFood = await apiGet(
+          `${endpoints.food.list}?categoryId=${activeCategory.id}&shopId=${id}`,
+        );
+        setFoods(resFood.data.data);
+      } catch (error) {
+        console.error("Lỗi khi tải dữ liệu món ăn:", error);
+      }
+    };
+
+    fetchFoods();
+  }, [activeCategory]);
+
+  const handleBuyNow = (food) => {
+    openModal(
+      <FoodDetail
+        food={food}
+        shopName={shop.shopName}
+        shopId={shop.shopId}
+        navigate={navigate}
+      />,
+      { type: "slide" },
+    );
+  };
+
+  const handleAddToCart = (food) => {
+    addItem(shop, food);
+  };
 
   // const handleUpdateShop = async (key, newValue) => {
   //   try {
@@ -66,22 +107,6 @@ function ShopDetail() {
   // };
 
   // ===== Lấy danh sách món ăn khi đổi category =====
-
-  useEffect(() => {
-    const fetchFoods = async () => {
-      if (!activeCategory) return;
-      try {
-        const resFood = await apiGet(
-          `${endpoints.food.list}?categoryId=${activeCategory.id}&shopId=${shop.id}`,
-        );
-        setFoods(resFood.data.data);
-      } catch (error) {
-        console.error("Lỗi khi tải dữ liệu món ăn:", error);
-      }
-    };
-
-    fetchFoods();
-  }, [activeCategory]);
 
   //==========xóa món=============
   // const handleDeleteFood = async (foodId) => {
@@ -177,7 +202,13 @@ function ShopDetail() {
           />
         )}
 
-        <FoodList shopName={shop.name} shopId={shop.id} foods={foods} />
+        <FoodList
+          shopName={shop.shopName}
+          shopId={shop.shopId}
+          foods={foods}
+          handleBuyNow={handleBuyNow}
+          handleAddToCart={handleAddToCart}
+        />
       </div>
     </>
   );

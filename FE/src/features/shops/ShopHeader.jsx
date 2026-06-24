@@ -15,13 +15,13 @@ function ShopHeader({ shop }) {
       <div className={styles.wrapperAvatar}>
         <ShopAvatar
           src={`${endpoints.image.shop}/${shop.shopAvatar}`}
-          alt={shop.name}
+          alt={shop.shopName}
           size="large"
         />
       </div>
 
       <div className={styles.content}>
-        <ShopInfo name={shop.name} description={shop.description} />
+        <ShopInfo name={shop.shopName} description={shop.description} />
         <ShopMeta
           rating={shop.ratingAvg}
           ratingCount={shop.ratingCount}

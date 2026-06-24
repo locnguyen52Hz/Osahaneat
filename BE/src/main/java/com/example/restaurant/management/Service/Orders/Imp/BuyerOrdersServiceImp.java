@@ -66,8 +66,12 @@ public class BuyerOrdersServiceImp implements OrdersService {
 
         OrdersItemRequest foodRequest = new OrdersItemRequest();
         foodRequest.setFoodId(request.getFoodId());
-        foodRequest.setQuantity(request.getQuantity());
 
+
+        if(request.getQuantity() <= 0){
+            throw new RuntimeException("Quantity must be greater than 0");
+        }
+        foodRequest.setQuantity(request.getQuantity());
         ordersRequest.setFoods(List.of(foodRequest));
 
         Food food = foodRepository.findFoodById(request.getFoodId());

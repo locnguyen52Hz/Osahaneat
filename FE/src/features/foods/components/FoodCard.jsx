@@ -1,13 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import FreeShipIcon from "../../../components/common/FreeShipIcon";
 import style from "../../../assets/styles/FoodCard.module.css";
 import { formatCurrency } from "../../../util/format";
 import endpoints from "../../../api/endpoints";
 import { useCartStore } from "../../../stores/Cart/useCartStore";
 
-function FoodCard({ food, onClick, type = "default" }) {
+function FoodCard({ food, onBuyNow, type = "default", onAddItemToCart }) {
   const { image, foodName, price, description, ratting, foodId } = food;
-  console.log(food)
+  const [effects, setEffects] = useState([]);
+
+
+  const handleAddItemToCart = () => {
+    const id = Date.now();
+
+    setEffects((prev) => [...prev, id]);
+
+    setTimeout(() => {
+      setEffects((prev) => prev.filter((i) => i !== id));
+    }, 800);
+    onAddItemToCart(food);
+  };
 
 
   if (type === "default") {
@@ -21,34 +33,28 @@ function FoodCard({ food, onClick, type = "default" }) {
           <p className={style.price}>Giá: {formatCurrency(price)}</p>
         </div>
         <div className={style.action}>
-          <button onClick={onClick} className={style.buyNow}>
+          <button onClick={onBuyNow} className={style.buyNow}>
             Mua nhanh
           </button>
 
-          <i className={`bi bi-cart-plus ${style.addToCart}`}></i>
+          <div style={{ position: "relative" }}>
+            <i
+              onClick={handleAddItemToCart}
+              className={`bi bi-cart-plus ${style.addToCart}`}
+            ></i>
+
+            {effects.map((id) => (
+              <span key={id} className={style.addEffect}>
+                +1
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     );
   }
 
-  // if (type === "detail") {
-  //   return (
-  //     <div className={style.cardDetail} id={`food-${foodId}`}>
-  //       <div className={style.imageWrapper}>
-  //         <img src={`${endpoints.image.food}/${image}`} alt={foodName} />
-  //       </div>
-  //       <div className={style.cardTitle}>
-  //         <p className={style.foodName}>{foodName}</p>
-  //         <FreeShipIcon />
-  //       </div>
-  //       <div className={style.extraInfo}>
-  //         <p className={style.description}>{description}</p>
-  //         <p className={style.price}>Giá: {price}₫</p>
-  //         <p className={style.description}>{description}</p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+
 
   return null;
 }

@@ -6,8 +6,8 @@ import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ShopDto {
-    private Integer id;
-    private String name;
+    private Integer shopId;
+    private String shopName;
     private double latitude;
     private double longitude;
     private String shopAvatar;
@@ -25,7 +25,7 @@ public class ShopDto {
         this.longitude = longitude;
     }
 
-    public ShopDto(Integer id,
+    public ShopDto(Integer shopId,
                    String name,
                    double latitude,
                    double longitude,
@@ -34,8 +34,8 @@ public class ShopDto {
                    double ratingAvg,
                    Integer ratingCount) {
 
-        this.id = id;
-        this.name = name;
+        this.shopId = shopId;
+        this.shopName = name;
         this.latitude = latitude;
         this.longitude = longitude;
         this.shopAvatar = shopAvatar;
@@ -46,16 +46,16 @@ public class ShopDto {
 
 
     public ShopDto(Integer shopId, String shopName) {
-        this.id = shopId;
-        this.name = shopName;
+        this.shopId = shopId;
+        this.shopName = shopName;
 
     }
 
 
 
-    public ShopDto(Integer id, String name, String shopAvatar, String address, double ratingAvg, Integer ratingCount) {
-        this.id = id;
-        this.name = name;
+    public ShopDto(Integer shopId, String name, String shopAvatar, String address, double ratingAvg, Integer ratingCount) {
+        this.shopId = shopId;
+        this.shopName = name;
         this.shopAvatar = shopAvatar;
         this.address = address;
         this.ratingAvg = ratingAvg;
@@ -91,11 +91,12 @@ public class ShopDto {
         this.location = location;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getShopId() {
+        return shopId;
     }
-    public void setId(Integer id) {
-        this.id = id;
+
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
     }
 
     public double getDistance() {
@@ -106,12 +107,12 @@ public class ShopDto {
         this.distance = distance;
     }
 
-    public String getName() {
-        return name;
+    public String getShopName() {
+        return shopName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
     }
 
     public double getLatitude() {

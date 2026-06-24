@@ -20,6 +20,7 @@ function MyCartPage() {
   const [isLoadingShippingFee, setIsLoadingShippingFee] = useState(false);
 
   const carts = useCartStore((s) => s.carts);
+  const fetchCart = useCartStore((s) => s.fetchCart);
 
   const visibleCarts = carts.filter((c) => c.cartItems.length > 0);
 
@@ -34,6 +35,10 @@ function MyCartPage() {
   const selectedShop = visibleCarts.find(
     (shop) => shop.shopId === selectedCartId,
   );
+
+  useEffect(() => {
+    fetchCart();
+  }, []);
 
   const subTotal = useMemo(
     () => (selectedShop ? calculateCartTotal(selectedShop.cartItems) : 0),
@@ -123,18 +128,18 @@ function MyCartPage() {
                 {isLoading ? (
                   <LoadingSpinner />
                 ) : (
-                  visibleCarts.map((shop) => (
+                  visibleCarts.map((cart) => (
                     <ShopCart
-                      key={shop.shopId}
-                      name={shop.shopName}
-                      cartId={shop.id}
-                      shopId={shop.shopId}
-                      address={shop.address}
-                      shippingFee={shop.shippingFee}
-                      items={shop.cartItems}
-                      isSelected={selectedCartId === shop.shopId}
-                      onSelect={() => setSelectedCartId(shop.shopId)}
-                      totalPrice={calculateCartTotal(shop.cartItems)}
+                      key={cart.shopId}
+                      name={cart.shopName}
+                      cartId={cart.id}
+                      shopId={cart.shopId}
+                      address={cart.address}
+                      shippingFee={cart.shippingFee}
+                      items={cart.cartItems}
+                      isSelected={selectedCartId === cart.shopId}
+                      onSelect={() => setSelectedCartId(cart.shopId)}
+                      totalPrice={calculateCartTotal(cart.cartItems)}
                     />
                   ))
                 )}

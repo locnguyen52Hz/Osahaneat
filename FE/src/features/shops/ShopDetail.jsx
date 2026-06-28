@@ -16,35 +16,34 @@ import { toast } from "react-toastify";
 import { useModal } from "../../contexts/ModalContext";
 import ActiveCategories from "../category/components/ActiveCategories";
 import ShopHeader from "./ShopHeader";
-import { useLocation } from "../../contexts/LocationContext";
 import FoodDetail from "../foods/components/FoodDetail";
 import { useCartStore } from "../../stores/Cart/useCartStore";
+import { useLocationStore } from "../../stores/location/useLocationStore";
 
 function ShopDetail() {
   const { id } = useParams();
-
   const [categories, setCategories] = useState([]);
   const [shop, setShop] = useState({});
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState(null);
   const [foods, setFoods] = useState([]);
 
-  const { location } = useLocation();
+  const currentLocation = useLocationStore((s) => s.currentLocation);
+
   const { closeAllModal, openModal } = useModal();
   const navigate = useNavigate();
 
   const addItem = useCartStore((s) => s.addItem);
 
-
   // ===== Lấy thông tin shop + categories =====
   useEffect(() => {
-    if (!location) return;
+    if (!currentLocation) return;
     setLoading(true);
     const fetchData = async () => {
       try {
         const [shopRes, categoryResponse] = await Promise.all([
           apiGet(
-            `${endpoints.shop.details}?shopId=${id}&longitude=${location.longitude}&latitude=${location.latitude}`,
+            `${endpoints.shop.details}?shopId=${id}&longitude=${currentLocation.longitude}&latitude=${currentLocation.latitude}`,
           ),
           apiGet(`${endpoints.category.shopCategories}?shopId=${id}`),
         ]);
@@ -60,7 +59,7 @@ function ShopDetail() {
       }
     };
     fetchData();
-  }, [location]);
+  }, [currentLocation]);
 
   useEffect(() => {
     const fetchFoods = async () => {
@@ -94,21 +93,6 @@ function ShopDetail() {
     addItem(shop, food);
   };
 
-  // const handleUpdateShop = async (key, newValue) => {
-  //   try {
-  //     await apiPatch(`${endpoints.shop.update}`, {
-  //       [key]: newValue,
-  //     });
-  //     console.log("success");
-  //     setShop((prev) => ({ ...prev, [key]: newValue }));
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  // ===== Lấy danh sách món ăn khi đổi category =====
-
-  //==========xóa món=============
   // const handleDeleteFood = async (foodId) => {
   //   console.log(foodId);
   //   try {

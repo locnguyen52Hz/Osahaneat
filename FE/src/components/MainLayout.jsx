@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import SideBar from "./SideBar";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import style from "../assets/styles/MainLayout.module.css";
 
 import NavBar from "./NavBar";
 
 function MainLayout() {
   const [showSideBar, setShowSideBar] = useState(true);
+  const location = useLocation();
+
 
   return (
     <div className={style.layout}>
@@ -16,7 +18,7 @@ function MainLayout() {
         <SideBar isOpen={showSideBar} />
 
         <div className={style.content}>
-          <Outlet  context={{showSideBar}}/>
+          <Outlet context={{ showSideBar }} />
         </div>
       </div>
     </div>

@@ -1,12 +1,13 @@
 import React from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import LocationPicker from "./LocationPicker";
-import { useLocation } from "../../../contexts/LocationContext";
 import Routing from "../../../components/Routing";
+import { useLocationStore } from "../../../stores/location/useLocationStore";
 
 function ShopLocation({ latitude, longitude }) {
-  const { isLocationReady } = useLocation();
-  // console.log(isLocationReady)
+  const currentLocation = useLocationStore((s) => s.currentLocation);
+
+  // console.log(currentLocation)
   return (
     <div
       style={{
@@ -24,9 +25,9 @@ function ShopLocation({ latitude, longitude }) {
           attribution="&copy; OpenStreetMap contributors"
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {isLocationReady && (
+        {currentLocation && (
           <Routing
-            from={[isLocationReady.latitude, isLocationReady.longitude]}
+            from={[currentLocation.latitude, currentLocation.longitude]}
             to={[latitude, longitude]}
           />
         )}

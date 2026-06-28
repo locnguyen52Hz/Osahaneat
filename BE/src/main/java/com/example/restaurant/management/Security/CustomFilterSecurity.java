@@ -1,7 +1,6 @@
 package com.example.restaurant.management.Security;
 
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,32 +38,36 @@ public class CustomFilterSecurity {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults());
-        http.sessionManagement(sessionManagement ->sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorizeRequests ->authorizeRequests
-                        .requestMatchers("/api/auth/register/**","/api/auth/login","/api/food/image/{filename:.+}","/api/shops/avatar/{filename:.+}","/websocket/**").permitAll()
-                        .requestMatchers("/login/get-role").hasAnyRole("ADMIN","SHOP_MANAGER","BUYER")
+        http.csrf(AbstractHttpConfigurer::disable).cors(Customizer.withDefaults());
+        http.sessionManagement(sessionManagement ->
+                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(authorizeRequests ->
+                        authorizeRequests.requestMatchers
+                                        ("/api/auth/register/**",
+                                                "/api/auth/login",
+                                                "/api/food/image/{filename:.+}",
+                                                "/api/categories/image/{filename:.+}",
+                                                "/api/shops/avatar/{filename:.+}",
+                                                "/websocket/**").permitAll().requestMatchers("/login/get-role").hasAnyRole("ADMIN", "SHOP_MANAGER", "BUYER")
 
-                        .anyRequest().authenticated());
+                .anyRequest().authenticated());
 
         http.addFilterBefore(customJwt, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("http://127.0.0.1:5500","http://localhost:5173","http://localhost:5174"));
+        configuration.setAllowedOriginPatterns(List.of("http://127.0.0.1:5500", "http://localhost:5173", "http://localhost:5174"));
 
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","PATCH"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 
 
     @Bean

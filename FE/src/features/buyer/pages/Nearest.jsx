@@ -1,6 +1,5 @@
 import { MapContainer, TileLayer } from "react-leaflet";
 import LocationPicker from "../../../features/location/components/LocationPicker";
-import { useLocation } from "../../../contexts/LocationContext";
 import Routing from "../../../components/Routing";
 import { useEffect, useState } from "react";
 import { apiGet } from "../../../api/api";
@@ -10,9 +9,12 @@ import MapContainerBase from "../../map/MapContainerBase";
 import UserMarker from "../../map/UserMarker";
 import ShopsMarker from "../../map/ShopsMarker";
 import { latLng } from "leaflet";
+import { useLocationStore } from "../../../stores/location/useLocationStore";
 
 function Nearest() {
-  const { location, loading } = useLocation();
+  const currentLocation = useLocationStore((s) => s.currentLocation);
+  const loading = useLocationStore((s) => s.loading);
+  
   const [shopLocations, setShopLocations] = useState([]);
   const [position, setPosition] = useState(null);
 
@@ -29,12 +31,12 @@ function Nearest() {
     fetchShopLocations();
   }, []);
 
-  
-
   return (
     <div className={styles.container}>
       {!loading && (
-        <MapContainerBase center={[location.latitude, location.longitude]}>
+        <MapContainerBase
+          center={[currentLocation.latitude, currentLocation.longitude]}
+        >
           <UserMarker />
           <ShopsMarker shops={shopLocations} />
         </MapContainerBase>

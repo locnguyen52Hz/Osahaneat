@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import UpcomingOrderCard from "../../orders/components/UpcomingOrderCard";
-import styles from "../../../assets/styles/WrapperOrders.module.css";
+
 import Paginate from "../../../components/common/Paginate";
 import { updateOrderStatus, getUpcomingOrders } from "../service/OrderServices";
 import { useModal } from "../../../contexts/ModalContext";
@@ -11,7 +11,7 @@ import useOrderActions from "../hooks/useOrderActions";
 function UpcomingOrders() {
   const { loading, state, setState, setCurrentPage } =
     useOrders(getUpcomingOrders);
-
+  console.log(state);
 
   const { cancelOrder } = useOrderActions(setState);
   const { closeAllModal } = useModal();

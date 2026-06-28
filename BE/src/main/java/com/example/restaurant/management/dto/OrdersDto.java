@@ -14,7 +14,7 @@ public class OrdersDto {
     private String status;
     private String note;
     private Instant createdAt;
-    private String address;
+    private String deliveredTo;
     private double shippingFee;
     private double subtotal;
     private double distance;
@@ -38,7 +38,7 @@ public class OrdersDto {
     }
 
     public OrdersDto(Integer orderId, double totalAmount, OrdersStatus status,
-                     String note, Instant createdAt, String address, double shippingFee,
+                     String note, Instant createdAt, String deliveredTo, double shippingFee,
                      double subtotal, double distance, Integer shopId, String shopName, double latitude, double longitude,
                      Integer rating
                      ) {
@@ -47,7 +47,7 @@ public class OrdersDto {
         this.status = status.toString();
         this.note = note;
         this.createdAt = createdAt;
-        this.address = address;
+        this.deliveredTo = deliveredTo;
         this.shippingFee = shippingFee;
         this.subtotal = subtotal;
         this.distance = distance;
@@ -60,14 +60,14 @@ public class OrdersDto {
 
 
     public OrdersDto(Integer orderId, double totalAmount, OrdersStatus status,
-                     String note, Instant createdAt, String address, double shippingFee,
+                     String note, Instant createdAt, String deliveredTo, double shippingFee,
                      double subtotal, double distance, Integer partnerId, String partnerName) {
         this.orderId = orderId;
         this.totalAmount = totalAmount;
         this.status = status.toString();
         this.note = note;
         this.createdAt = createdAt;
-        this.address = address;
+        this.deliveredTo = deliveredTo;
         this.shippingFee = shippingFee;
         this.subtotal = subtotal;
         this.distance = distance;
@@ -76,13 +76,13 @@ public class OrdersDto {
     }
 
     public OrdersDto(Integer orderId, double totalAmount, OrdersStatus status,
-                     Instant createdAt, String address, Integer partnerId,
+                     Instant createdAt, String deliveredTo, Integer partnerId,
                      String partnerName, Long totalQuantity) {
         this.orderId = orderId;
         this.totalAmount = totalAmount;
         this.status = status.toString();
         this.createdAt = createdAt;
-        this.address = address;
+        this.deliveredTo = deliveredTo;
         this.partnerId = partnerId;
         this.partnerName = partnerName;
         this.totalQuantity = totalQuantity;
@@ -113,12 +113,12 @@ public class OrdersDto {
         this.distance = distance;
     }
 
-    public String getAddress() {
-        return address;
+    public String getDeliveredTo() {
+        return deliveredTo;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setDeliveredTo(String deliveredTo) {
+        this.deliveredTo = deliveredTo;
     }
 
 

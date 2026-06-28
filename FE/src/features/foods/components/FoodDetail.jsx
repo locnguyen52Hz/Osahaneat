@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import shared from "../../../assets/styles/Shared.module.css";
 import { useCart } from "../../cart/context/CartContext";
 import style from "../../../assets/styles/FoodDetail.module.css";
-import MyCart from "../../cart/component/MyCart";
+
 import { useModal } from "../../../contexts/ModalContext";
 import {
   MODAL_ANIMATION_DURATION,
@@ -19,8 +19,9 @@ import OrderDetailsView from "../../orders/components/OrderDetailsView";
 import OrderPreview from "../../orders/components/OrderPreview";
 import FloatingLabel from "../../../components/common/FloatingLabel";
 import { apiPost } from "../../../api/api";
-import { useLocation } from "../../../contexts/LocationContext";
+
 import { toast } from "react-toastify";
+import { useLocationStore } from "../../../stores/location/useLocationStore";
 
 function FoodDetail({ food, shopName, shopId, navigate }) {
   const { foodName, image, price, description, foodId } = food;
@@ -29,7 +30,7 @@ function FoodDetail({ food, shopName, shopId, navigate }) {
   const [note, setNote] = useState("");
   const [buyNowLoading, setBuyNowLoading] = useState(false);
 
-  const { location, isReady } = useLocation();
+  const currentLocation = useLocationStore((s) => s.currentLocation);
 
   const {
     quantity,
@@ -58,16 +59,16 @@ function FoodDetail({ food, shopName, shopId, navigate }) {
   console.log(normalize);
 
   const createOrderBuyNow = async () => {
-    if (!isReady) return;
+    if (!currentLocation) return;
     setBuyNowLoading(true);
 
     try {
       const res = await apiPost(`${endpoints.order.buyNow}`, {
         foodId: food.foodId,
         quantity,
-        fromLatitude: location.latitude,
-        fromLongitude: location.longitude,
-        address: location.address,
+        fromLatitude: currentLocation.latitude,
+        fromLongitude: currentLocation.longitude,
+        deliveredTo: currentLocation.address,
       });
       closeAllModal();
 
@@ -93,7 +94,7 @@ function FoodDetail({ food, shopName, shopId, navigate }) {
       <OrderPreview
         orderInfo={normalize}
         loading={buyNowLoading}
-        location={location}
+        location={currentLocation}
         createOrder={createOrderBuyNow}
       />,
       {

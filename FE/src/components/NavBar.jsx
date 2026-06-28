@@ -1,19 +1,22 @@
 import style from "../assets/styles/Navbar.module.css";
 import shared from "../assets/styles/Shared.module.css";
-import { useLocation } from "../contexts/LocationContext";
+
 import { useModal } from "../contexts/ModalContext";
 import "../assets/styles/variables.css";
 import SearchBox from "../features/search/SearchBox";
-import LoadingSpinner from "./common/LoadingSpinner";
-import SavedAddress from "./SavedAddress";
 import { useState } from "react";
 
 import { useSearch } from "../features/search/hooks/useSearch";
 import IconBadge from "./common/IconBadge";
 import { useCartStore } from "../stores/Cart/useCartStore";
+import { useLocationStore } from "../stores/location/useLocationStore";
+import AddressSelector from "./common/AddressSelector";
+import LoadingSpinner from "./common/LoadingSpinner";
 
 function NavBar({ onToggleSideBar }) {
-  const { location, loading, error } = useLocation();
+  const currentLocation = useLocationStore((s) => s.currentLocation);
+  const loading = useLocationStore((s) => s.loading);
+  const error = useLocationStore((s) => s.error);
 
   const { openModal } = useModal();
 
@@ -44,9 +47,9 @@ function NavBar({ onToggleSideBar }) {
 
       <div className={style.center}>
         {" "}
-        {/* <div
+        <div
           className={`${style.navItem} ${shared.paragraphColor}`}
-          onClick={() => openModal(<SavedAddress />, { type: "slide" })}
+          onClick={() => openModal(<AddressSelector />, { type: "slide" })}
         >
           <i className={`${shared.textDanger} bi bi-crosshair2`}></i>
 
@@ -54,12 +57,12 @@ function NavBar({ onToggleSideBar }) {
             <LoadingSpinner />
           ) : error ? (
             "Không thể lấy vị trí"
-          ) : location ? (
-            location.address
+          ) : currentLocation ? (
+            currentLocation.address
           ) : (
             "Không xác định vị trí"
           )}
-        </div> */}
+        </div>
       </div>
 
       {/* Right */}

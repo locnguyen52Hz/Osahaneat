@@ -1,7 +1,9 @@
-import { useLocation } from "../contexts/LocationContext";
+import { useLocationStore } from "../stores/location/useLocationStore";
 
 export const useFormattedLocation = () => {
-  const { location, loading, error } = useLocation();
+  const currentLocation = useLocationStore((s) => currentLocation);
+  const loading = useLocationStore((s) => loading);
+  const error = useLocationStore((s) => error);
 
   if (loading) {
     return {
@@ -25,7 +27,7 @@ export const useFormattedLocation = () => {
     };
   }
 
-  if (!location) {
+  if (!currentLocation) {
     return {
       loading: false,
       error: null,
@@ -39,9 +41,9 @@ export const useFormattedLocation = () => {
   return {
     loading: false,
     error: null,
-    address: location.address,
-    latitude: location.latitude,
-    longitude: location.longitude,
+    address: currentLocation.address,
+    latitude: currentLocation.latitude,
+    longitude: currentLocation.longitude,
     message: null,
   };
 };

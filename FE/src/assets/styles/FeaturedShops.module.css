@@ -59,6 +59,10 @@
 }
 
 
+.content {
+  width: 100%;
+}
+
 /* Mobile nhỏ */
 @media (max-width: 480px) {
   .header {

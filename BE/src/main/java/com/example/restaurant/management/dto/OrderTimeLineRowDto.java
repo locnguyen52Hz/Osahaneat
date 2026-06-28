@@ -33,7 +33,7 @@ public class OrderTimeLineRowDto {
     private String note;
 
     // o.address
-    private String address;
+    private String deliveredTo;
 
     // o.shipping_fee
     private double shippingFee;
@@ -59,7 +59,7 @@ public class OrderTimeLineRowDto {
                                Integer userId,
                                double totalAmount,
                                String note,
-                               String address,
+                               String deliveredTo,
                                double shippingFee,
                                double subtotal,
                                double distance,
@@ -80,7 +80,7 @@ public class OrderTimeLineRowDto {
         this.userId = userId;
         this.totalAmount = totalAmount;
         this.note = note;
-        this.address = address;
+        this.deliveredTo = deliveredTo;
         this.shippingFee = shippingFee;
         this.subtotal = subtotal;
         this.distance = distance;
@@ -153,12 +153,12 @@ public class OrderTimeLineRowDto {
         this.note = note;
     }
 
-    public String getAddress() {
-        return address;
+    public String getDeliveredTo() {
+        return deliveredTo;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setDeliveredTo(String deliveredTo) {
+        this.deliveredTo = deliveredTo;
     }
 
     public double getShippingFee() {

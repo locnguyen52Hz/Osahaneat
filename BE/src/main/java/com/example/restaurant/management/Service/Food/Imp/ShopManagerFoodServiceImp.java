@@ -48,7 +48,7 @@ public class ShopManagerFoodServiceImp implements FoodService {
     @Autowired
     UserRepository userRepository;
 
-    public void addFoodByShopManager(FoodRequest foodRequest, @RequestHeader("Authorization") String authHeader) {
+    public void addFoodByShopManager(FoodRequest foodRequest,  String authHeader) {
         Integer userID = jwtHelper.getUserID(authHeader);
 
         // Lấy shop của user

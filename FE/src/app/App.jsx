@@ -8,6 +8,7 @@ import Login from "../features/auth/Common/Login.jsx";
 import { ToastContainer } from "react-toastify";
 import { useConversationStore } from "../stores/messages/useConversationStore.js";
 import { useCartStore } from "../stores/Cart/useCartStore.js";
+import { useLocationStore } from "../stores/location/useLocationStore.js";
 
 // helper
 function mapRoutes(routeTree) {
@@ -37,10 +38,14 @@ function App() {
 
   const fetchUnreadMessage = useConversationStore((s) => s.fetchUnreadMessage);
   const fetchCart = useCartStore((s) => s.fetchCart);
+  const detectCurrentLocation = useLocationStore(
+    (s) => s.detectCurrentLocation,
+  );
   useEffect(() => {
     if (token) {
       fetchUnreadMessage();
       fetchCart();
+      detectCurrentLocation();
     }
   }, [token]);
   return (

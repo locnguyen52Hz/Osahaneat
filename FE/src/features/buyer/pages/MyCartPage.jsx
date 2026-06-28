@@ -2,95 +2,105 @@ import React, { useEffect, useMemo, useState } from "react";
 import styles from "../../../assets/styles/MyCartPage.module.css";
 import ShopCart from "../../cart/component/ShopCart";
 import OrderSummary from "../../cart/component/OrderSummary";
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import "../../../assets/styles/variables.css";
 import { useCartStore } from "../../../stores/Cart/useCartStore";
 import LoadingSpinner from "../../../components/common/LoadingSpinner";
 import { calculateCartTotal } from "../../../util/cart";
-import { useLocation } from "../../../contexts/LocationContext";
-import { apiGet } from "../../../api/api";
+
+import { apiGet, apiPost } from "../../../api/api";
 import endpoints from "../../../api/endpoints";
 import CartEmpty from "../../cart/component/CartEmpty";
-import useQuantity from "../../../hooks/useQuantity";
-import { MAX_QUANTITY_FOOD, MIN_QUANTITY_FOOD } from "../../../constants";
+
+import { useLocationStore } from "../../../stores/location/useLocationStore";
+import { useModal } from "../../../contexts/ModalContext";
+import OrderDetailsView from "../../orders/components/OrderDetailsView";
+import OrderActions from "../../orders/components/OrderActions";
+import { toast } from "react-toastify";
+import useShippingFee from "../../../hooks/useShippingFee";
 
 function MyCartPage() {
   const { showSideBar } = useOutletContext();
   const [selectedCartId, setSelectedCartId] = useState(null);
-  const [isLoadingShippingFee, setIsLoadingShippingFee] = useState(false);
 
   const carts = useCartStore((s) => s.carts);
+  const createOrderFromCart = useCartStore((s) => s.createOrderFromCart);
   const fetchCart = useCartStore((s) => s.fetchCart);
-
-  const visibleCarts = carts.filter((c) => c.cartItems.length > 0);
-
   const isLoading = useCartStore((s) => s.isLoading);
   const totalCartItem = useCartStore((s) => s.totalCartItem);
   const updateShippingFee = useCartStore((s) => s.updateShippingFee);
+  const currentLocation = useLocationStore((s) => s.currentLocation);
+  const loading = useLocationStore((s) => s.loading);
 
-  const { location, loading } = useLocation();
-  const { quantity, decrease, increase, handleChange, handleBlur } =
-    useQuantity(MIN_QUANTITY_FOOD, MAX_QUANTITY_FOOD);
+  const setShippingLoading = useLocationStore((s) => s.setShippingLoading);
+  const cartShippingLoading = useLocationStore((s) => s.cartShippingLoading);
 
-  const selectedShop = visibleCarts.find(
+  const { openModal } = useModal();
+  const visibleCarts = carts.filter((c) => c.cartItems.length > 0);
+
+  const selectedCart = visibleCarts.find(
     (shop) => shop.shopId === selectedCartId,
   );
 
+  const isLoadingShippingFee = useShippingFee(
+    selectedCart,
+    currentLocation,
+    loading,
+  );
+
+  const navigate = useNavigate();
+  const { closeAllModal } = useModal();
   useEffect(() => {
     fetchCart();
   }, []);
 
-  const subTotal = useMemo(
-    () => (selectedShop ? calculateCartTotal(selectedShop.cartItems) : 0),
-    [selectedShop],
+  const subtotal = useMemo(
+    () => (selectedCart ? calculateCartTotal(selectedCart.cartItems) : 0),
+    [selectedCart],
   );
 
-  useEffect(() => {
-    if (loading || !selectedShop || !location) return;
+  const onCheckoutCart = async (cart) => {
+    try {
+      await createOrderFromCart(cart);
 
-    // Đã fetch rồi thì không gọi nữa
-    if (selectedShop.shippingFee != null) return;
+      closeAllModal();
 
-    const controller = new AbortController();
+      toast.success("Đặt hàng thành công", {
+        onClose: () => {
+          navigate("/buyer/orders/upcoming");
+        },
+      });
+    } catch (error) {
+      console.error(error);
 
-    const fetchShippingFee = async () => {
-      setIsLoadingShippingFee(true);
+      toast.error("Đặt hàng thất bại");
+    }
+  };
 
-      try {
-        const res = await apiGet(
-          `${endpoints.routes.shippingFee}?fromLongitude=${location.longitude}&fromLatitude=${location.latitude}&shopID=${selectedShop.shopId}`,
-          {
-            signal: controller.signal,
-          },
-        );
-
-        updateShippingFee(selectedShop.shopId, res.data.data);
-      } catch (error) {
-        const isCanceled =
-          error.name === "AbortError" || error.name === "CanceledError";
-
-        if (!isCanceled) {
-          console.error(error);
-        }
-      } finally {
-        if (!controller.signal.aborted) {
-          setIsLoadingShippingFee(false);
-        }
-      }
+  const handleOpenCheckout = () => {
+    if (loading || cartShippingLoading || !selectedCart?.shippingFee) return;
+    const cart = {
+      ...selectedCart,
+      subtotal,
+      totalAmount: subtotal + selectedCart.shippingFee,
+      deliveredTo: currentLocation.address,
+      fromLatitude: currentLocation.latitude,
+      fromLongitude: currentLocation.longitude,
     };
 
-    fetchShippingFee();
-
-    return () => {
-      controller.abort();
-    };
-  }, [
-    loading,
-    selectedShop,
-    location?.latitude,
-    location?.longitude,
-    updateShippingFee,
-  ]);
+    openModal(
+      <OrderDetailsView
+        order={cart}
+        foods={cart.cartItems}
+        footer={
+          <OrderActions action={() => onCheckoutCart(cart)} label="Đặt hàng" />
+        }
+      />,
+      {
+        type: "slide",
+      },
+    );
+  };
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -152,8 +162,9 @@ function MyCartPage() {
               >
                 <OrderSummary
                   loadingShippingFee={isLoadingShippingFee}
-                  shippingFee={selectedShop?.shippingFee ?? 0}
-                  subTotal={subTotal}
+                  shippingFee={selectedCart?.shippingFee}
+                  subtotal={subtotal}
+                  onOpenCheckout={handleOpenCheckout}
                 />
               </div>
             </div>

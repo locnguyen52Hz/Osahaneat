@@ -80,7 +80,7 @@ public class BuyerSearchServiceImp implements SearchService {
         List<ShopDto> shopDtos = new ArrayList<>();
         for (int i = 0; i < shopList.size(); i++) {
             Shop shop = shopList.get(i);
-            double distanceInKm = distanceRow.get(i + 1) / 1000.0;
+            double distanceInKm = distanceRow.get(i + 1);
 
             ShopDto dto = new ShopDto();
             dto.setShopId(shop.getId());
@@ -89,6 +89,7 @@ public class BuyerSearchServiceImp implements SearchService {
             dto.setDistance(distanceInKm);
             dto.setLatitude(shop.getLatitude());
             dto.setLongitude(shop.getLongitude());
+            dto.setRatingAvg(shop.getRatingAvg());
 
             shopDtos.add(dto);
         }

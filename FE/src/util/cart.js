@@ -42,6 +42,14 @@ export function getTotalCartItems(carts) {
   return carts.reduce((sum, cart) => sum + cart.cartItems.length, 0);
 }
 
-
 export const calculateCartTotal = (cartItems) =>
   cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+export const normalizeItems = (items) => {
+  return items
+    .map((item) => ({
+      foodId: item.foodId,
+      quantity: item.quantity,
+    }))
+    .sort((a, b) => a.foodId - b.foodId);
+};

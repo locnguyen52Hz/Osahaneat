@@ -5,13 +5,15 @@ import shared from "../../assets/styles/Shared.module.css";
 import endpoints from "../../api/endpoints";
 import { useEffect, useState } from "react";
 import { apiGet } from "../../api/api";
-import { useLocation } from "../../contexts/LocationContext";
 import { formatDistance } from "../../util/format";
+import { useLocationStore } from "../../stores/location/useLocationStore";
 
 function FeaturedShops() {
   const navigate = useNavigate();
   const [shops, setShops] = useState([]);
-  const { location, loading } = useLocation();
+
+  const currentLocation = useLocationStore((s) => s.currentLocation);
+  const loading = useLocationStore((s) => s.loading);
 
   const shopDetailPage = (id) => {
     navigate(`/buyer/detail/shop/${id}`);
@@ -22,7 +24,7 @@ function FeaturedShops() {
     const fetchShops = async () => {
       try {
         const response = await apiGet(
-          `${endpoints.shop.top6Shop}?fromLongitude=${location.longitude}&fromLatitude=${location.latitude}`,
+          `${endpoints.shop.top6Shop}?fromLongitude=${currentLocation.longitude}&fromLatitude=${currentLocation.latitude}`,
         );
 
         setShops(response.data.data);
@@ -34,7 +36,7 @@ function FeaturedShops() {
   }, [loading]);
 
   return (
-    <>
+    <div className={style.content}>
       <div className={style.header}>
         <h5 className={shared.h5}>Featured Shops</h5>
         <a
@@ -49,7 +51,7 @@ function FeaturedShops() {
         {shops.map((shop) => (
           <ShopCard
             key={shop.shopId}
-            name={shop.shopName}
+            shopName={shop.shopName}
             avatar={`${endpoints.image.shop}/${shop.shopAvatar}`}
             rating={shop.ratingAvg}
             ratingCount={shop.ratingCount}
@@ -60,7 +62,7 @@ function FeaturedShops() {
           />
         ))}
       </div>
-    </>
+    </div>
   );
 }
 

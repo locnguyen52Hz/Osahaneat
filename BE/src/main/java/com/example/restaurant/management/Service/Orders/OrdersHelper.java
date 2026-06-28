@@ -77,7 +77,7 @@ public class OrdersHelper {
                 .map(item -> {
                     OrderItemDto dto = new OrderItemDto();
                     dto.setFoodId(item.getFood().getId());
-                    dto.setName(item.getFood().getName());
+                    dto.setFoodName(item.getFood().getName());
                     dto.setQuantity(item.getQuantity());
                     dto.setPrice(item.getFood().getPrice());
                     return dto;
@@ -124,7 +124,7 @@ public class OrdersHelper {
                         dto.setSubtotal(row.getSubtotal());
                         dto.setDistance(row.getDistance());
                         dto.setNote(row.getNote());
-                        dto.setAddress(row.getAddress());
+                        dto.setDeliveredTo(row.getDeliveredTo());
                         dto.setShopName(row.getShopName());
                         dto.setShopAddress(row.getShopAddress());
                         dto.setShopId(row.getShopId());

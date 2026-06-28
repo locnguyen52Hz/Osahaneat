@@ -3,6 +3,7 @@ package com.example.restaurant.management.Controllers;
 
 import com.example.restaurant.management.Enums.OrdersStatus;
 import com.example.restaurant.management.Payload.Request.BuyNowRequest;
+import com.example.restaurant.management.Payload.Request.CreateOrderFromCartRequest;
 import com.example.restaurant.management.Payload.Request.CreateRatingRequest;
 import com.example.restaurant.management.Payload.Request.OrdersRequest;
 import com.example.restaurant.management.Payload.ResponseData;
@@ -65,6 +66,19 @@ public class OrdersController {
         simpMessagingTemplate.convertAndSendToUser(String.valueOf(ordersDto.getPartnerId()), "/queue/notify", ordersDto);
 
         responseData.setData(ordersDto);
+        responseData.setSuccess(true);
+        responseData.setMessage("Order created successfully");
+        responseData.setStatus(HttpStatus.CREATED.value());
+        return new ResponseEntity<>(responseData, HttpStatus.OK);
+    }
+
+    @PostMapping("/from-cart")
+    @PreAuthorize("hasAnyRole('ROLE_BUYER')")
+    public ResponseEntity<?> createOrderFromCart(@RequestBody CreateOrderFromCartRequest ordersRequest, @RequestHeader("Authorization") String authorization) {
+        ResponseData responseData = new ResponseData();
+        OrdersDto ordersDTO = buyerOrdersServiceImp.createOrderFromCart(ordersRequest, authorization);
+        simpMessagingTemplate.convertAndSendToUser(String.valueOf(ordersDTO.getPartnerId()), "/queue/notify", ordersDTO);
+        responseData.setData(ordersDTO);
         responseData.setSuccess(true);
         responseData.setMessage("Order created successfully");
         responseData.setStatus(HttpStatus.CREATED.value());

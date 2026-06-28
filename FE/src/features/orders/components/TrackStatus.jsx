@@ -7,7 +7,7 @@ import StatusTimeLine from "../../TimeLine/StatusTimeLine";
 import shared from "../../../assets/styles/Shared.module.css";
 import MapContainerBase from "../../../features/map/MapContainerBase";
 import Routing from "../../../components/Routing";
-import { LocationContext, useLocation } from "../../../contexts/LocationContext";
+
 import UserMarker from "../../../features/map/UserMarker";
 import ShopsMarker from "../../../features/map/ShopsMarker";
 import ProgressTimeline from "../../TimeLine/ProgressTimeline";

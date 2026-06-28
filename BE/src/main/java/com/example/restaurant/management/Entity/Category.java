@@ -20,6 +20,25 @@ public class Category {
     @OneToMany(mappedBy = "category")
     private List<Food> food;
 
+    @Column(name = "image", nullable = false)
+    private String image;
+
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public List<Shop> getShop() {
+        return shop;
+    }
+
+    public void setShop(List<Shop> shop) {
+        this.shop = shop;
+    }
+
+    public String getImage() {
+        return image;
+    }
 
     public Integer getId() {
         return id;

@@ -116,7 +116,7 @@ public class ShopManagerOrderServiceImp implements OrdersService {
         for (OrdersItem ordersItem : ordersItems) {
             OrderItemDto orderItemDTO = new OrderItemDto();
             orderItemDTO.setFoodId(ordersItem.getFood().getId());
-            orderItemDTO.setName(ordersItem.getFood().getName());
+            orderItemDTO.setFoodName(ordersItem.getFood().getName());
             orderItemDTO.setPrice(ordersItem.getFood().getPrice());
             orderItemDTO.setQuantity(ordersItem.getQuantity());
             orderItemDtos.add(orderItemDTO);

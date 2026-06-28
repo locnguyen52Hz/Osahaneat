@@ -43,7 +43,7 @@ public interface OrdersRepository extends JpaRepository<Order, Integer>, JpaSpec
                 odh.status,
                 od.note,
                 od.createdAt,
-                od.address,
+                od.deliveredTo,
                 od.shipFee,
                 od.subtotal,
                 od.distance,
@@ -88,7 +88,7 @@ public interface OrdersRepository extends JpaRepository<Order, Integer>, JpaSpec
                 odh.status,
                 od.note,
                 od.createdAt,
-                od.address,
+                od.deliveredTo,
                 od.shipFee,
                 od.subtotal,
                 od.distance,
@@ -114,7 +114,7 @@ public interface OrdersRepository extends JpaRepository<Order, Integer>, JpaSpec
                     odh.status,
                     od.note,
                     odh.startTime,
-                    od.address,
+                    od.deliveredTo,
                     od.shipFee,
                     od.subtotal,
                     od.distance,
@@ -138,7 +138,7 @@ public interface OrdersRepository extends JpaRepository<Order, Integer>, JpaSpec
                     ,odh.status
                     ,od.note
                     ,odh.startTime
-                    ,od.address
+                    ,od.deliveredTo
                     ,od.shipFee
                     ,od.subtotal
                     ,od.distance
@@ -163,7 +163,7 @@ public interface OrdersRepository extends JpaRepository<Order, Integer>, JpaSpec
             od.totalAmount,
             odh.status,
             odh.startTime,
-            od.address,
+            od.deliveredTo,
             usr.id,
             usr.fullName,
             CAST((
@@ -219,7 +219,7 @@ public interface OrdersRepository extends JpaRepository<Order, Integer>, JpaSpec
         u.id,
         o.totalAmount,
         o.note,
-        o.address,
+        o.deliveredTo,
         o.shipFee,
         o.subtotal,
         o.distance,

@@ -1,8 +1,9 @@
 import React from "react";
-import styles from "../../../assets/styles/OrderAddress.module.css";
+import styles from "../../../assets/styles/AddressDisplay.module.css";
 import shared from "../../../assets/styles/Shared.module.css";
 
 function OrderAddress({ address, location, border = true }) {
+  console.log(address)
   return (
     <div className={`${styles.location} ${border && styles.border}`}>
       <div>
@@ -11,7 +12,7 @@ function OrderAddress({ address, location, border = true }) {
           {address || location?.address || location || ""}
         </p>
       </div>
-      {location && <p className={`${styles.edit} ${shared.textInfo}`}>Edit</p>}
+      {address && <p className={`${styles.edit} ${shared.textInfo}`}>Edit</p>}
     </div>
   );
 }

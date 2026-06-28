@@ -1,18 +1,15 @@
 package com.example.restaurant.management.Service.Orders.Imp;
 
-import com.example.restaurant.management.Payload.Request.*;
-import com.example.restaurant.management.dto.*;
 import com.example.restaurant.management.Entity.*;
 import com.example.restaurant.management.Enums.OrdersStatus;
+import com.example.restaurant.management.Payload.Request.*;
 import com.example.restaurant.management.Repository.*;
-
 import com.example.restaurant.management.Service.Orders.OrdersHelper;
 import com.example.restaurant.management.Service.Orders.OrdersService;
 import com.example.restaurant.management.Service.RoutesService;
 import com.example.restaurant.management.Util.JwtHelper;
-import io.jsonwebtoken.Claims;
+import com.example.restaurant.management.dto.*;
 import jakarta.persistence.EntityNotFoundException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -22,8 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -52,10 +49,13 @@ public class BuyerOrdersServiceImp implements OrdersService {
     OrderStatusHistoryRepository orderStatusHistoryRepository;
 
     @Autowired
+    CartRepository cartRepository;
+
+    @Autowired
     RoutesService routesService;
 
     @Autowired
-    OrdersHelper  ordersHelper;
+    OrdersHelper ordersHelper;
 
     @Autowired
     RatingRepository ratingRepository;
@@ -68,7 +68,7 @@ public class BuyerOrdersServiceImp implements OrdersService {
         foodRequest.setFoodId(request.getFoodId());
 
 
-        if(request.getQuantity() <= 0){
+        if (request.getQuantity() <= 0) {
             throw new RuntimeException("Quantity must be greater than 0");
         }
         foodRequest.setQuantity(request.getQuantity());
@@ -77,12 +77,40 @@ public class BuyerOrdersServiceImp implements OrdersService {
         Food food = foodRepository.findFoodById(request.getFoodId());
 
         ordersRequest.setShopId(food.getShop().getId());
-        ordersRequest.setAddress(request.getAddress());
+        ordersRequest.setDeliveredTo(request.getDeliveredTo());
         ordersRequest.setNote(request.getNote());
         ordersRequest.setFromLatitude(request.getFromLatitude());
         ordersRequest.setFromLongitude(request.getFromLongitude());
 
         return createOrder(ordersRequest, authHeader);
+    }
+
+    @Transactional
+    public OrdersDto createOrderFromCart(CreateOrderFromCartRequest request, String authHeader) {
+        Integer buyerId = jwtHelper.getUserID(authHeader);
+        Integer shopId = request.getShopId();
+
+        Cart cart = cartRepository.findCartWithItemsAndFood(buyerId, shopId);
+        if (cart == null) {
+            throw new RuntimeException("Cart not found");
+        }
+        List<OrdersItemRequest> ordersItems = new ArrayList<>();
+        for (CartItem cartItem : cart.getCartItems()) {
+            OrdersItemRequest ordersItem = new OrdersItemRequest();
+            ordersItem.setFoodId(cartItem.getFood().getId());
+            ordersItem.setQuantity(cartItem.getQuantity());
+            ordersItems.add(ordersItem);
+        }
+        OrdersRequest ordersRequest = new OrdersRequest();
+        ordersRequest.setDeliveredTo(request.getDeliveredTo());
+        ordersRequest.setShopId(request.getShopId());
+        ordersRequest.setNote(request.getNote());
+        ordersRequest.setFromLatitude(request.getFromLatitude());
+        ordersRequest.setFromLongitude(request.getFromLongitude());
+        ordersRequest.setFoods(ordersItems);
+        cartRepository.delete(cart);
+        return createOrder(ordersRequest, authHeader);
+
     }
 
 
@@ -102,7 +130,7 @@ public class BuyerOrdersServiceImp implements OrdersService {
         Order order = new Order();
         order.setUser(user);
         order.setShops(shop);
-        order.setAddress(ordersRequest.getAddress());
+        order.setDeliveredTo(ordersRequest.getDeliveredTo());
         order.setNote(ordersRequest.getNote());
         order.setFromLocation(new Location(ordersRequest.getFromLongitude(), ordersRequest.getFromLatitude()));
         order.setToLocation(new Location(shop.getLongitude(), shop.getLatitude()));
@@ -163,7 +191,7 @@ public class BuyerOrdersServiceImp implements OrdersService {
 
         ordersDTO.setOrderId(order.getId());
         ordersDTO.setNote(order.getNote());
-        ordersDTO.setAddress(order.getAddress());
+        ordersDTO.setDeliveredTo(order.getDeliveredTo());
         ordersDTO.setStatus(orderStatusHistory.getStatus().toString());
         ordersDTO.setSubtotal(order.getSubtotal());
         ordersDTO.setDistance(order.getDistance());
@@ -186,8 +214,7 @@ public class BuyerOrdersServiceImp implements OrdersService {
         OrderStatusHistory currentStatus = orderStatusHistoryRepository.findCurrentStatus(orders.getId());
 
         // 2. Validate
-        if (currentStatus.getStatus().equals(OrdersStatus.PENDING)
-            && newStatus.equals(OrdersStatus.CANCELLED)) {
+        if (currentStatus.getStatus().equals(OrdersStatus.PENDING) && newStatus.equals(OrdersStatus.CANCELLED)) {
 
             // 3. Apply change (chỉ modify memory)
             ordersHelper.applyNewStatus(orders, currentStatus, newStatus);
@@ -232,9 +259,6 @@ public class BuyerOrdersServiceImp implements OrdersService {
     }
 
 
-
-
-
     @Override
     public List<OrderItemDto> getListOrderItems(Integer userId, Integer orderId) {
         Order order = ordersRepository.findOrdersByIdAndUserId(orderId, userId);
@@ -245,7 +269,7 @@ public class BuyerOrdersServiceImp implements OrdersService {
         List<OrderItemDto> orderItemDtoList = new ArrayList<>();
         for (OrdersItem ordersItem : ordersItems) {
             OrderItemDto orderItemDTO = new OrderItemDto();
-            orderItemDTO.setName(ordersItem.getFood().getName());
+            orderItemDTO.setFoodName(ordersItem.getFood().getName());
             orderItemDTO.setQuantity(ordersItem.getQuantity());
             orderItemDTO.setFoodId(ordersItem.getFood().getId());
             orderItemDTO.setPrice(ordersItem.getFood().getPrice());
@@ -294,13 +318,13 @@ public class BuyerOrdersServiceImp implements OrdersService {
         if (orders == null) {
             throw new RuntimeException("Orders not found");
         }
-        if(!orders.getUser().getId().equals(userId)) {
+        if (!orders.getUser().getId().equals(userId)) {
             throw new RuntimeException("You are not authorized to rate this order");
         }
         if (!orders.getStatus().equals(OrdersStatus.COMPLETED)) {
             throw new RuntimeException("You can only rate completed orders");
         }
-        if(ratingRepository.existsRatingByOrder_Id(orders.getId())) {
+        if (ratingRepository.existsRatingByOrder_Id(orders.getId())) {
             throw new RuntimeException("You have already rated this order");
         }
 

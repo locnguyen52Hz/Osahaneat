@@ -3,8 +3,9 @@ import FeaturedShops from "../../../features/shops/FeaturedShops.jsx";
 import { apiGet } from "../../../api/api";
 import style from "../../../assets/styles/Home.module.css";
 import endpoints from "../../../api/endpoints.js";
-import { useLocation } from "../../../contexts/LocationContext.jsx";
+
 import QuickSearch from "../../search/QuickSearch.jsx";
+import Categories from "./Categories.jsx";
 
 function Home() {
   return (
@@ -21,8 +22,11 @@ function Home() {
           <QuickSearch />
         </div>
       </div>
-      <div className={style.main}>
-        <FeaturedShops />
+      <div className={style.wrapper}>
+        <div className={style.main}>
+          <Categories/>
+          <FeaturedShops />
+        </div>
       </div>
     </>
   );

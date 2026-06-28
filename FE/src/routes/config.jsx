@@ -11,7 +11,7 @@ import Forbidden from "../features/auth/Common/Forbidden";
 
 import Nearest from "../features/buyer/pages/Nearest";
 import RegisterShop from "../features/auth/RegisterShop";
-import Categories from "../features/shop-manager/Categories";
+import CategoriesPage from "../features/shop-manager/CategoriesPage";
 import SearchResults from "../features/search/SearchResults";
 import MessagesPage from "../features/messages/pages/MessagesPage";
 import { icon } from "leaflet";
@@ -99,6 +99,12 @@ const routes = {
       },
       {
         type: "item",
+        path: "/buyer/detail/shop/:id",
+        element: <ShopDetail />,
+        showInSideBar: false,
+      },
+      {
+        type: "item",
         path: "/buyer/nearest",
         element: <Nearest />,
         showInSideBar: true,
@@ -150,7 +156,7 @@ const routes = {
       {
         type: "item",
         path: "/manager/categories",
-        element: <Categories />,
+        element: <CategoriesPage />,
         label: "categories",
         icon: <i className="bi bi-menu-button-wide-fill"></i>,
 

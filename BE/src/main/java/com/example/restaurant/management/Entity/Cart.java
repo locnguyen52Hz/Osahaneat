@@ -47,6 +47,16 @@ public class Cart {
     @OrderBy("id ASC")
     private List<CartItem> cartItems;
 
+    @Column(name = "last_added_at")
+    private Instant lastAddedAt;
+
+    public Instant getLastAddedAt() {
+        return lastAddedAt;
+    }
+
+    public void setLastAddedAt(Instant lastAddedAt) {
+        this.lastAddedAt = lastAddedAt;
+    }
 
     public Integer getId() {
         return id;

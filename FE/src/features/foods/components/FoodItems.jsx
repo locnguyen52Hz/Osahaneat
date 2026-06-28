@@ -10,7 +10,7 @@ function FoodItems({ listItem }) {
           <p className={`${styles.quantity}  ${shared.bgLight}`}>
             {food.quantity}
           </p>
-          <p className={styles.foodName}>{food.name}</p>
+          <p className={styles.foodName}>{food.foodName}</p>
           <p className={styles.price}>{formatCurrency(food.price)}</p>
         </div>
       ))}

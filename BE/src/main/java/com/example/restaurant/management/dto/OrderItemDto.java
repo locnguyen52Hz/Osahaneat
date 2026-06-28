@@ -1,18 +1,18 @@
 package com.example.restaurant.management.dto;
 
 public class OrderItemDto {
-    private  String name;
+    private  String foodName;
     private Integer foodId;
     private  double price;
     private  int quantity;
 
 
-    public String getName() {
-        return name;
+    public String getFoodName() {
+        return foodName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFoodName(String foodName) {
+        this.foodName = foodName;
     }
 
     public int getFoodId() {

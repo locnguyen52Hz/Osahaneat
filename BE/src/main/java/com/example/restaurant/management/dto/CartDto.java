@@ -10,6 +10,7 @@ public class CartDto {
     private String address;
     Instant createdAt;
     Instant updatedAt;
+    Instant lastAddedAt;
     private List<CartItemResponseDto> cartItems;
 
     public Integer getId() {
@@ -28,7 +29,13 @@ public class CartDto {
         this.shopId = shopId;
     }
 
+    public Instant getLastAddedAt() {
+        return lastAddedAt;
+    }
 
+    public void setLastAddedAt(Instant lastAddedAt) {
+        this.lastAddedAt = lastAddedAt;
+    }
 
     public Instant getCreatedAt() {
         return createdAt;

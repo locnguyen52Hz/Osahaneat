@@ -9,10 +9,10 @@ public class BuyNowRequest {
     Integer foodId;
 
     @Valid
-            @Min(1)
-            @Max(99)
+    @Min(1)
+    @Max(99)
     int quantity;
-    String address;
+    String deliveredTo;
     String note;
     private double fromLatitude;
     private double fromLongitude;
@@ -49,12 +49,12 @@ public class BuyNowRequest {
         this.fromLongitude = fromLongitude;
     }
 
-    public String getAddress() {
-        return address;
+    public String getDeliveredTo() {
+        return deliveredTo;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setDeliveredTo(String deliveredTo) {
+        this.deliveredTo = deliveredTo;
     }
 
     public String getNote() {

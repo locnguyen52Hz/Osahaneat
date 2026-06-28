@@ -4,22 +4,23 @@ import ActiveCategories from "../../features/category/components/ActiveCategorie
 import styles from "../../assets/styles/SearchResults.module.css";
 import { apiGet } from "../../api/api";
 import endpoints from "../../api/endpoints";
-import { useLocation as location } from "../../contexts/LocationContext";
+
 import ShopsList from "../shops/ShopsList";
 import FoodCard from "../../features/foods/components/FoodCard";
 import { useModal } from "../../contexts/ModalContext";
 import FoodDetail from "../foods/components/FoodDetail";
 import Paginate from "../../components/common/Paginate";
+import { useLocationStore } from "../../stores/location/useLocationStore";
 
 const types = [
   { name: "shop", id: 1, icon: <i className="bi bi-house-door-fill"></i> },
   { name: "food", id: 2, icon: <i className="bi bi-fork-knife"></i> },
+  { name: "category", id: 3, icon: <i className="bi bi-fork-knife"></i> },
 ];
 
 function SearchResults() {
   const [params, setParams] = useSearchParams();
-  const { isLocationReady } = location();
-  // console.log(isLocationReady);
+
   const [searchType, setSearchType] = useState(types[0].id);
   console.log(searchType);
   const type = params.get("type") ?? "shop";
@@ -29,6 +30,8 @@ function SearchResults() {
   const [shops, setShops] = useState(null);
   const [foods, setFoods] = useState(null);
   const [isFetched, setIsFetched] = useState(false);
+
+  const currentLocation = useLocationStore((s) => s.currentLocation);
 
   const updatePage = (newPage) => {
     const newParams = new URLSearchParams(params);
@@ -45,7 +48,7 @@ function SearchResults() {
   };
 
   useEffect(() => {
-    if (!keyword || !isLocationReady) return;
+    if (!keyword || !currentLocation) return;
     setLoading(true);
     setIsFetched(false);
 
@@ -54,7 +57,7 @@ function SearchResults() {
       const fetchShops = async () => {
         try {
           const res = await apiGet(
-            `${endpoints.search.shopsByCategory}?category=${keyword}&userLat=${isLocationReady.latitude}&userLon=${isLocationReady.longitude}&page=${page}`
+            `${endpoints.search.shopsByCategory}?category=${keyword}&userLat=${currentLocation.latitude}&userLon=${currentLocation.longitude}&page=${page}`,
           );
           console.log(res.data.data);
           setShops(res.data.data);
@@ -73,7 +76,7 @@ function SearchResults() {
       const fetchFoods = async () => {
         try {
           const res = await apiGet(
-            `${endpoints.search.foodByCategoryName}?category=${keyword}&page=${page}`
+            `${endpoints.search.foodByCategoryName}?category=${keyword}&page=${page}`,
           );
           console.log(res.data.data);
 
@@ -87,7 +90,7 @@ function SearchResults() {
       };
       fetchFoods();
     }
-  }, [type, keyword, page, isLocationReady]);
+  }, [type, keyword, page, currentLocation]);
 
   useEffect(() => {});
 
@@ -103,7 +106,7 @@ function SearchResults() {
       />,
       {
         type: "slide",
-      }
+      },
     );
   };
 

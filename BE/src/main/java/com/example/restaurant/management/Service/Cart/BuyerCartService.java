@@ -266,6 +266,8 @@ public class BuyerCartService {
 
                 cart.setCreatedAt(now);
 
+                cart.setLastAddedAt(now);
+
                 cart.setCartItems(new ArrayList<>());
             }
 
@@ -299,6 +301,8 @@ public class BuyerCartService {
                     cartItem.setCart(cart);
 
                     cartItem.setFood(food);
+
+                    cart.setLastAddedAt(now);
 
                     cart.getCartItems().add(cartItem);
                 }
@@ -334,7 +338,7 @@ public class BuyerCartService {
         // 6. RESPONSE
         // ==========================
 
-        return cartRepository.findByUser_IdOrderByCreatedAtDesc(userId).stream().map(this::toCartDto).toList();
+        return cartRepository.findByUser_IdOrderByLastAddedAtDesc(userId).stream().map(this::toCartDto).toList();
     }
 
     public List<CartDto> getCarts(String auth) {
@@ -390,6 +394,7 @@ public class BuyerCartService {
         dto.setAddress(cart.getShop().getAddress());
         dto.setUpdatedAt(cart.getUpdatedAt());
         dto.setCreatedAt(cart.getCreatedAt());
+        dto.setLastAddedAt(cart.getLastAddedAt());
 
         List<CartItemResponseDto> items = cart.getCartItems().stream().map(this::toCartItemDto).toList();
 

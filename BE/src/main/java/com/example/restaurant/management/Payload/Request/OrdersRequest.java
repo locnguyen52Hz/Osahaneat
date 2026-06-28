@@ -1,13 +1,11 @@
 package com.example.restaurant.management.Payload.Request;
 
-import com.example.restaurant.management.Entity.OrdersItem;
-
 import java.util.List;
 
 public class OrdersRequest {
     private Integer shopId;
     private List<OrdersItemRequest> foods;
-    private String address;
+    private String deliveredTo;
     private String note;
     private double fromLatitude;
     private double fromLongitude;
@@ -38,12 +36,12 @@ public class OrdersRequest {
         this.note = note;
     }
 
-    public String getAddress() {
-        return address;
+    public String getDeliveredTo() {
+        return deliveredTo;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setDeliveredTo(String deliveredTo) {
+        this.deliveredTo = deliveredTo;
     }
 
     public Integer getShopId() {

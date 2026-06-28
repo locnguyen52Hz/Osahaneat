@@ -5,12 +5,14 @@ import styles from "../../../assets/styles/OrderDetails.module.css";
 import shared from "../../../assets/styles/Shared.module.css";
 import OrderStatusIcon from "./OrderStatusIcon";
 import FoodItems from "../../foods/components/FoodItems";
+import AddressDisplay from "../../../components/common/AddressDisplay";
 
 function OrderDetailsView({
   order,
   foods,
   loadingItems,
   footer,
+  handleSelectAddress,
 }) {
   if (!order) return <p>Loading...</p>;
 
@@ -22,11 +24,13 @@ function OrderDetailsView({
 
         {order.orderId && <p>#{order.orderId}</p>}
 
-        {order.status && (
-          <OrderStatusIcon status={order.status} size={10} />
-        )}
+        {order.status && <OrderStatusIcon status={order.status} size={10} />}
 
-        <OrderAddress address={order.address} />
+        <AddressDisplay
+          address={order.deliveredTo}
+          onClick={handleSelectAddress}
+          border
+        />
         <h4 className={styles.shopName}>{order.shopName}</h4>
       </div>
 

@@ -3,6 +3,15 @@ package com.example.restaurant.management.dto;
 public class CategoryDto {
     private Integer id;
     private String name;
+    private String image;
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 
     public Integer getId() {
         return id;

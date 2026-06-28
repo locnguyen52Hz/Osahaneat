@@ -27,8 +27,8 @@ public class Order {
     @JoinColumn(name = "shop_id", nullable = false)
     private Shop shop;
 
-    @Column(name = "address", nullable = false)
-    private String address;
+    @Column(name = "delivered_to", nullable = false)
+    private String deliveredTo;
 
     // FROM LOCATION
     @Embedded
@@ -102,12 +102,12 @@ public class Order {
     }
 
 
-    public String getAddress() {
-        return address;
+    public String getDeliveredTo() {
+        return deliveredTo;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setDeliveredTo(String deliveredTo) {
+        this.deliveredTo = deliveredTo;
     }
 
     public OrdersStatus getStatus() {

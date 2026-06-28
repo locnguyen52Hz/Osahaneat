@@ -3,7 +3,7 @@ import { AuthProvider, useAuth } from "../providers/UseContext";
 import { CartProvider } from "../../features/cart/context/CartContext";
 import { ModalProvider } from "../../contexts/ModalContext";
 import { OrderProvider } from "../../features/orders/context/OrderContext";
-import { LocationProvider } from "../../contexts/LocationContext";
+
 import { WebSocketProvider } from "../../contexts/WebSocketContext";
 
 function AppProvider({ children }) {
@@ -19,14 +19,11 @@ function AuthConsumerWrapper({ children }) {
 
   return (
     <WebSocketProvider token={token}>
-      <LocationProvider>
-        <CartProvider>
-          <ModalProvider>{children}</ModalProvider>
-        </CartProvider>
-      </LocationProvider>
+      <CartProvider>
+        <ModalProvider>{children}</ModalProvider>
+      </CartProvider>
     </WebSocketProvider>
   );
 }
-
 
 export default AppProvider;

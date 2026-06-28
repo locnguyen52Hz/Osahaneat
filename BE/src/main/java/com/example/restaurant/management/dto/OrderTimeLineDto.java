@@ -27,7 +27,7 @@ public class OrderTimeLineDto {
     private double distance;
 
     private String note;
-    private String address;
+    private String deliveredTo;
     private Instant createdAt;
 
 
@@ -114,12 +114,12 @@ public class OrderTimeLineDto {
         this.note = note;
     }
 
-    public String getAddress() {
-        return address;
+    public String getDeliveredTo() {
+        return deliveredTo;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setDeliveredTo(String deliveredTo) {
+        this.deliveredTo = deliveredTo;
     }
 
     public String getShopName() {

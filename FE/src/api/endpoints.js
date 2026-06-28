@@ -10,6 +10,7 @@ const endpoints = {
   image: {
     food: `${API_BASE_URL}/food/image`,
     shop: `${API_BASE_URL}/shops/avatar`,
+    category: `${API_BASE_URL}/categories/image`,
   },
   shop: {
     top6Shop: `${API_BASE_URL}/shops/top-6-shops`,
@@ -36,6 +37,7 @@ const endpoints = {
     previous: `${API_BASE_URL}/orders/previous`,
     createRating: `${API_BASE_URL}/orders/create-rating`,
     buyNow: `${API_BASE_URL}/orders/buy-now`,
+    createOrderFromCart: `${API_BASE_URL}/orders/from-cart`,
   },
   routes: {
     shippingFee: `${API_BASE_URL}/routes/shipping-fee`,
@@ -65,7 +67,7 @@ const endpoints = {
   },
   cart: {
     listCart: `${API_BASE_URL}/cart/list-cart`,
-    syncCart: `${API_BASE_URL}/cart/sync-cart`
+    syncCart: `${API_BASE_URL}/cart/sync-cart`,
   },
 };
 export default endpoints;

@@ -8,7 +8,7 @@ import ShopAvatar from "./components/ShopAvatar";
 import GeographyIcon from "../../components/common/GeographyIcon";
 
 function ShopCard({
-  name,
+  shopName,
   avatar,
   rating,
   ratingCount,
@@ -17,6 +17,7 @@ function ShopCard({
   onClick,
   formatDistance,
 }) {
+  console.log(`${distance} km`);
   return (
     <div className={`${style.card} ${shared.boxShadow}`} onClick={onClick}>
       <div className={`${style.shopAvatarPadding} ${shared.bgLight}`}>
@@ -24,13 +25,12 @@ function ShopCard({
       </div>
 
       <div className={style.shopDesc}>
-        <h3>{name}</h3>
+        <h3>{shopName}</h3>
 
         <div className={`${shared.textDark} ${shared.fontWeightBold}`}>
           <RatingDisplay value={rating ?? 0} count={ratingCount} />
         </div>
         <GeographyIcon number={formatDistance(distance)} />
-  
       </div>
     </div>
   );

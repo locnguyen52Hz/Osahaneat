@@ -1,14 +1,16 @@
 import { Marker, Popup, Tooltip, useMapEvents } from "react-leaflet";
-import { useLocation } from "../../../contexts/LocationContext";
+
 import { useEffect, useState } from "react";
 import { apiGet } from "../../../api/api";
 import endpoints from "../../../api/endpoints";
 import L from "leaflet";
 import useReverseGeocode from "../../../hooks/useReverseGeocode";
 import { toast } from "react-toastify";
+import { useLocationStore } from "../../../stores/location/useLocationStore";
 
 function LocationPicker() {
-  const { isLocationReady, setMyLocation } = useLocation();
+  const currentLocation = useLocationStore((s) => s.currentLocation);
+
   const [shops, setShops] = useState([]);
 
   const { fetchAddress, data, error, isLoading } = useReverseGeocode();
@@ -42,7 +44,7 @@ function LocationPicker() {
       const { lat, lng } = e.latlng;
       map.flyTo([lat, lng]);
       fetchAddress(lat, lng);
-      console.log(lat,lng)
+      console.log(lat, lng);
     },
   });
 
@@ -55,9 +57,9 @@ function LocationPicker() {
   return (
     <>
       {/* Marker user */}
-      {isLocationReady?.latitude && isLocationReady?.longitude && (
+      {currentLocation?.latitude && currentLocation?.longitude && (
         <Marker
-          position={[isLocationReady.latitude, isLocationReady.longitude]}
+          position={[currentLocation.latitude, currentLocation.longitude]}
           icon={redIcon}
         >
           <Popup>Bạn đang ở đây</Popup>

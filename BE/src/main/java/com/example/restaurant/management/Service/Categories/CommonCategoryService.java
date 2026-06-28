@@ -46,6 +46,7 @@ public class CommonCategoryService {
             CategoryDto categoryDTO = new CategoryDto();
             categoryDTO.setName(category.getName());
             categoryDTO.setId(category.getId());
+            categoryDTO.setImage(category.getImage());
             categoryDtoList.add(categoryDTO);
         }
         return categoryDtoList;

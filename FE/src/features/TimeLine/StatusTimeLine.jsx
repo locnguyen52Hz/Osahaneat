@@ -1,24 +1,24 @@
 import React, { useMemo } from "react";
-import { buildTimelineData } from "../../util/timeline";
+import { buildTimelineData, BUYER_TIMELINE_TEXT } from "../../util/timeline";
 import TimelineItem from "./TimelineItem";
 
 function StatusTimeline({ currentStatus, statuses }) {
   const timelineData = useMemo(
-    () => buildTimelineData(currentStatus, statuses, { hideEmpty: true }),
+    () => buildTimelineData(currentStatus, statuses),
     [currentStatus, statuses],
   );
-
-
   return (
     <>
-      {timelineData.map((item) => (
-        <TimelineItem
-          key={item.status}
-          text={item.text}
-          time={item.time}
-          state={item.state}
-        />
-      ))}
+      {timelineData.items
+        .filter((item) => item.state !== "upcoming")
+        .map((item) => (
+          <TimelineItem
+            key={item.status}
+            text={BUYER_TIMELINE_TEXT[item.status][item.state]}
+            time={item.time}
+            state={currentStatus === "COMPLETED" ? "done" : item.state}
+          />
+        ))}
     </>
   );
 }

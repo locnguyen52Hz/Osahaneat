@@ -51,7 +51,7 @@ public class RoutesService {
 
         String url = String.format(
                 "http://localhost:5000/table/v1/driving/%s?annotations=distance",
-                coordinates.toString()
+                coordinates
         );
 
         try {

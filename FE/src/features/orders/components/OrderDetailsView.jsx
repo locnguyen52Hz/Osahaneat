@@ -3,7 +3,7 @@ import OrderAddress from "./OrderAddress";
 import { formatCurrency } from "../../../util/format";
 import styles from "../../../assets/styles/OrderDetails.module.css";
 import shared from "../../../assets/styles/Shared.module.css";
-import OrderStatusIcon from "./OrderStatusIcon";
+import StatusBadge from "./StatusBadge";
 import FoodItems from "../../foods/components/FoodItems";
 import AddressDisplay from "../../../components/common/AddressDisplay";
 
@@ -22,9 +22,14 @@ function OrderDetailsView({
       <div className={styles.header}>
         <h2 className={shared.h5}>Order Details</h2>
 
-        {order.orderId && <p>#{order.orderId}</p>}
-
-        {order.status && <OrderStatusIcon status={order.status} size={10} />}
+        {order.orderId && (
+          <p>
+            #{order.orderId}{" "}
+            {order.status && (
+              <StatusBadge status={order.status} size={10} />
+            )}
+          </p>
+        )}
 
         <AddressDisplay
           address={order.deliveredTo}

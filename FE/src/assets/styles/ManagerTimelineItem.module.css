@@ -1,0 +1,84 @@
+.current {
+    color: #006C49;
+
+}
+
+.done {
+    color: white;
+
+}
+
+.upcoming {
+    color: #505052;
+
+}
+
+.item {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    flex: 1;
+}
+
+.item:not(:last-child)::after {
+    content: "";
+    position: absolute;
+
+    top: 20px;
+    /* giữa icon */
+    left: 50%;
+    width: 100%;
+    height: 3px;
+
+    background: #C6C6CD;
+    z-index: 1;
+}
+
+.icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    z-index: 2;
+    background: #ddd;
+    font-size: 17px;
+}
+
+.currentLabel {
+    font-weight: bold;
+    color: black;
+}
+
+.doneLabel {
+    font-weight: bold;
+    color: #006C49;
+}
+
+.upcomingLabel {
+    color: #45464D;
+}
+
+
+.currentLabel,
+.doneLabel,
+.upcomingLabel {
+    margin-top: 8px;
+}
+
+.item.done .icon {
+    background: #006C49;
+}
+
+
+
+.item.done::after {
+    background: #006C49;
+}
+
+.currentBorder{
+    border: 2px solid #006C49;
+}

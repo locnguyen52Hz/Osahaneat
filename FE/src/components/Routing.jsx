@@ -4,7 +4,6 @@ import L from "leaflet";
 import { apiGet } from "../api/api";
 
 function Routing({ from, to }) {
-  console.log(from);
   const map = useMap();
   const [route, setRoute] = useState(null);
   const polylineRef = useRef(null); // giữ ref để cleanup chắc chắn

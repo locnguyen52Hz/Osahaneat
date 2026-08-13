@@ -2,31 +2,32 @@ import React, { useMemo } from "react";
 import DateTime from "../../components/common/DateTime";
 import styles from "../../assets/styles/ProgressTimeline.module.css";
 
-import { STATUS_TEXT, buildTimelineData, getTimeLine } from "../../util/timeline";
+import { BUYER_TIMELINE_TEXT, buildTimelineData } from "../../util/timeline";
 import { timeAgo } from "../../util/format";
 
 function ProgressTimeline({ currentStatus, statuses }) {
   const timelineData = useMemo(
-    () => buildTimelineData(currentStatus, statuses),
+    () =>
+      buildTimelineData(currentStatus, statuses).items.filter(
+        (item) => item.status !== "COMPLETED",
+      ),
     [currentStatus, statuses],
   );
 
+  // console.log(timelineData)
 
   return (
     <div className={styles.timeLineTracks}>
       {timelineData.map((item) => (
-        <div
-          key={item.status}
-          className={styles[item.state]}
-        >
-          {item.time && item.text && (
+        <div key={item.status} className={styles[item.state]}>
+          {item.time && (
             <div className={styles.tooltip}>
-              <p>{item.text}</p>
+              <p>{BUYER_TIMELINE_TEXT[item.status][item.state]}</p>
 
               {item.isCurrent ? (
-                timeAgo(item.time)
+                timeAgo(item.startTime)
               ) : (
-                <DateTime time={item.time} />
+                <DateTime time={item.endTime} />
               )}
             </div>
           )}

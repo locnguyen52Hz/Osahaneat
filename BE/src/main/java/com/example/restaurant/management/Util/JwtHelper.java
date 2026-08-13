@@ -18,26 +18,52 @@ public class JwtHelper {
     @Value("${jwt.privateKey}")
     private String privateKey;
 
-    public String generateToken(String email, String fullName, int id){
+
+    private SecretKey getKey() {
+        return Keys.hmacShaKeyFor(
+                Base64.getDecoder().decode(privateKey)
+        );
+    }
+
+    public String generateAccessToken(String email, String fullName, int id){
 
         Date now = new Date();
-        Duration expiration = Duration.ofDays(30);
+        Duration expiration = Duration.ofMinutes(15);
         Date expiryDate = new Date(now.getTime() + expiration.toMillis());
-        SecretKey key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(privateKey));
+
         return Jwts.builder()
                 .subject(email)
                 .claim("fullName", fullName)
-                .claim("userID",id)
+                .claim("userID", id)
+                .claim("type", "access")
                 .issuedAt(now)
                 .expiration(expiryDate)
-                .signWith(key)
+                .signWith(getKey())
+                .compact();
+    }
+
+
+    public String generateRefreshToken(int userId) {
+        Date now = new Date();
+
+        Date expiryDate = new Date(
+                now.getTime() + Duration.ofDays(7).toMillis()
+        );
+
+
+        return Jwts.builder()
+                .subject(String.valueOf(userId))
+                .claim("type", "refresh")
+                .issuedAt(now)
+                .expiration(expiryDate)
+                .signWith(getKey())
                 .compact();
     }
 
     public Claims getClaimsFromToken(String token) {
-        SecretKey key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(privateKey));
+
         return Jwts.parser()
-                .verifyWith(key)
+                .verifyWith(getKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
@@ -45,8 +71,7 @@ public class JwtHelper {
 
     public boolean validateToken(String token){
         try{
-            SecretKey key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(privateKey));
-            Jwts.parser().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
+            getClaimsFromToken(token);
             return true;
         }catch (ExpiredJwtException e){
             System.out.println("Token đã hết hạn");
@@ -65,8 +90,20 @@ public class JwtHelper {
     public Integer getUserID(String authHeader){
         String token = authHeader.replace("Bearer ", "");
         Claims claims = getClaimsFromToken(token);
-        Integer userID = claims.get("userID", Integer.class);
-        return userID;
+        return claims.get("userID", Integer.class);
+    }
+
+    public Integer getUserIdFromRefreshToken(String token) {
+
+        Claims claims = getClaimsFromToken(token);
+
+        String type = claims.get("type", String.class);
+
+        if (!"refresh".equals(type)) {
+            throw new RuntimeException("Invalid refresh token");
+        }
+
+        return Integer.valueOf(claims.getSubject());
     }
 
 }

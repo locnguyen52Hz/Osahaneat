@@ -44,9 +44,9 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("username");
-    setRole('');
-    setToken('');
-    setUsername('');
+    setRole("");
+    setToken("");
+    setUsername("");
   };
 
   const login = async (credentials) => {
@@ -59,21 +59,22 @@ export const AuthProvider = ({ children }) => {
         },
         {
           headers: { "Content-Type": "application/json" },
-        }
+        },
       );
 
-      console.log("Đăng nhập: ", credentials);
-      const token = res.data.token;
+      // console.log("Đăng nhập: ", credentials);
+      console.log(res.data.data);
+      const accessToken = res.data.accessToken;
       const username = res.data.data;
 
-      if (token && username) {
+      if (accessToken) {
         const roleRes = await axios.get(endpoints.auth.role, {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${accessToken}` },
         });
 
         const roleName = roleRes.data.data.roleName;
-        saveAuthData(token, roleName, username);
-      
+        saveAuthData(accessToken, roleName, username);
+
         return roleName;
       }
     } catch (error) {

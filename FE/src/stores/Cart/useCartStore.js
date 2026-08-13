@@ -14,7 +14,6 @@ const createCart = (shop, food, quantity) => ({
   id: uuidv4(),
   shopId: shop.shopId,
   shopName: shop.shopName,
-  address: shop.address,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
   lastAddedAt: new Date().toISOString(),

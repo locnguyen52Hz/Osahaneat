@@ -1,32 +1,20 @@
 import React, { useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { useAuth } from "../app/providers/UseContext";
+
+import { useAuthStore } from "../stores/Auth/useAuthStore";
 
 function PrivateRouter({ children, allowedRoles }) {
-  const { role, token, loading } = useAuth();
-  const navigate = useNavigate();
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const role = useAuthStore((s) => s.role);
 
-  useEffect(() => {
-    if (!token) {
-      alert('login')
-      navigate("/login");
 
-    }
-  }, [token, loading, navigate]);
-
-  if (loading) {
-    return <div>Loading...</div>;
+  if (!accessToken) {
+    return <Navigate to="/login" replace />;
   }
 
-  if (!token) {
-    alert("login");
-    return <Navigate to="/login" />;
+  if (!allowedRoles.includes(role)) {
+    return <Navigate to="/403" replace />;
   }
-
-  // if (role && !allowedRoles.includes(role)) {
-  //   alert("chạy 403");
-  //   return <Navigate to="/403" />;
-  // }
 
   return children;
 }

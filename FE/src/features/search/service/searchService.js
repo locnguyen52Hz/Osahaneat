@@ -1,3 +1,3 @@
-export function buildSearchUrl(keyword) {
-  return `/search?type=shop&keyword=${encodeURIComponent(keyword)}&page=0`;
+export function buildSearchUrl(params) {
+  return `/search?${new URLSearchParams(params)}`;
 }

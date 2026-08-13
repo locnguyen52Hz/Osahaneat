@@ -22,11 +22,13 @@ public class OrdersDto {
     private double latitude;
     private double longitude;
     private Integer rating;
+    private double estimatedDeliveryTime;
 
 
     //id người nhận thông báo
     private Integer partnerId;
     private String partnerName;
+    private String partnerEmail;
     private Double partnerLatitude;
     private Double partnerLongitude;
     private Integer shopId;
@@ -88,6 +90,13 @@ public class OrdersDto {
         this.totalQuantity = totalQuantity;
     }
 
+    public double getEstimatedDeliveryTime() {
+        return estimatedDeliveryTime;
+    }
+
+    public void setEstimatedDeliveryTime(double estimatedDeliveryTime) {
+        this.estimatedDeliveryTime = estimatedDeliveryTime;
+    }
 
     public double getShippingFee() {
         return shippingFee;
@@ -140,6 +149,14 @@ public class OrdersDto {
 
     public Double getPartnerLatitude() {
         return partnerLatitude;
+    }
+
+    public String getPartnerEmail() {
+        return partnerEmail;
+    }
+
+    public void setPartnerEmail(String partnerEmail) {
+        this.partnerEmail = partnerEmail;
     }
 
     public void setPartnerLatitude(Double partnerLatitude) {

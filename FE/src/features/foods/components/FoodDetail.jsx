@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import shared from "../../../assets/styles/Shared.module.css";
-import { useCart } from "../../cart/context/CartContext";
 import style from "../../../assets/styles/FoodDetail.module.css";
-
 import { useModal } from "../../../contexts/ModalContext";
 import {
   MODAL_ANIMATION_DURATION,

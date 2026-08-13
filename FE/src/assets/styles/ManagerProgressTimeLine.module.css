@@ -1,0 +1,30 @@
+.container {
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #E2E8F0;
+    padding: 24px;
+
+}
+
+.title {
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    font-weight: bold;
+    line-height: 16px;
+    font-size: 12px;
+    color: #45464D;
+}
+
+.timeline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+.cancel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}

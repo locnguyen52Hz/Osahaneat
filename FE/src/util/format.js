@@ -9,7 +9,10 @@ export const formatCurrency = (value) => {
 };
 
 export const sanitizeInput = (input) => {
-  return DOMPurify.sanitize(input, { USE_PROFILES: { html: false } });
+  return DOMPurify.sanitize(input, {
+    ALLOWED_TAGS: [],
+    ALLOWED_ATTR: [],
+  });
 };
 
 export const formatDate = (time) => {
@@ -23,7 +26,22 @@ export const formatTime = (time) => {
 };
 export const formatDistance = (distance) => {
   if (distance == null) return null;
-  return Number((distance/1000).toFixed(1));
+  return Number((distance / 1000).toFixed(1));
+};
+
+export const formatDuration = (seconds) => {
+  const minutes = Math.round(seconds / 60);
+
+  if (minutes < 60) {
+    return `${minutes} phút`;
+  }
+
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+
+  return remainingMinutes
+    ? `${hours} giờ ${remainingMinutes} phút`
+    : `${hours} giờ`;
 };
 
 export const formatDateTime = (time) =>

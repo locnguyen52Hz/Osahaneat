@@ -29,8 +29,15 @@ public class OrderTimeLineDto {
     private String note;
     private String deliveredTo;
     private Instant createdAt;
+    private double estimatedDeliveryTime;
 
+    public double getEstimatedDeliveryTime() {
+        return estimatedDeliveryTime;
+    }
 
+    public void setEstimatedDeliveryTime(double estimatedDeliveryTime) {
+        this.estimatedDeliveryTime = estimatedDeliveryTime;
+    }
 
     private List<StatusDto> statuses = new ArrayList<>();
 

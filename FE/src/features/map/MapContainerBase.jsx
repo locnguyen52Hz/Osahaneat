@@ -2,13 +2,11 @@ import React from "react";
 import { MapContainer, TileLayer, useMapEvents } from "react-leaflet";
 
 function MapContainerBase({ children, center }) {
-
-
   return (
     <MapContainer
       center={center}
       zoom={12}
-      // scrollWheelZoom={true}
+      scrollWheelZoom={false}
       style={{ height: "100%", width: "100%" }}
     >
       <TileLayer

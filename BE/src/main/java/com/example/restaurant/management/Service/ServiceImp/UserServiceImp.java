@@ -34,8 +34,6 @@ public class UserServiceImp implements com.example.restaurant.management.Service
             userDTO.setId(user.getId());
             userDTO.setEmail(user.getEmail());
             userDTO.setFullName(user.getFullName());
-            userDTO.setRole(user.getRole().toString());
-            userDTO.setPassword(passwordEncoder.encode(user.getPassword()));
             userDtos.add(userDTO);
         }
         return userDtos;

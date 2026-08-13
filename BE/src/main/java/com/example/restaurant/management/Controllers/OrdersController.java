@@ -160,6 +160,7 @@ public class OrdersController {
 
 
     @GetMapping("/active")
+    @PreAuthorize("hasAnyRole('ROLE_BUYER', 'ROLE_SHOP_MANAGER')")
     public ResponseEntity<?> getActiveOrders(@RequestHeader("Authorization") String authorization, int page) {
         Page<OrderTimeLineDto> result = commonOrdersService.getActiveOrders(authorization, page);
         ResponseData responseData = new ResponseData();
@@ -177,6 +178,7 @@ public class OrdersController {
     }
 
     @PostMapping("/create-rating")
+    @PreAuthorize("hasAnyRole('ROLE_BUYER')")
     public ResponseEntity<?> createRating(@RequestBody CreateRatingRequest createRatingRequest, @RequestHeader("Authorization") String authorization) {
         ResponseData responseData = new ResponseData();
         responseData.setData(buyerOrdersServiceImp.createRating(createRatingRequest, authorization));
@@ -187,5 +189,26 @@ public class OrdersController {
         return new ResponseEntity<>(responseData, HttpStatus.CREATED);
     }
 
+    @GetMapping("/timeline")
+    @PreAuthorize("hasAnyRole('ROLE_BUYER','ROLE_SHOP_MANAGER')")
+    public ResponseEntity<?> getOrderTimeline(@RequestHeader("Authorization") String authorization, @RequestParam Integer orderId) {
+        ResponseData responseData = new ResponseData();
+        responseData.setData(commonOrdersService.getOrderTimeLineItems(authorization, orderId));
+        responseData.setSuccess(true);
+        responseData.setMessage("Order histories successfully");
+        responseData.setStatus(HttpStatus.OK.value());
+        return new ResponseEntity<>(responseData, HttpStatus.OK);
+    }
+
+    @GetMapping("/details")
+    @PreAuthorize("hasAnyRole('ROLE_BUYER','ROLE_SHOP_MANAGER')")
+    public ResponseEntity<?>getOrderDetails(@RequestHeader("Authorization") String authorization, @RequestParam Integer orderId) {
+        ResponseData responseData = new ResponseData();
+        responseData.setData(commonOrdersService.getOrderDetails(authorization, orderId));
+        responseData.setSuccess(true);
+        responseData.setMessage("Order details successfully");
+        responseData.setStatus(HttpStatus.OK.value());
+        return new ResponseEntity<>(responseData, HttpStatus.OK);
+    }
 
 }

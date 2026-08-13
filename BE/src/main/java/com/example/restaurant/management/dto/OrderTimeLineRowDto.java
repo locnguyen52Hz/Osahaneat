@@ -50,6 +50,8 @@ public class OrderTimeLineRowDto {
     // s.shop_name
     private String shopName;
 
+    private double estimatedDeliveryTime;
+
     private String shopAddress;
     private Location fromLocation;
     private Location toLocation;
@@ -74,7 +76,8 @@ public class OrderTimeLineRowDto {
                                double fromLongitude,
                                double toLatitude,
                                double toLongitude,
-                               Instant createdAt
+                               Instant createdAt,
+                               double estimatedDeliveryTime
     ) {
         this.orderId = orderId;
         this.userId = userId;
@@ -94,6 +97,7 @@ public class OrderTimeLineRowDto {
         this.toLocation = new Location(toLongitude,toLatitude);
         this.createdAt = createdAt;
         this.ohsStatus = ohsStatus;
+        this.estimatedDeliveryTime = estimatedDeliveryTime;
     }
 
     public Integer getOrderId() {
@@ -248,5 +252,13 @@ public class OrderTimeLineRowDto {
 
     public void setShopAddress(String shopAddress) {
         this.shopAddress = shopAddress;
+    }
+
+    public double getEstimatedDeliveryTime() {
+        return estimatedDeliveryTime;
+    }
+
+    public void setEstimatedDeliveryTime(double estimatedDeliveryTime) {
+        this.estimatedDeliveryTime = estimatedDeliveryTime;
     }
 }

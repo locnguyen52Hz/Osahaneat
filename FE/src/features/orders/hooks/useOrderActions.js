@@ -36,6 +36,18 @@ function useOrderActions(setState) {
     }
   };
 
+  //update order status
+
+  const updateStatus = async (orderId, newStatus) => {
+    try {
+      await updateOrderStatus(orderId, newStatus);
+      toast.success("Thành công");
+    } catch (error) {
+      console.log(error);
+      toast.error("Thất bại");
+    }
+  };
+
   //  Rating
   const rateOrder = async (orderId, rating) => {
     let snapshot;
@@ -65,6 +77,7 @@ function useOrderActions(setState) {
   return {
     cancelOrder,
     rateOrder,
+    updateStatus,
   };
 }
 

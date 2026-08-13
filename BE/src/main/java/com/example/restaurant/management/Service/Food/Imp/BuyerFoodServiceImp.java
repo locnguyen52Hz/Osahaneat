@@ -44,6 +44,8 @@ public class BuyerFoodServiceImp implements FoodService {
             foodDTO.setImage(food.getImage());
             foodDTO.setDescription(food.getDescription());
             foodDTO.setFoodId(food.getId());
+            foodDTO.setShopId(food.getShop().getId());
+            foodDTO.setShopName(food.getShop().getShopName());
             foodDtoList.add(foodDTO);
         }
         return foodDtoList;

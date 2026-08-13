@@ -7,7 +7,8 @@ function FoodItems({ listItem }) {
     <>
       {listItem.map((food) => (
         <div className={styles.foodItem} key={food.foodId}>
-          <p className={`${styles.quantity}  ${shared.bgLight}`}>
+          <p className={`${styles.quantity} 
+           ${shared.bgLight}`}>
             {food.quantity}
           </p>
           <p className={styles.foodName}>{food.foodName}</p>

@@ -1,8 +1,7 @@
 import React from "react";
 import { AuthProvider, useAuth } from "../providers/UseContext";
-import { CartProvider } from "../../features/cart/context/CartContext";
+
 import { ModalProvider } from "../../contexts/ModalContext";
-import { OrderProvider } from "../../features/orders/context/OrderContext";
 
 import { WebSocketProvider } from "../../contexts/WebSocketContext";
 
@@ -19,9 +18,7 @@ function AuthConsumerWrapper({ children }) {
 
   return (
     <WebSocketProvider token={token}>
-      <CartProvider>
-        <ModalProvider>{children}</ModalProvider>
-      </CartProvider>
+      <ModalProvider>{children}</ModalProvider>
     </WebSocketProvider>
   );
 }

@@ -1,14 +1,27 @@
 import React, { useState } from "react";
 import FreeShipIcon from "../../../components/common/FreeShipIcon";
 import style from "../../../assets/styles/FoodCard.module.css";
-import { formatCurrency } from "../../../util/format";
+import { formatCurrency, formatDistance } from "../../../util/format";
 import endpoints from "../../../api/endpoints";
 import { useCartStore } from "../../../stores/Cart/useCartStore";
+import RatingDisplay from "../../../components/common/RatingDisplay";
+import GeographyIcon from "../../../components/common/GeographyIcon";
 
-function FoodCard({ food, onBuyNow, type = "default", onAddItemToCart }) {
-  const { image, foodName, price, description, ratting, foodId } = food;
+function FoodCard({ food, onBuyNow, onAddItemToCart }) {
+  const {
+    image,
+    foodName,
+    price,
+    description,
+    foodId,
+    shopName,
+    ratingAvg,
+    ratingCount,
+    distance,
+  } = food;
+
+
   const [effects, setEffects] = useState([]);
-
 
   const handleAddItemToCart = () => {
     const id = Date.now();
@@ -21,42 +34,45 @@ function FoodCard({ food, onBuyNow, type = "default", onAddItemToCart }) {
     onAddItemToCart(food);
   };
 
+  return (
+    <div className={style.card} id={`food-${foodId}`}>
+      <div className={style.imageWrapper}>
+        <img src={`${endpoints.image.food}/${image}`} alt={image} />
+      </div>
+      <div className={style.cardTitle}>
+        <p className={style.foodName}>
+          {shopName ? `${foodName} - ${shopName}` : foodName}
+        </p>
+        {ratingAvg != null && ratingCount != null && (
+          <>
+            <div className={style.rating}>
+              <RatingDisplay value={ratingAvg} count={ratingCount} />
+            </div>
+            <GeographyIcon number={formatDistance(distance)} />
+          </>
+        )}
+        <p className={style.price}>Giá: {formatCurrency(price)}</p>
+      </div>
+      <div className={style.action}>
+        <button onClick={onBuyNow} className={style.buyNow}>
+          Mua nhanh
+        </button>
 
-  if (type === "default") {
-    return (
-      <div className={style.card} id={`food-${foodId}`}>
-        <div className={style.imageWrapper}>
-          <img src={`${endpoints.image.food}/${image}`} alt={image} />
-        </div>
-        <div className={style.cardTitle}>
-          <p className={style.foodName}>{foodName}</p>
-          <p className={style.price}>Giá: {formatCurrency(price)}</p>
-        </div>
-        <div className={style.action}>
-          <button onClick={onBuyNow} className={style.buyNow}>
-            Mua nhanh
-          </button>
+        <div style={{ position: "relative" }}>
+          <i
+            onClick={handleAddItemToCart}
+            className={`bi bi-cart-plus ${style.addToCart}`}
+          ></i>
 
-          <div style={{ position: "relative" }}>
-            <i
-              onClick={handleAddItemToCart}
-              className={`bi bi-cart-plus ${style.addToCart}`}
-            ></i>
-
-            {effects.map((id) => (
-              <span key={id} className={style.addEffect}>
-                +1
-              </span>
-            ))}
-          </div>
+          {effects.map((id) => (
+            <span key={id} className={style.addEffect}>
+              +1
+            </span>
+          ))}
         </div>
       </div>
-    );
-  }
-
-
-
-  return null;
+    </div>
+  );
 }
 
 export default FoodCard;

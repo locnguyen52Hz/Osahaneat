@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import styles from "../../../assets/styles/OrdersTable.module.css";
 import Paginate from "../../../components/common/Paginate";
-import OrderStatusIcon from "../../orders/components/OrderStatusIcon";
+import StatusBadge from "../../orders/components/StatusBadge";
 import { formatDateTime, formatCurrency } from "../../../util/format";
+import { useNavigate } from "react-router-dom";
 
 const TABLE_HEAD = [
-  { label: "Order ID", key: "orderID" },
+  { label: "Order ID", key: "orderId" },
   { label: "Customer", key: "partnerName" },
-  { label: "Address", key: "address" },
+  { label: "Delivered To", key: "deliveredTo" },
   { label: "Status", key: "status" },
   { label: "Time", key: "time" },
   { label: "Total", key: "totalAmount" },
@@ -31,6 +32,10 @@ function OrdersTable({
   const start = totalElement === 0 ? 0 : currentPage * tableSize + 1;
   const end = Math.min((currentPage + 1) * tableSize, totalElement);
   console.log(data);
+  const navigate = useNavigate();
+  const handleNavigate = (orderId) => {
+    navigate(`/order-details/${orderId}`);
+  };
   return (
     <div className={styles.card}>
       <div className={styles.cardHeader}>
@@ -128,16 +133,16 @@ function OrdersTable({
                 ) : (
                   data.map((item, index) => (
                     <tr className={styles.tRow} key={index}>
-                      <td>{item.orderID}</td>
+                      <td>{item.orderId}</td>
                       <td>{item.partnerName}</td>
-                      <td>{item.address}</td>
+                      <td>{item.deliveredTo}</td>
                       <td>
-                        <OrderStatusIcon status={item.status.toUpperCase()} />
+                        <StatusBadge status={item.status.toUpperCase()} />
                       </td>
-                      <td>{formatDateTime(item.time)}</td>
+                      <td>{formatDateTime(item.createdAt)}</td>
                       <td>{formatCurrency(item.totalAmount)}</td>
                       <td>{item.totalQuantity}</td>
-                      <td>View</td>
+                      <td onClick={() => handleNavigate(item.orderId)}>View</td>
                     </tr>
                   ))
                 )}

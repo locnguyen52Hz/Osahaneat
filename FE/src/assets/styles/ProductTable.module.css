@@ -1,0 +1,94 @@
+.orderTable {
+    width: 100%;
+    /* padding: 16px 24px; */
+    border-spacing: 0px;
+    table-layout: fixed;
+    border-radius: 6px;
+}
+
+.titleRow {
+    /* background-color: white; */
+    border-radius: 6px;
+}
+
+.row{
+    background-color: white;
+}
+
+.tableHeader {
+    display: flex;
+    background-color: rgb(252, 252, 252);
+    justify-content: space-between;
+    padding: 12px 24px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.tableHeader>span:first-child {
+    font-size: 18px;
+    font-weight: normal;
+}
+
+.productCol {
+    width: 45%;
+    text-align: left;
+
+
+}
+
+.quantityCol {
+    width: 15%;
+    text-align: center;
+}
+
+.priceCol,
+.totalCol {
+    width: 20%;
+    text-align: right;
+}
+
+
+.tableHeader,
+.productCol,
+.quantityCol,
+.priceCol,
+.totalCol {
+    padding: 16px 24px;
+    border-bottom: 1px solid #E2E8F0;
+
+}
+
+.titleCol {
+    background-color: #F8FAFC;
+    color: #64748B;
+}
+
+.productCell {
+    display: flex;
+    align-items: center;
+    column-gap: 12px;
+
+}
+
+
+.foodImage {
+    width: 48px;
+    height: 48px;
+    background-color: red;
+    flex-shrink: 0;
+    border-radius: 4px;
+
+
+}
+
+.foodName {
+    flex: 1;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    line-height: 24px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #0F172A;
+}

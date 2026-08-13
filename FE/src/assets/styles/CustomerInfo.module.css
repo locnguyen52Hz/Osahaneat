@@ -1,0 +1,40 @@
+.container {
+    background-color: white;
+    border-radius: 8px;
+    border: 2px solid #E2E8F0;
+    padding: 24px;
+}
+
+.title {
+    padding-bottom: 16px;
+    border-bottom: 1px solid #94A3B8;
+}
+
+.title,
+.name {
+    /* font-size: 16px; */
+    font-weight: bold;
+    line-height: 24px;
+
+}
+
+
+.title,
+.name,
+.deliveredTo,
+.email {
+    margin-bottom: 16px;
+}
+
+.email {}
+
+.deliveredTo {
+    line-height: 23px;
+}
+
+.lable {
+    font-size: 12px;
+    line-height: 16px;
+    color: #94A3B8;
+    margin-top: 4px;
+}

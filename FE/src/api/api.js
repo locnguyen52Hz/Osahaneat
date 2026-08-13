@@ -1,26 +1,26 @@
 import axios from "axios";
 import { data } from "react-router-dom";
+import { useAuthStore } from "../stores/Auth/useAuthStore";
 const baseURL = import.meta.env.VITE_BASE_URL;
 
 const createAuthorizedAxios = () => {
-  const token = localStorage.getItem("token");
-
+  const accessToken = useAuthStore.getState().accessToken;
   return axios.create({
     baseURL: baseURL,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${accessToken}`,
     },
   });
 };
 
 const createAuthorizedAxiosFile = () => {
-  const token = localStorage.getItem("token");
+  const accessToken = useAuthStore.getState().accessToken;
   return axios.create({
     baseURL: baseURL,
     headers: {
       "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${accessToken}`,
     },
   });
 };

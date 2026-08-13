@@ -5,6 +5,7 @@ import FoodDetail from "./FoodDetail";
 import style from "../../../assets/styles/FoodList.module.css";
 
 function FoodList({ foods, handleBuyNow, handleAddToCart }) {
+
   return (
     <>
       <div className={style.foodList}>
@@ -12,8 +13,10 @@ function FoodList({ foods, handleBuyNow, handleAddToCart }) {
           <FoodCard
             key={food.foodId}
             food={food}
-            onBuyNow={() => handleBuyNow(food)}
-            onAddItemToCart={handleAddToCart}
+            onBuyNow={() => handleBuyNow(food, food.shopName, food.shopId)}
+            onAddItemToCart={() =>
+              handleAddToCart(food, food.shopName, food.shopId)
+            }
           />
         ))}
       </div>

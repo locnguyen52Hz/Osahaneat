@@ -2,8 +2,7 @@ import React from "react";
 
 import { Marker, Popup, useMapEvents } from "react-leaflet";
 
-function UserMarker({location}) {
-
+function UserMarker({ latitude, longitude, popup = 'Bạn đang ở dây' }) {
 
   const redIcon = new L.Icon({
     iconUrl:
@@ -16,22 +15,22 @@ function UserMarker({location}) {
     shadowSize: [41, 41],
   });
 
-    const map = useMapEvents({
-      click: (e) => {
-        const { lat, lng } = e.latlng;
-        map.flyTo([lat, lng]);
-        // fetchAddress(lat, lng);
-        console.log(lat,lng)
-      },
-    });
+  const map = useMapEvents({
+    click: (e) => {
+      const { lat, lng } = e.latlng;
+      // map.flyTo([lat, lng]);
+      // fetchAddress(lat, lng);
+      console.log(lat, lng)
+    },
+  });
   return (
     <>
       {location && (
         <Marker
-          position={[location.latitude, location.longitude]}
+          position={[latitude, longitude]}
           icon={redIcon}
         >
-          <Popup>Bạn đang ở dây</Popup>
+          <Popup>{popup}</Popup>
         </Marker>
       )}
     </>

@@ -60,6 +60,12 @@ public class BuyerOrdersServiceImp implements OrdersService {
     @Autowired
     RatingRepository ratingRepository;
 
+    @Override
+    public OrderTimelineResponseDto getOrderTimelineItems(Integer userId, Integer orderId) {
+        return null;
+    }
+
+
     public OrdersDto buyNow(BuyNowRequest request, String authHeader) {
 
         OrdersRequest ordersRequest = new OrdersRequest();
@@ -139,7 +145,8 @@ public class BuyerOrdersServiceImp implements OrdersService {
 
 
         OsrmResponse routes = routesService.getRoutes(order.getFromLocation(), order.getToLocation());
-
+        double duration = routes.getRoutes().get(0).getDuration();
+        order.setEstimatedDeliveryTime(duration);
 
         //set khoảng cách
         double distance = routes.getRoutes().get(0).getDistance();
@@ -188,7 +195,7 @@ public class BuyerOrdersServiceImp implements OrdersService {
         OrdersDto ordersDTO = new OrdersDto();
         ordersDTO.setPartnerId(shop.getManager().getId());
         ordersDTO.setPartnerName(order.getUser().getFullName());
-
+        ordersDTO.setEstimatedDeliveryTime(order.getEstimatedDeliveryTime());
         ordersDTO.setOrderId(order.getId());
         ordersDTO.setNote(order.getNote());
         ordersDTO.setDeliveredTo(order.getDeliveredTo());
@@ -295,7 +302,7 @@ public class BuyerOrdersServiceImp implements OrdersService {
         Pageable pageable = PageRequest.of(page, 9);
         Page<Integer> orderIdPage = ordersRepository.getActiveOrderIdsByUserId(userId, pageable);
         List<Integer> orderIds = orderIdPage.getContent();
-        System.out.println(orderIds);
+
 
         if (orderIds.isEmpty()) {
             return Page.empty(pageable);
@@ -351,6 +358,9 @@ public class BuyerOrdersServiceImp implements OrdersService {
         shopsRepository.save(shop);
         return orderRating;
     }
-
+    @Override
+    public OrdersDto getOrderDetails(Integer orderId, Integer userId) {
+        return null;
+    }
 
 }

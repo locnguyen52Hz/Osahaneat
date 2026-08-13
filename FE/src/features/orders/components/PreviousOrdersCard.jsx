@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "../../../assets/styles/PreviousOrdersCard.module.css";
-import OrderStatusIcon from "./OrderStatusIcon";
+import StatusBadge from "./StatusBadge";
 import DateTime from "../../../components/common/DateTime";
 import { formatCurrency } from "../../../util/format";
 import OrderAddress from "./OrderAddress";
@@ -17,7 +17,7 @@ function PreviousOrdersCard({ order, submitRating, loading }) {
         <h6>
           {order.shopName} - # {order.orderId}
         </h6>
-        <OrderStatusIcon status={order.status} />
+        <StatusBadge status={order.status} />
       </div>
       <div className={styles.time}>
         <DateTime time={order.createdAt} />

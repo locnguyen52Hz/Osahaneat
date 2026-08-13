@@ -234,7 +234,8 @@ public interface OrdersRepository extends JpaRepository<Order, Integer>, JpaSpec
         o.fromLocation.longitude,
         o.toLocation.latitude,
         o.toLocation.longitude,
-        o.createdAt
+        o.createdAt,
+        o.estimatedDeliveryTime
     )
     FROM Order o
     JOIN o.user u

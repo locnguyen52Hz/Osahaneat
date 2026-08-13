@@ -26,6 +26,7 @@ function FeaturedShops() {
         const response = await apiGet(
           `${endpoints.shop.top6Shop}?fromLongitude=${currentLocation.longitude}&fromLatitude=${currentLocation.latitude}`,
         );
+     
 
         setShops(response.data.data);
       } catch (error) {

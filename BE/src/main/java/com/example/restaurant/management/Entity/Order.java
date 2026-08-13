@@ -30,6 +30,9 @@ public class Order {
     @Column(name = "delivered_to", nullable = false)
     private String deliveredTo;
 
+    @Column(name = "estimated_delivery_time", nullable = false, updatable = false)
+    private double estimatedDeliveryTime;
+
     // FROM LOCATION
     @Embedded
     @AttributeOverrides({
@@ -101,6 +104,17 @@ public class Order {
         this.user = user;
     }
 
+    public void setShop(Shop shop) {
+        this.shop = shop;
+    }
+
+    public double getEstimatedDeliveryTime() {
+        return estimatedDeliveryTime;
+    }
+
+    public void setEstimatedDeliveryTime(double estimatedDeliveryTime) {
+        this.estimatedDeliveryTime = estimatedDeliveryTime;
+    }
 
     public String getDeliveredTo() {
         return deliveredTo;

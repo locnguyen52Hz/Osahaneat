@@ -1,13 +1,17 @@
 package com.example.restaurant.management.Service.Search.Imp;
-import com.example.restaurant.management.dto.FoodDto;
-import com.example.restaurant.management.dto.OsrmTableResponse;
-import com.example.restaurant.management.dto.ShopDto;
+
 import com.example.restaurant.management.Entity.Shop;
+import com.example.restaurant.management.Payload.Request.SearchFoodByKeywordRequest;
 import com.example.restaurant.management.Repository.FoodRepository;
 import com.example.restaurant.management.Repository.ShopsRepository;
 import com.example.restaurant.management.Service.Search.SearchService;
 import com.example.restaurant.management.Specifications.ShopSpecifications;
+import com.example.restaurant.management.dto.FoodDto;
+import com.example.restaurant.management.dto.FoodSearchDto;
+import com.example.restaurant.management.dto.OsrmTableResponse;
+import com.example.restaurant.management.dto.ShopDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -17,6 +21,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,8 +38,7 @@ public class BuyerSearchServiceImp implements SearchService {
     @Autowired
     FoodRepository foodRepository;
 
-    public Page<ShopDto> findShopsByCategoryWithQuantity(
-            String name, double userLon, double userLat, int page) {
+    public Page<ShopDto> findShopsByCategoryWithQuantity(String name, double userLon, double userLat, int page) {
 
         if (name == null || name.isEmpty()) {
             return Page.empty(); // trả về page rỗng
@@ -95,37 +99,47 @@ public class BuyerSearchServiceImp implements SearchService {
         }
 
         // Trả về Page<ShopDTO> bằng cách map từ Page<Shops>
-        return new PageImpl<>(
-                shopDtos,
-                pageable,
-                shopsPage.getTotalElements() // tổng số shop
+        return new PageImpl<>(shopDtos, pageable, shopsPage.getTotalElements() // tổng số shop
         );
     }
 
-    public Map<String, Object> searchFoods(String name, int page) {
+
+
+    public Map<String, Object> searchFoodsByCategoryId(Integer categoryId, int page) {
         Pageable pageable = PageRequest.of(page, 10);
-        Page<FoodDto> result = foodRepository.searchFoodsByName(name, pageable);
+        Page<FoodDto> result = foodRepository.findFoodByCategoryId(categoryId, pageable);
         Map<String, Object> response = new HashMap<>();
         response.put("list", result.getContent());
         response.put("totalElement", result.getTotalElements());
         response.put("totalPages", result.getTotalPages());
-        response.put("page",result.getNumber());
-        response.put("size",result.getSize());
+        response.put("page", result.getNumber());
+        response.put("size", result.getSize());
         return response;
     }
 
-    public Map<String, Object> searchFoodsByCategoryName(String name, int page) {
-        Pageable pageable = PageRequest.of(page, 10);
-        Page<FoodDto> result = foodRepository.findFoodByCategoryName(name, pageable);
+
+    public Map<String, Object> searchFoodsByKeyword(SearchFoodByKeywordRequest request, int page) throws BadRequestException {
+        Pageable pageable = PageRequest.of(page, 8);
+
+        if (request.getRadius() == null) {
+            request.setRadius(10000);
+        }
+        if (request.getKeyword() != null && request.getCategoryId() != null) {
+            throw new BadRequestException("Only one search type allowed");
+        }
+
+        Page<FoodSearchDto> result = foodRepository.searchFoods(request, pageable);
+
+
         Map<String, Object> response = new HashMap<>();
         response.put("list", result.getContent());
         response.put("totalElement", result.getTotalElements());
         response.put("totalPages", result.getTotalPages());
-        response.put("page",result.getNumber());
-        response.put("size",result.getSize());
+        response.put("page", result.getNumber());
+        response.put("size", result.getSize());
+
         return response;
     }
-
 
 
 }

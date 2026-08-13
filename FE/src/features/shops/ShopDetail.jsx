@@ -13,12 +13,13 @@ import shared from "../../assets/styles/Shared.module.css";
 import FoodList from "../foods/components/FoodList";
 import endpoints from "../../api/endpoints";
 import { toast } from "react-toastify";
-import { useModal } from "../../contexts/ModalContext";
+
 import ActiveCategories from "../category/components/ActiveCategories";
 import ShopHeader from "./ShopHeader";
 import FoodDetail from "../foods/components/FoodDetail";
 import { useCartStore } from "../../stores/Cart/useCartStore";
 import { useLocationStore } from "../../stores/location/useLocationStore";
+import { useFoodActions } from "../../hooks/useFoodActions";
 
 function ShopDetail() {
   const { id } = useParams();
@@ -29,9 +30,7 @@ function ShopDetail() {
   const [foods, setFoods] = useState([]);
 
   const currentLocation = useLocationStore((s) => s.currentLocation);
-
-  const { closeAllModal, openModal } = useModal();
-  const navigate = useNavigate();
+  const { handleBuyNow, handleAddToCart } = useFoodActions();
 
   const addItem = useCartStore((s) => s.addItem);
 
@@ -77,91 +76,6 @@ function ShopDetail() {
     fetchFoods();
   }, [activeCategory]);
 
-  const handleBuyNow = (food) => {
-    openModal(
-      <FoodDetail
-        food={food}
-        shopName={shop.shopName}
-        shopId={shop.shopId}
-        navigate={navigate}
-      />,
-      { type: "slide" },
-    );
-  };
-
-  const handleAddToCart = (food) => {
-    addItem(shop, food);
-  };
-
-  // const handleDeleteFood = async (foodId) => {
-  //   console.log(foodId);
-  //   try {
-  //     await apiDelete(`${endpoints.food.delete}/${foodId}`);
-  //     const resFood = await apiGet(
-  //       `${endpoints.food.list}?categoryId=${activeCategory.id}&shopId=${shop.id}`,
-  //     );
-  //     setFoods(resFood.data.data);
-  //     closeAllModal();
-  //     toast.success("Xóa thành công");
-  //   } catch (error) {
-  //     console.log(error);
-  //     toast.error("Xóa thất bại");
-  //   }
-  // };
-
-  // ========= thêm mới food ===========
-  // const onSubmitNewFood = async (newFood) => {
-  //   const formData = new FormData();
-  //   formData.append("name", newFood.name);
-  //   formData.append("description", newFood.description);
-  //   formData.append("price", newFood.price);
-  //   formData.append("image", newFood.image);
-  //   formData.append("categoryId", activeCategory.id);
-
-  //   console.log(formData);
-  //   try {
-  //     const res = await apiPostFile(`${endpoints.food.insertFood}`, formData);
-  //     const resFood = await apiGet(
-  //       `${endpoints.food.list}?categoryId=${activeCategory.id}&shopId=${shop.id}`,
-  //     );
-  //     setFoods(resFood.data.data);
-  //     closeAllModal();
-  //     toast.success("Thành công");
-  //   } catch (error) {
-  //     console.log(error);
-  //     toast.error("Thất bại");
-  //   }
-  // };
-
-  //==========edit food==============
-  // const onSubmitEditFood = async (editFood) => {
-  //   console.log(editFood);
-
-  //   const formData = new FormData();
-  //   formData.append("name", editFood.name);
-  //   formData.append("description", editFood.description);
-  //   formData.append("price", editFood.price);
-  //   formData.append("foodId", editFood.foodId);
-  //   formData.append("categoryId", activeCategory.id);
-
-  //   if (editFood.image instanceof File) {
-  //     formData.append("image", editFood.image);
-  //   }
-  //   try {
-  //     const res = await apiPatchFile(endpoints.food.edit, formData);
-  //     const resFood = await apiGet(
-  //       `${endpoints.food.list}?categoryId=${activeCategory.id}&shopId=${shop.id}`,
-  //     );
-
-  //     setFoods(resFood.data.data);
-  //     closeAllModal();
-  //     toast.success("Chỉnh sửa thành công");
-  //   } catch (error) {
-  //     console.log(error);
-  //     toast.error("Cập nhật thất bại");
-  //   }
-  // };
-
   return (
     <>
       {/* Banner */}
@@ -183,12 +97,13 @@ function ShopDetail() {
             array={categories}
             btnColor={shared.btnLight}
             btnActive={shared.navActive}
+            getKey={(item) => item.id}
+            getLabel={(item) => item.name}
           />
         )}
 
         <FoodList
-          shopName={shop.shopName}
-          shopId={shop.shopId}
+  
           foods={foods}
           handleBuyNow={handleBuyNow}
           handleAddToCart={handleAddToCart}

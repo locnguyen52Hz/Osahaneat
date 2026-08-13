@@ -7,15 +7,17 @@ import { useAuth } from "../app/providers/UseContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { useCartStore } from "../stores/Cart/useCartStore.js";
 import useSidebarBadges from "../hooks/useSidebarBadges.js";
+import { useAuthStore } from "../stores/Auth/useAuthStore.js";
 
 function SideBar({ isOpen }) {
-  const role = localStorage.getItem("role");
+  const role = useAuthStore((s) => s.role);
+  const username = useAuthStore((s) => s.username);
+  const clearAuth = useAuthStore((s) => s.clearAuth);
 
   const totalUnreadCount = useConversationStore((s) => s.totalUnreadCount);
 
-  const badgeCounts = useSidebarBadges()
+  const badgeCounts = useSidebarBadges();
 
-  const { username, clearAuthData } = useAuth();
   const navigate = useNavigate();
 
   const items = routes[role].children.filter((item) => item.showInSideBar);
@@ -38,7 +40,7 @@ function SideBar({ isOpen }) {
 
       <button
         onClick={() => {
-          clearAuthData();
+          clearAuth();
           navigate("/login");
         }}
       >

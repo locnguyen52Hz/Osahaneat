@@ -25,4 +25,13 @@ public interface OrderStatusHistoryRepository extends JpaRepository<OrderStatusH
             """)
     List<Object[]> findCurrentStatuses(@Param("orderIds") List<Integer> orderIds);
 
+
+    @Query("""
+                SELECT osh
+                FROM OrderStatusHistory osh
+                WHERE osh.order.id = :orderId
+                ORDER BY osh.startTime
+            """)
+    List<OrderStatusHistory> findTimelineByOrderId(@Param("orderId") Integer orderId);
+
 }

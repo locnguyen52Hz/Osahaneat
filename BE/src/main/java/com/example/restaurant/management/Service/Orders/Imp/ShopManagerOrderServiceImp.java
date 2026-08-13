@@ -1,11 +1,7 @@
 package com.example.restaurant.management.Service.Orders.Imp;
 
-import com.example.restaurant.management.dto.OrderItemDto;
-import com.example.restaurant.management.dto.OrderTimeLineDto;
-
-import com.example.restaurant.management.dto.OrdersDto;
-import com.example.restaurant.management.Entity.OrderStatusHistory;
 import com.example.restaurant.management.Entity.Order;
+import com.example.restaurant.management.Entity.OrderStatusHistory;
 import com.example.restaurant.management.Entity.OrdersItem;
 import com.example.restaurant.management.Entity.Shop;
 import com.example.restaurant.management.Enums.OrdersStatus;
@@ -15,6 +11,7 @@ import com.example.restaurant.management.Repository.OrdersRepository;
 import com.example.restaurant.management.Repository.ShopsRepository;
 import com.example.restaurant.management.Service.Orders.OrdersHelper;
 import com.example.restaurant.management.Service.Orders.OrdersService;
+import com.example.restaurant.management.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -44,6 +41,44 @@ public class ShopManagerOrderServiceImp implements OrdersService {
     @Autowired
     OrdersHelper ordersHelper;
 
+
+    @Override
+    public OrdersDto getOrderDetails(Integer orderId, Integer userId) {
+        Shop shop = shopsRepository.findShopsByManager_Id(userId);
+        if (shop == null) {
+            throw new RuntimeException("Shop not found");
+        }
+        Order order = ordersRepository.findOrdersByIdAndShop_Id(orderId, shop.getId());
+        if (order == null) {
+            throw new RuntimeException("Orders not found");
+        }
+
+        OrdersDto ordersDto = new OrdersDto();
+        ordersDto.setOrderId(order.getId());
+
+        // customer info
+        ordersDto.setPartnerEmail(order.getUser().getEmail());
+        ordersDto.setPartnerId(order.getUser().getId());
+        ordersDto.setPartnerName(order.getUser().getFullName());
+
+        //location
+        ordersDto.setDeliveredTo(order.getDeliveredTo());
+        ordersDto.setLatitude(order.getFromLocation().getLatitude());
+        ordersDto.setLongitude(order.getFromLocation().getLongitude());
+        ordersDto.setPartnerLatitude(order.getToLocation().getLatitude());
+        ordersDto.setPartnerLongitude(order.getToLocation().getLongitude());
+
+        //order info
+        ordersDto.setNote(order.getNote());
+        ordersDto.setCreatedAt(order.getCreatedAt());
+        ordersDto.setDistance(order.getDistance());
+        ordersDto.setShippingFee(order.getShipFee());
+        ordersDto.setSubtotal(order.getSubtotal());
+        ordersDto.setTotalAmount(order.getTotalAmount());
+        ordersDto.setStatus(order.getStatus().toString());
+
+        return ordersDto;
+    }
 
     @Override
     @Transactional
@@ -85,7 +120,7 @@ public class ShopManagerOrderServiceImp implements OrdersService {
 
     public Page<OrdersDto> getOrdersWithTotalQuantity(Integer userId, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        return ordersRepository.findOrdersWithQuantity(userId,pageable);
+        return ordersRepository.findOrdersWithQuantity(userId, pageable);
     }
 
     @Override
@@ -96,7 +131,7 @@ public class ShopManagerOrderServiceImp implements OrdersService {
         }
 
         Pageable pageable = PageRequest.of(page, 10);
-        Page<OrdersDto> ordersPage = ordersRepository.findPreviousOrdersForShopManager( shop.getId(), pageable);
+        Page<OrdersDto> ordersPage = ordersRepository.findPreviousOrdersForShopManager(shop.getId(), pageable);
 
         return ordersPage;
     }
@@ -122,6 +157,41 @@ public class ShopManagerOrderServiceImp implements OrdersService {
             orderItemDtos.add(orderItemDTO);
         }
         return orderItemDtos;
+    }
+
+    @Override
+    public OrderTimelineResponseDto getOrderTimelineItems(Integer userId, Integer orderId) {
+
+        Shop shop = shopsRepository.findShopsByManager_Id(userId);
+        if (shop == null) {
+            throw new RuntimeException("Shop not found");
+        }
+        Order order = ordersRepository.findOrdersByIdAndShop_Id(orderId,shop.getId());
+        if (order == null) {
+            throw new RuntimeException("Orders not found");
+        }
+
+        List<OrderStatusHistory> histories = orderStatusHistoryRepository.findTimelineByOrderId(order.getId());
+        List<OrderTimelineItemDto> timeline = new ArrayList<>();
+        OrderTimelineResponseDto response = new OrderTimelineResponseDto();
+
+        for (int i = 0; i < histories.size(); i++) {
+            OrderStatusHistory current = histories.get(i);
+            OrderTimelineItemDto dto = new OrderTimelineItemDto();
+            dto.setStatus(current.getStatus());
+            dto.setStartTime(current.getStartTime());
+            dto.setEndTime(current.getEndTime());
+            if (current.getStatus() == OrdersStatus.CANCELLED && i > 0) {
+                dto.setCancelledFrom(histories.get(i - 1).getStatus());
+
+            }
+            timeline.add(dto);
+        }
+        response.setCurrentStatus(order.getStatus());
+        response.setStatuses(timeline);
+
+
+        return response;
     }
 
 

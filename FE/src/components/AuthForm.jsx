@@ -30,7 +30,6 @@ export default function AuthForm({
       });
     }
   }, [externalErrors, setError]);
-  console.log(pathnameUrl);
 
   return (
     <div className={styles.pageRegister}>
@@ -88,10 +87,7 @@ export default function AuthForm({
               <h3 className={styles.h3}>{title}</h3>
               <p className={styles.paragraph}>{description}</p>
             </div>
-            <form
-              className={styles.form}
-              onSubmit={handleSubmit(onSubmit)}
-            >
+            <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
               {fields.map((field) => (
                 <div className={styles.row} key={field.name}>
                   <div className={styles.bgIcon}>

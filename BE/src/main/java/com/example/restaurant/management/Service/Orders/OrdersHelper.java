@@ -132,6 +132,7 @@ public class OrdersHelper {
                         dto.setFromLocation(row.getFromLocation());
                         dto.setToLocation(row.getToLocation());
                         dto.setStatus(row.getCurrentStatus());
+                        dto.setEstimatedDeliveryTime(row.getEstimatedDeliveryTime());
                         return dto;
                     }
             );

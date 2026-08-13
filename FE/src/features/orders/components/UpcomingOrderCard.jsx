@@ -1,11 +1,15 @@
 import React, { useMemo } from "react";
-import OrderStatusIcon from "./OrderStatusIcon";
+import StatusBadge from "./StatusBadge";
 import DateTime from "../../../components/common/DateTime";
 import shared from "../../../assets/styles/Shared.module.css";
 import { useModal } from "../../../contexts/ModalContext";
 import OrderDetails from "./OrderDetails";
 import styles from "../../../assets/styles/OrderCard.module.css";
-import { formatDateTime, formatDistance } from "../../../util/format";
+import {
+  formatDateTime,
+  formatDistance,
+  formatDuration,
+} from "../../../util/format";
 import ProgressTimeline from "../../TimeLine/ProgressTimeline";
 import OrderAddress from "./OrderAddress";
 import FoodItems from "../../foods/components/FoodItems";
@@ -14,7 +18,7 @@ import OrderActions from "./OrderActions";
 
 function UpcomingOrderCard({ order, updateOrderStatus, handleCancelOrder }) {
   const { openModal } = useModal();
-
+  // console.log(order)
   return (
     <div className={styles.cardOrder}>
       {/* Header */}
@@ -23,7 +27,7 @@ function UpcomingOrderCard({ order, updateOrderStatus, handleCancelOrder }) {
           {order.shopName} - #{order.orderId}
         </p>
 
-        <OrderStatusIcon status={order.status} />
+        <StatusBadge status={order.status} />
       </div>
 
       {/* Time */}
@@ -34,7 +38,9 @@ function UpcomingOrderCard({ order, updateOrderStatus, handleCancelOrder }) {
       {/* Body */}
       <div className={styles.cardBody}>
         <div>
-          <p className={`${shared.paragraphColor} ${shared.small}`}>Distance</p>
+          <p className={`${shared.paragraphColor} ${shared.small}`}>
+            Khoảng cách
+          </p>
 
           <h2>{formatDistance(order.distance)} km</h2>
         </div>
@@ -53,7 +59,7 @@ function UpcomingOrderCard({ order, updateOrderStatus, handleCancelOrder }) {
               )
             }
           >
-            Details
+            Chi tiết
           </button>
 
           <button
@@ -62,7 +68,7 @@ function UpcomingOrderCard({ order, updateOrderStatus, handleCancelOrder }) {
               openModal(<TrackStatus order={order} />, { type: "slide" })
             }
           >
-            Track
+            Theo dõi
           </button>
         </div>
       </div>

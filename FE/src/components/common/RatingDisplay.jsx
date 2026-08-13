@@ -6,12 +6,11 @@ function RatingDisplay({
   count = 0,
   showCount = true,
   size = "md", // "sm" | "md" | "lg"
-  className = "",
 }) {
   const containerClass = `
     ${styles.rating}
     ${styles[size]}
-    ${className}
+
   `;
 
   return (
@@ -19,7 +18,7 @@ function RatingDisplay({
       <i className="bi bi-star-fill"></i>
       <p>
         <b>{value}</b>
-        {showCount && <> - {count} Ratings</>}
+        {showCount && <> ({count})</>}
       </p>
     </div>
   );

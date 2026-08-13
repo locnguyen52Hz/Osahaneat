@@ -45,10 +45,14 @@ public class CustomFilterSecurity {
                         authorizeRequests.requestMatchers
                                         ("/api/auth/register/**",
                                                 "/api/auth/login",
+                                                "/api/auth/refresh",
                                                 "/api/food/image/{filename:.+}",
                                                 "/api/categories/image/{filename:.+}",
                                                 "/api/shops/avatar/{filename:.+}",
-                                                "/websocket/**").permitAll().requestMatchers("/login/get-role").hasAnyRole("ADMIN", "SHOP_MANAGER", "BUYER")
+                                                "/websocket/**")
+                                .permitAll()
+                                .requestMatchers("/login/get-role")
+                                .hasAnyRole("ADMIN", "SHOP_MANAGER", "BUYER")
 
                 .anyRequest().authenticated());
 

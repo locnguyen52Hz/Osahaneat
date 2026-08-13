@@ -1,18 +1,17 @@
 package com.example.restaurant.management.Controllers;
 
 
+import com.example.restaurant.management.Payload.Request.SearchFoodByKeywordRequest;
 import com.example.restaurant.management.dto.ShopDto;
 import com.example.restaurant.management.Payload.ResponseData;
 import com.example.restaurant.management.Service.Search.Imp.BuyerSearchServiceImp;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,11 +44,11 @@ public class SearchController {
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
-    @GetMapping("/food-name")
+    @GetMapping("/food-by-keyword")
     @PreAuthorize("hasAnyRole('ROLE_BUYER')")
-    public ResponseEntity<?> searchFoodName(@RequestParam String name, @RequestParam int page) {
+    public ResponseEntity<?> searchFoodName(@ModelAttribute SearchFoodByKeywordRequest request, @RequestParam int page) throws BadRequestException {
         ResponseData  responseData = new ResponseData();
-        Map<String,Object> map = buyerSearchServiceImp.searchFoods(name,page);
+        Map<String,Object> map = buyerSearchServiceImp.searchFoodsByKeyword(request,page);
         responseData.setData(map);
         responseData.setMessage("success");
         responseData.setSuccess(true);
@@ -59,9 +58,9 @@ public class SearchController {
 
     @GetMapping("/food-by-category")
     @PreAuthorize("hasAnyRole('ROLE_BUYER')")
-    public ResponseEntity<?> getFoodByCategory(@RequestParam String category, @RequestParam int page) {
+    public ResponseEntity<?> getFoodByCategory(@RequestParam Integer categoryId, @RequestParam int page) {
         ResponseData  responseData = new ResponseData();
-        Map<String,Object> map = buyerSearchServiceImp.searchFoodsByCategoryName(category, page);
+        Map<String,Object> map = buyerSearchServiceImp.searchFoodsByCategoryId(categoryId, page);
         responseData.setData(map);
         responseData.setMessage("success");
         responseData.setSuccess(true);

@@ -17,7 +17,6 @@ function ShopCard({
   onClick,
   formatDistance,
 }) {
-  console.log(`${distance} km`);
   return (
     <div className={`${style.card} ${shared.boxShadow}`} onClick={onClick}>
       <div className={`${style.shopAvatarPadding} ${shared.bgLight}`}>

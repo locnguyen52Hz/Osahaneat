@@ -10,7 +10,6 @@ import ShopInfo from "./components/ShopInfo.jsx";
 function ShopHeader({ shop }) {
   return (
 
-
     <div className={styles.container}>
       <div className={styles.wrapperAvatar}>
         <ShopAvatar

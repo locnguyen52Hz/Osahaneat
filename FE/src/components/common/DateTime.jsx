@@ -8,7 +8,7 @@ function DateTime({ time, color }) {
       display: "inline-flex",
       gap: "0.3rem",
       fontSize: "12px",
-      // color:'#858796'
+      color: color
     },
     p: {
       paddingTop: "1px",

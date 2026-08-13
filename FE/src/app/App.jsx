@@ -1,14 +1,18 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Suspense, useEffect } from "react";
 import PrivateRouter from "../components/PrivateRouter.jsx";
-import MainLayout from "../components/MainLayout.jsx";
+import MainLayout from "../layouts/MainLayout.jsx";
 import routes from "../routes/config.jsx";
 import { useAuth } from "./providers/UseContext.jsx";
-import Login from "../features/auth/Common/Login.jsx";
+import Login from "../features/pages/common/Login.jsx";
 import { ToastContainer } from "react-toastify";
 import { useConversationStore } from "../stores/messages/useConversationStore.js";
 import { useCartStore } from "../stores/Cart/useCartStore.js";
 import { useLocationStore } from "../stores/location/useLocationStore.js";
+import { useAuthStore } from "../stores/Auth/useAuthStore.js";
+import { apiPost } from "../api/api.js";
+import endpoints from "../api/endpoints.js";
+import axios from "axios";
 
 // helper
 function mapRoutes(routeTree) {
@@ -31,23 +35,48 @@ function mapRoutes(routeTree) {
 }
 
 function App() {
-  const { role, token } = useAuth();
+  // const { role, token } = useAuth();
+  const setAuth = useAuthStore((s) => s.setAuth);
+  const isInitializing = useAuthStore((s) => s.isInitializing);
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const refresh = useAuthStore((s) => s.refresh);
+  const role = useAuthStore((s) => s.role);
+  console.log("isInitializing: ", isInitializing);
+
+  const Initializer = role ? routes[role]?.initializer : null;
 
   const privateRoutes =
     role && routes[role] ? mapRoutes(routes[role].children) : [];
 
   const fetchUnreadMessage = useConversationStore((s) => s.fetchUnreadMessage);
-  const fetchCart = useCartStore((s) => s.fetchCart);
+
   const detectCurrentLocation = useLocationStore(
     (s) => s.detectCurrentLocation,
   );
+
   useEffect(() => {
-    if (token) {
+    const initializeAuth = async () => {
+      const success = await refresh();
+
+      if (!success) {
+        console.log("redirect login");
+      }
+    };
+
+    initializeAuth();
+  }, []);
+
+  useEffect(() => {
+    if (accessToken) {
       fetchUnreadMessage();
-      fetchCart();
+
       detectCurrentLocation();
     }
-  }, [token]);
+  }, [accessToken]);
+
+  if (isInitializing) {
+    return <div>Đang xác thực người dùng....</div>;
+  }
   return (
     <BrowserRouter>
       <Suspense fallback={<div>Loading...</div>}>
@@ -60,7 +89,7 @@ function App() {
           <Route path="/login" element={<Login />} />
 
           {/* Private */}
-          {role && token && routes[role] && (
+          {role && accessToken && routes[role] && Initializer && (
             <Route
               element={
                 <PrivateRouter allowedRoles={[role]}>
@@ -68,9 +97,11 @@ function App() {
                 </PrivateRouter>
               }
             >
-              {privateRoutes.map(({ path, element }) => (
-                <Route key={path} path={path} element={element} />
-              ))}
+              <Route element={<Initializer />}>
+                {privateRoutes.map(({ path, element }) => (
+                  <Route key={path} path={path} element={element} />
+                ))}
+              </Route>
             </Route>
           )}
 
@@ -78,7 +109,7 @@ function App() {
           <Route
             path="/"
             element={
-              role && token ? (
+              role && accessToken ? (
                 <Navigate
                   to={
                     role === "ROLE_BUYER" ? "/buyer/home" : "/manager/dashboard"
@@ -93,7 +124,9 @@ function App() {
           {/* Catch all */}
           <Route
             path="*"
-            element={token ? <Navigate to="/403" /> : <Navigate to="/login" />}
+            element={
+              accessToken ? <Navigate to="/403" /> : <Navigate to="/login" />
+            }
           />
         </Routes>
 

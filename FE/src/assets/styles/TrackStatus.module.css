@@ -11,14 +11,21 @@
     margin-bottom: 20px;
 }
 
-.statusTrack {
-    padding: 20px
+
+.estimated {
+    display: flex;
+    justify-content: space-between;
 }
 
-.distance {
+.statusTrack {
+    padding: 20px;
+}
+
+.distance,
+.time {
     display: flex;
     align-items: center;
-    column-gap: 20px;
+    column-gap: 10px;
     margin-bottom: 20px;
 }
 
@@ -27,21 +34,20 @@
     font-size: 1.25rem;
 }
 
-.distance>div>p:first-child {
-    font-size: 12px;
+.time>i {
+    color: red;
 }
 
-
-.distance>div>p:last-child {
-    font-size: 1.25rem;
-    font-weight: bold;
+.count{
+    
 }
+
 
 .footer {
     margin-top: auto;
     padding: 0 20px;
 }
 
-.map{
+.map {
     height: 400px;
 }

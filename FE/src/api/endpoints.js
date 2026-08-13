@@ -6,6 +6,7 @@ const endpoints = {
     register: `${API_BASE_URL}/auth/register`,
     logout: `${API_BASE_URL}/auth/logout`,
     role: `${API_BASE_URL}/auth/get-role`,
+    refresh: `${API_BASE_URL}/auth/refresh`,
   },
   image: {
     food: `${API_BASE_URL}/food/image`,
@@ -27,6 +28,8 @@ const endpoints = {
     toggle: `${API_BASE_URL}/categories/toggle-category`,
   },
   order: {
+    details: `${API_BASE_URL}/orders/details`,
+    timeline: `${API_BASE_URL}/orders/timeline`,
     create: `${API_BASE_URL}/orders/create-orders`,
     get_orders: `${API_BASE_URL}/orders`,
     updateStatus: (id, action) =>
@@ -50,8 +53,8 @@ const endpoints = {
   },
   search: {
     shopsByCategory: `${API_BASE_URL}/search/shops-by-category`,
-    foodName: `${API_BASE_URL}/search/food-name`,
-    foodByCategoryName: `${API_BASE_URL}/search/food-by-category`,
+    foodByKeyword: `${API_BASE_URL}/search/food-by-keyword`,
+    foodByCategoryId: `${API_BASE_URL}/search/food-by-category`,
   },
   messages: {
     conversation: `${API_BASE_URL}/messages/conversations`,

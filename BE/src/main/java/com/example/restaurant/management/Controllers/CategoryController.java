@@ -33,7 +33,7 @@ public class CategoryController {
     @Autowired
     FileService fileService;
 
-    //Shop_manager
+
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<?> createCategory(@ModelAttribute CategoryRequest categoryRequest) {

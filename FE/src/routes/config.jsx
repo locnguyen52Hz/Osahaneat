@@ -1,23 +1,26 @@
 // routes/config.js
-import Home from "../features/buyer/pages/Home";
-import Dashboard from "../features/shop-manager/Dashboard";
-import Favourites from "../features/buyer/pages/Favourites";
-import Explore from "../features/buyer/pages/Explore";
+import Home from "../features/pages/buyer/Home";
+import Dashboard from "../features/pages/shop-manager/Dashboard";
+import Favourites from "../features/pages/buyer/Favourites";
 import ShopDetail from "../features/shops/ShopDetail";
-import Orders from "../features/orders/pages/Orders";
-import Login from "../features/auth/Common/Login";
-import Register from "../features/auth/Register";
-import Forbidden from "../features/auth/Common/Forbidden";
-
-import Nearest from "../features/buyer/pages/Nearest";
-import RegisterShop from "../features/auth/RegisterShop";
+import Orders from "../features/pages/common/Orders";
+import Login from "../features/pages/common/Login";
+import Register from "../features/pages/buyer/Register";
+import Forbidden from "../features/pages/common/Forbidden";
+import Nearest from "../features/pages/buyer/Nearest";
 import CategoriesPage from "../features/shop-manager/CategoriesPage";
-import SearchResults from "../features/search/SearchResults";
-import MessagesPage from "../features/messages/pages/MessagesPage";
+import SearchResults from "../features/pages/buyer/SearchResults";
+import MessagesPage from "../features/pages/common/MessagesPage";
 import { icon } from "leaflet";
 import UpcomingOrders from "../features/orders/components/UpcomingOrders";
 import PreviousOrders from "../features/orders/components/PreviousOrders";
-import MyCartPage from "../features/buyer/pages/MyCartPage";
+import MyCartPage from "../features/pages/buyer/MyCartPage";
+import RegisterShop from "../features/pages/shop-manager/RegisterShop";
+import Explore from "../features/pages/buyer/Explore";
+
+import ManagerInitializer from "../features/shop-manager/components/ManagerInitializer";
+import BuyerInitializer from "../features/buyer/components/BuyerInitializer";
+import ManagerOrderDetails from "../features/pages/shop-manager/ManagerOrderDetails";
 
 const routes = {
   public: [
@@ -29,6 +32,7 @@ const routes = {
 
   ROLE_BUYER: {
     layout: "main",
+    initializer: BuyerInitializer,
     children: [
       {
         type: "item",
@@ -99,12 +103,6 @@ const routes = {
       },
       {
         type: "item",
-        path: "/buyer/detail/shop/:id",
-        element: <ShopDetail />,
-        showInSideBar: false,
-      },
-      {
-        type: "item",
         path: "/buyer/nearest",
         element: <Nearest />,
         showInSideBar: true,
@@ -133,6 +131,7 @@ const routes = {
 
   ROLE_SHOP_MANAGER: {
     layout: "main",
+    initializer: ManagerInitializer,
     children: [
       {
         type: "item",
@@ -148,7 +147,7 @@ const routes = {
         path: "/manager/shop-orders",
         element: <Orders />,
         label: "shop orders",
-        icon: <i class="bi bi-minecart"></i>,
+        icon: <i className="bi bi-minecart"></i>,
 
         showInSideBar: true,
         notify: "orders",
@@ -172,6 +171,12 @@ const routes = {
 
         notify: "message",
         showInSideBar: true,
+      },
+      {
+        type: "item",
+        path: "/order-details/:id",
+        element: <ManagerOrderDetails />,
+        showInSideBar: false,
       },
     ],
   },

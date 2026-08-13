@@ -1,29 +1,56 @@
-// utils/orderTimeline.js
+export const STATUS_ORDER = ["PENDING", "PROCESSING", "SHIPPING", "COMPLETED"];
 
-export const STATUS_ORDER = ["PENDING", "PROCESSING", "SHIPPING"];
-
-export const STATUS_TEXT = {
+export const BUYER_TIMELINE_TEXT = {
   PENDING: {
-    current: "Ordered on",
-    done: "Order confirmed",
+    current: "Đặt hàng lúc",
+    done: "Đã xác nhận",
   },
-
   PROCESSING: {
-    current: "Order preparing",
-    done: "Order packed",
+    current: "Đang xử lý",
+    done: "Đã đóng gói",
   },
-
   SHIPPING: {
-    current: "Departed ",
+    current: "Đang giao hàng",
+    done: "Đã giao hàng",
+  },
+  COMPLETED: {
+    current: "Đã hoàn thành",
+  },
+  CANCELLED: {
+    current: "Đã hủy",
   },
 };
 
-export function getTimeLine(currentStatus) {
-  const currentIndex = STATUS_ORDER.indexOf(currentStatus);
+export const MANAGER_TIMELINE_TEXT = {
+  PENDING: {
+    current: "Chờ xác nhận",
+    done: "Đã xác nhận",
+    icon: "bi bi-check-lg",
+  },
+  PROCESSING: {
+    current: "Đang chuẩn bị",
+    done: "Đã chuẩn bị",
+    upcoming: "Chuẩn bị",
+    icon: "bi bi-hourglass-split",
+  },
+  SHIPPING: {
+    current: "Đang vận chuyển",
+    done: "Đã vận chuyển",
+    upcoming: "Giao hàng",
+    icon: "bi bi-truck",
+  },
+  COMPLETED: {
+    done: "Đã hoàn thành",
+    upcoming: "Hoàn thành",
+    icon: "bi bi-geo-alt-fill",
+  },
+};
 
-  return STATUS_ORDER.map((status, index) => ({
+export function getTimeline(currentStatus, statusOrder = STATUS_ORDER) {
+  const currentIndex = statusOrder.indexOf(currentStatus);
+
+  return statusOrder.map((status, index) => ({
     status,
-
     state:
       index < currentIndex
         ? "done"
@@ -33,33 +60,31 @@ export function getTimeLine(currentStatus) {
   }));
 }
 
-export function buildTimelineData(currentStatus, statuses, options = {}) {
-  const { hideEmpty = false } = options;
+export function buildTimelineData(currentStatus, statuses) {
+  const timeline = getTimeline(currentStatus);
 
-  const timeLine = getTimeLine(currentStatus);
+  const statusMap = Object.fromEntries(
+    statuses.map((item) => [item.status, item]),
+  );
 
-  const statusMap = Object.fromEntries(statuses.map((s) => [s.status, s]));
+  return {
+    isFinished: currentStatus === "COMPLETED",
 
-  const data = timeLine.map((item) => {
-    const statusInfo = statusMap[item.status];
+    items: timeline.map((item) => {
+      const statusInfo = statusMap[item.status];
 
-    const time =
-      item.state === "current"
-        ? statusInfo?.startTime
-        : item.state === "done"
-          ? statusInfo?.endTime
-          : null;
-
-    const text = STATUS_TEXT[item.status]?.[item.state];
-
-    return {
-      status: item.status,
-      state: item.state,
-      text,
-      time,
-      isCurrent: item.state === "current",
-    };
-  });
-
-  return hideEmpty ? data.filter((item) => item.text) : data;
+      return {
+        status: item.status,
+        state: item.state,
+        startTime: statusInfo?.startTime ?? null,
+        endTime: statusInfo?.endTime ?? null,
+        time:
+          item.state === "done"
+            ? (statusInfo?.endTime ?? null)
+            : item.state === "current"
+              ? (statusInfo?.startTime ?? null)
+              : null,
+      };
+    }),
+  };
 }

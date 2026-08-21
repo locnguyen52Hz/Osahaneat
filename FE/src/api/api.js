@@ -1,5 +1,4 @@
 import axios from "axios";
-import { data } from "react-router-dom";
 import { useAuthStore } from "../stores/Auth/useAuthStore";
 const baseURL = import.meta.env.VITE_BASE_URL;
 
@@ -25,23 +24,45 @@ const createAuthorizedAxiosFile = () => {
   });
 };
 
-//get
-export const apiGet = async (url, config = {}) => {
-  const axiosInstance = createAuthorizedAxios();
-  return axiosInstance.get(url, config);
-};
+export const api = axios.create({
+  baseURL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
-// post
-export const apiPost = async (url, data = {}) => {
-  const axiosInstance = createAuthorizedAxios();
-  return axiosInstance.post(url, data);
-};
+api.interceptors.response.use(
+  (response) => response,
 
-// put
-export const apiPut = async (url, data = {}) => {
-  const axiosInstance = createAuthorizedAxios();
-  return axiosInstance.put(url, data);
-};
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (error.response.status === 401 && !originalRequest.hasRetried) {
+      originalRequest.hasRetried = true;
+
+      // gọi refresh
+      const res = await useAuthStore.getState().refresh();
+
+      // gắn token mới vào request cũ
+      originalRequest.headers.Authorization = `Bearer ${useAuthStore.getState.accessToken}`;
+
+      // gọi lại request cũ
+      return api(originalRequest);
+    }
+
+    return Promise.reject(error);
+  },
+);
+
+api.interceptors.request.use((config) => {
+  // console.log(config)
+  const accessToken = useAuthStore.getState().accessToken;
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
+  }
+
+  return config;
+});
 
 // post file
 export const apiPostFile = async (url, data = {}) => {
@@ -49,20 +70,8 @@ export const apiPostFile = async (url, data = {}) => {
   return axiosInstance.post(url, data);
 };
 
-// path
-export const apiPatch = async (url, data = {}) => {
-  const axiosInstance = createAuthorizedAxios();
-  return axiosInstance.patch(url, data);
-};
-
 //path file
 export const apiPatchFile = async (url, data = {}) => {
   const axiosInstance = createAuthorizedAxiosFile();
   return axiosInstance.patch(url, data);
-};
-
-// delete
-export const apiDelete = async (url, data = {}) => {
-  const axiosInstance = createAuthorizedAxios();
-  return axiosInstance.delete(url, data);
 };

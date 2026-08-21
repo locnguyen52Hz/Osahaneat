@@ -2,7 +2,7 @@ package com.example.restaurant.management.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+
 public class UnreadCount {
     Integer conversationId;
     Long conversationUnreadCount;

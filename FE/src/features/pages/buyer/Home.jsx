@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import FeaturedShops from "../../shops/FeaturedShops.jsx";
-import { apiGet } from "../../../api/api.js";
+
 import style from "../../../assets/styles/Home.module.css";
 import endpoints from "../../../api/endpoints.js";
 

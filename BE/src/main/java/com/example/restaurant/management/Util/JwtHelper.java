@@ -4,6 +4,7 @@ package com.example.restaurant.management.Util;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +26,7 @@ public class JwtHelper {
         );
     }
 
-    public String generateAccessToken(String email, String fullName, int id){
+    public String generateAccessToken(String email, String fullName, int id) {
 
         Date now = new Date();
         Duration expiration = Duration.ofMinutes(15);
@@ -69,25 +70,12 @@ public class JwtHelper {
                 .getPayload();
     }
 
-    public boolean validateToken(String token){
-        try{
-            getClaimsFromToken(token);
-            return true;
-        }catch (ExpiredJwtException e){
-            System.out.println("Token đã hết hạn");
-        }catch (UnsupportedJwtException e){
-            System.out.println("Token ko đc hỗ trợ");
-        }catch (MalformedJwtException e){
-            System.out.println("Token không hợp lệ");
-        }catch (SignatureException e){
-            System.out.println("Chứ ký ko đúng");
-        }catch (IllegalArgumentException e){
-            System.out.println("Token trống");
-        }
-        return false;
+    public boolean validateToken(String token) {
+        getClaimsFromToken(token);
+        return true;
     }
 
-    public Integer getUserID(String authHeader){
+    public Integer getUserID(String authHeader) {
         String token = authHeader.replace("Bearer ", "");
         Claims claims = getClaimsFromToken(token);
         return claims.get("userID", Integer.class);
@@ -104,6 +92,20 @@ public class JwtHelper {
         }
 
         return Integer.valueOf(claims.getSubject());
+    }
+
+    public void sendUnauthorized(
+            HttpServletResponse response,
+            String message
+    ) throws java.io.IOException {
+
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        response.getWriter().write(
+                "{\"message\":\"" + message + "\"}"
+        );
     }
 
 }

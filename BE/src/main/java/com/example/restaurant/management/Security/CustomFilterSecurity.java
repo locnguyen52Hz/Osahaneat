@@ -46,6 +46,7 @@ public class CustomFilterSecurity {
                                         ("/api/auth/register/**",
                                                 "/api/auth/login",
                                                 "/api/auth/refresh",
+                                                "/api/auth/logout",
                                                 "/api/food/image/{filename:.+}",
                                                 "/api/categories/image/{filename:.+}",
                                                 "/api/shops/avatar/{filename:.+}",

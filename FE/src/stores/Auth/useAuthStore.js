@@ -1,8 +1,8 @@
 import { create } from "zustand";
-import { jwtDecode } from "jwt-decode";
 import endpoints from "../../api/endpoints";
-import { apiGet, apiPost } from "../../api/api";
+
 import axios from "axios";
+import { authApi } from "../../api/authApi";
 
 export const useAuthStore = create((set, get) => ({
   accessToken: null,
@@ -35,17 +35,10 @@ export const useAuthStore = create((set, get) => ({
   login: async (credentials) => {
     set({ isLoading: true });
     try {
-      const res = await axios.post(
-        endpoints.auth.login,
-        {
-          email: credentials.email,
-          password: credentials.password,
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        },
-      );
+      const res = await authApi.post(endpoints.auth.login, {
+        email: credentials.email,
+        password: credentials.password,
+      });
       const { accessToken, refreshToken, user } = res.data.data;
       console.log(res);
 
@@ -64,8 +57,6 @@ export const useAuthStore = create((set, get) => ({
         // console.log(resRole.data.data);
         return resRole.data.data.roleName;
       }
-    } catch (error) {
-      console.log(error);
     } finally {
       set({ isLoading: false });
     }
@@ -73,18 +64,10 @@ export const useAuthStore = create((set, get) => ({
 
   refresh: async () => {
     try {
-      const res = await axios.post(
-        endpoints.auth.refresh,
-        {},
-        {
-          withCredentials: true,
-        },
-      );
+      const res = await authApi.post(endpoints.auth.refresh);
 
       const { accessToken, user } = res.data.data;
-      console.log(res.data.data);
-
-      const decoded = jwtDecode(accessToken);
+      // console.log(accessToken);
 
       set({
         accessToken,
@@ -110,13 +93,21 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  clearAuth: () => {
-    set({
-      accessToken: null,
-      myId: null,
-      username: null,
-      role: null,
-    });
+  clearAuth: async () => {
+    try {
+      const res = await authApi.post(endpoints.auth.logout);
+      console.log(res);
+      set({
+        accessToken: null,
+        myId: null,
+        username: null,
+        role: null,
+      });
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   },
 
   setInitializing: (value) => {

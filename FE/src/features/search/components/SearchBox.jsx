@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "../../../assets/styles/SearchBox.module.css";
 
-import { apiGet } from "../../../api/api";
 import endpoints from "../../../api/endpoints";
 import { useModal } from "../../../contexts/ModalContext";
 

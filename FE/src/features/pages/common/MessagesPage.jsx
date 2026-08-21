@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Conversation from "../../messages/components/Conversation";
-import { apiGet } from "../../../api/api";
 import endpoints from "../../../api/endpoints";
 import ConversationDetails from "../../messages/components/ConversationDetails";
 import styles from "../../../assets/styles/MessagesPage.module.css";

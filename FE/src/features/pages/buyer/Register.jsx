@@ -1,9 +1,9 @@
-import AuthForm from "../../../components/AuthForm";
-import shared from "../../../assets/styles/Shared.module.css";
-import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import endpoints from "../../../api/endpoints";
+import shared from "../../../assets/styles/Shared.module.css";
+import AuthForm from "../../../components/AuthForm";
 
 function Register() {
   const navigate = useNavigate();
@@ -32,8 +32,9 @@ function Register() {
         }
       })
       .catch(function (error) {
-        const response = error.response?.data?.errorMessages || [];
-        setExternalErrors(response);
+        console.log(error);
+        // const response = error.response?.data?.errorMessages || [];
+        // setExternalErrors(response);
       });
   };
 

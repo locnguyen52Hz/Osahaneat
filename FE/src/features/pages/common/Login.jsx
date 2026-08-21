@@ -1,33 +1,32 @@
-import AuthForm from "../../../components/AuthForm";
-import shared from "../../../assets/styles/Shared.module.css";
 import { Link, useNavigate } from "react-router-dom";
+import shared from "../../../assets/styles/Shared.module.css";
+import AuthForm from "../../../components/AuthForm";
 
-import { useAuth } from "../../../app/providers/UseContext";
 import { useState } from "react";
+import LoadingSpinner from "../../../components/common/LoadingSpinner";
 import { useAuthStore } from "../../../stores/Auth/useAuthStore";
 
 function Login() {
   const navigate = useNavigate();
   const [externalErrors, setExternalErrors] = useState([]);
-  // const { login, loading } = useAuth();
+
   const login = useAuthStore((s) => s.login);
   const isLoading = useAuthStore((s) => s.isLoading);
 
-  const myId = useAuthStore((s) => s.myId);
-
   const onSubmit = async (data) => {
-    const role = await login(data);
+    if (isLoading) return;
 
-    if (!role) return;
-
-    if (role === "ROLE_BUYER" && !isLoading) {
-      // console.log(isLoading)
-
-      navigate("/buyer/home", { replace: true });
-    }
-    if (role === "ROLE_SHOP_MANAGER" && !isLoading) {
-      // console.log(loading)
-      navigate("/manager/dashboard", { replace: true });
+    setExternalErrors([]);
+    try {
+      const role = await login(data);
+      if (role === "ROLE_BUYER") {
+        navigate("/buyer/home", { replace: true });
+      }
+      if (role === "ROLE_SHOP_MANAGER") {
+        navigate("/manager/dashboard", { replace: true });
+      }
+    } catch (error) {
+      setExternalErrors(error.response.data.errors);
     }
   };
 
@@ -64,7 +63,6 @@ function Login() {
           icon: "bi-eye-slash",
           rules: {
             required: { value: true, message: "Không để trống" },
-
             pattern: {
               value: /^[A-Za-z\d]{8,72}$/,
               message: "Không dùng ký tự đặc biệt",
@@ -74,7 +72,9 @@ function Login() {
       ]}
       customFooter={
         <>
-          <button className={shared.submitBtn}>Sign in</button>
+          <button className={shared.submitBtn}>
+            {isLoading ? <LoadingSpinner /> : "Sign in"}
+          </button>
           <a
             className={shared.paragraph}
             style={{ textAlign: "center" }}

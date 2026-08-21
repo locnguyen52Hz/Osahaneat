@@ -1,9 +1,9 @@
-import React, { useRef, useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import { api } from "../api/api";
+import endpoints from "../api/endpoints";
+import shared from "../assets/styles/Shared.module.css";
 import styles from "../assets/styles/ShopCard.module.css";
 import SHOP_DETAIL_STYLE from "../assets/styles/ShopDetail.module.css";
-import shared from "../assets/styles/Shared.module.css";
-import { apiGet, apiPatchFile } from "../api/api";
-import endpoints from "../api/endpoints";
 import LoadingSpinner from "./common/LoadingSpinner";
 
 function UploadAvatar({ initialImage, setShop, editAble = true }) {
@@ -32,10 +32,10 @@ function UploadAvatar({ initialImage, setShop, editAble = true }) {
     const formData = new FormData();
     formData.append("file", file);
     try {
-      await apiPatchFile(`${endpoints.shop.updateAvatar}`, formData);
+      await api.patch(`${endpoints.shop.updateAvatar}`, formData);
 
       // Upload thành công → lấy lại thông tin shop thật
-      const res = await apiGet(`${endpoints.shop.details}`);
+      const res = await api.get(`${endpoints.shop.details}`);
       setShop(res.data.data);
     } catch (error) {
       console.error("Upload thất bại:", error);

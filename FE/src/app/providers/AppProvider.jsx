@@ -4,20 +4,17 @@ import { AuthProvider, useAuth } from "../providers/UseContext";
 import { ModalProvider } from "../../contexts/ModalContext";
 
 import { WebSocketProvider } from "../../contexts/WebSocketContext";
+import { useAuthStore } from "../../stores/Auth/useAuthStore";
 
 function AppProvider({ children }) {
-  return (
-    <AuthProvider>
-      <AuthConsumerWrapper>{children}</AuthConsumerWrapper>
-    </AuthProvider>
-  );
+  return <AuthConsumerWrapper>{children}</AuthConsumerWrapper>;
 }
 
 function AuthConsumerWrapper({ children }) {
-  const { token } = useAuth();
+  const accessToken = useAuthStore((s) => s.accessToken);
 
   return (
-    <WebSocketProvider token={token}>
+    <WebSocketProvider accessToken={accessToken}>
       <ModalProvider>{children}</ModalProvider>
     </WebSocketProvider>
   );

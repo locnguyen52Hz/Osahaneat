@@ -100,25 +100,41 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
 
 
     @Query("""
-    SELECT new com.example.restaurant.management.dto.UnreadCount(
-        :conversationId,
-        SUM(CASE WHEN c.id = :conversationId THEN 1 ELSE 0 END),
-        COUNT(m.id)
-    )
-    FROM Message m
-    JOIN m.conversation c
-    WHERE
-        m.sender.id <> :shopManagerId
-        AND m.readAt IS NULL
-        AND c.shop.id = :shopId
-    """)
+                SELECT new com.example.restaurant.management.dto.UnreadCount(
+                    :conversationId,
+                    COALESCE(
+                        SUM(
+                            CASE 
+                                WHEN c.id = :conversationId THEN 1 
+                                ELSE 0 
+                            END
+                        ),
+                        0
+                    ),
+                    COUNT(m.id)
+                )
+                FROM Message m
+                JOIN m.conversation c
+                WHERE 
+                    m.sender.id <> :shopManagerId
+                    AND m.readAt IS NULL
+                    AND c.shop.id = :shopId
+            """)
     UnreadCount getUnreadMessageStatsForShopManager(@Param("conversationId") Integer conversationId, @Param("shopManagerId") Integer shopManagerId, @Param("shopId") Integer shopId);
 
 
     @Query("""
     SELECT new com.example.restaurant.management.dto.UnreadCount(
         :conversationId,
-        SUM(CASE WHEN c.id = :conversationId THEN 1 ELSE 0 END),
+        COALESCE(
+            SUM(
+                CASE
+                    WHEN c.id = :conversationId THEN 1
+                    ELSE 0
+                END
+            ),
+            0
+        ),
         COUNT(m.id)
     )
     FROM Message m

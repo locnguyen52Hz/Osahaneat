@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import ActiveCategories from "../../category/components/ActiveCategories";
 import styles from "../../../assets/styles/SearchResults.module.css";
-import { apiGet } from "../../../api/api";
+import { api } from "../../../api/api";
 import endpoints from "../../../api/endpoints";
 import ShopsList from "../../shops/ShopsList";
 import FoodCard from "../../foods/components/FoodCard";
@@ -83,7 +83,7 @@ function SearchResults() {
       if (categoryId && keyword) return;
       setLoading(true);
       try {
-        const res = await apiGet(endpoints.search.foodByKeyword, {
+        const res = await api.get(endpoints.search.foodByKeyword, {
           params,
         });
 

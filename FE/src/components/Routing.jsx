@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useMap } from "react-leaflet";
 import L from "leaflet";
-import { apiGet } from "../api/api";
+import { api } from "../api/api";
 
 function Routing({ from, to }) {
   const map = useMap();
@@ -22,7 +22,7 @@ function Routing({ from, to }) {
 
     const fetchRoute = async () => {
       try {
-        const res = await apiGet(
+        const res = await api.get(
           `http://localhost:8080/api/routes?fromLat=${from[0]}&fromLong=${from[1]}&toLat=${to[0]}&toLong=${to[1]}`,
         );
         if (!mountedRef.current) return; // tránh setState khi unmounted

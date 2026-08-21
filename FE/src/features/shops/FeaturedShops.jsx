@@ -4,7 +4,7 @@ import style from "../../assets/styles/FeaturedShops.module.css";
 import shared from "../../assets/styles/Shared.module.css";
 import endpoints from "../../api/endpoints";
 import { useEffect, useState } from "react";
-import { apiGet } from "../../api/api";
+import { api } from "../../api/api";
 import { formatDistance } from "../../util/format";
 import { useLocationStore } from "../../stores/location/useLocationStore";
 
@@ -23,7 +23,7 @@ function FeaturedShops() {
     if (loading) return;
     const fetchShops = async () => {
       try {
-        const response = await apiGet(
+        const response = await api.get(
           `${endpoints.shop.top6Shop}?fromLongitude=${currentLocation.longitude}&fromLatitude=${currentLocation.latitude}`,
         );
      

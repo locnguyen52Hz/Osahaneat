@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
-import ActiveCategories from "../../category/components/ActiveCategories";
-import styles from "../../assets/styles/SearchFilter.module.css";
-import { useModal } from "../../../contexts/ModalContext";
-import { apiGet } from "../../../api/api";
+import { useEffect, useState } from "react";
+import { api } from "../../../api/api";
 import endpoints from "../../../api/endpoints";
+import { useModal } from "../../../contexts/ModalContext";
+import styles from "../../assets/styles/SearchFilter.module.css";
+import ActiveCategories from "../../category/components/ActiveCategories";
 
 let cacheCategories = null;
 
@@ -21,7 +21,7 @@ function SearchFilter({ navigate }) {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await apiGet(endpoints.category.all);
+        const res = await api.get(endpoints.category.all);
         cacheCategories = res.data.data;
         setCategories(res.data.data);
       } catch (error) {

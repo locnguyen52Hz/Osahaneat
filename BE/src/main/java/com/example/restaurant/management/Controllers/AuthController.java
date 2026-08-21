@@ -73,4 +73,18 @@ public class AuthController {
         responseData.setStatus(HttpStatus.OK.value());
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+
+        ResponseCookie cookie = ResponseCookie.from("refreshToken","")
+                .path("/api/auth/")
+                .httpOnly(true)
+                .secure(false)
+                .sameSite("Lax")
+                .maxAge(0)
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        return ResponseEntity.ok().build();
+    }
 }

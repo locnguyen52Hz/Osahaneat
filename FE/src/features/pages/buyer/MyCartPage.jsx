@@ -8,7 +8,6 @@ import { useCartStore } from "../../../stores/Cart/useCartStore";
 import LoadingSpinner from "../../../components/common/LoadingSpinner";
 import { calculateCartTotal } from "../../../util/cart";
 
-import { apiGet, apiPost } from "../../../api/api";
 import endpoints from "../../../api/endpoints";
 import CartEmpty from "../../cart/component/CartEmpty";
 

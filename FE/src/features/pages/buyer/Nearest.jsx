@@ -2,7 +2,7 @@ import { MapContainer, TileLayer } from "react-leaflet";
 import LocationPicker from "../../location/components/LocationPicker";
 import Routing from "../../../components/Routing";
 import { useEffect, useState } from "react";
-import { apiGet } from "../../../api/api";
+import { api } from "../../../api/api";
 import endpoints from "../../../api/endpoints";
 import styles from "../../../assets/styles/Nearest.module.css";
 import MapContainerBase from "../../map/MapContainerBase";
@@ -21,7 +21,7 @@ function Nearest() {
   useEffect(() => {
     const fetchShopLocations = async () => {
       try {
-        const res = await apiGet(endpoints.shop.locations);
+        const res = await api.get(endpoints.shop.locations);
         setShopLocations(res.data.data);
         console.log(res.data.data);
       } catch (error) {

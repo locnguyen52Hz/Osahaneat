@@ -49,6 +49,7 @@ public class CommonOrdersService {
             throw new RuntimeException("User not found");
         }
         String role = user.getRole().getRoleName();
+        System.out.println("role: " + role);
         if (!includeTotalQuantity) {
             return switch (role) {
                 case "ROLE_SHOP_MANAGER" -> shopManagerOrderServiceImp.getOrdersWithPage(userId, page, pageSize);

@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  apiDelete,
-  apiGet,
-  apiPatch,
-  apiPatchFile,
-  apiPostFile,
-} from "../../api/api";
+import { api } from "../../api/api";
 import style from "../../assets/styles/ShopDetail.module.css";
 import ShopCard from "../../features/shops/ShopCard";
 import shared from "../../assets/styles/Shared.module.css";
@@ -41,10 +35,10 @@ function ShopDetail() {
     const fetchData = async () => {
       try {
         const [shopRes, categoryResponse] = await Promise.all([
-          apiGet(
+          api.get(
             `${endpoints.shop.details}?shopId=${id}&longitude=${currentLocation.longitude}&latitude=${currentLocation.latitude}`,
           ),
-          apiGet(`${endpoints.category.shopCategories}?shopId=${id}`),
+          api.get(`${endpoints.category.shopCategories}?shopId=${id}`),
         ]);
         setShop(shopRes.data.data);
 
@@ -64,7 +58,7 @@ function ShopDetail() {
     const fetchFoods = async () => {
       if (!activeCategory) return;
       try {
-        const resFood = await apiGet(
+        const resFood = await api.get(
           `${endpoints.food.list}?categoryId=${activeCategory.id}&shopId=${id}`,
         );
         setFoods(resFood.data.data);
@@ -103,7 +97,6 @@ function ShopDetail() {
         )}
 
         <FoodList
-  
           foods={foods}
           handleBuyNow={handleBuyNow}
           handleAddToCart={handleAddToCart}

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { apiGet } from "../../../api/api";
+import { api } from "../../../api/api";
 import endpoints from "../../../api/endpoints";
 
 export default function useOrderDetails(orderId) {
@@ -26,7 +26,7 @@ export default function useOrderDetails(orderId) {
   const fectchOrderDetails = async () => {
     setLoading(true);
     try {
-      const res = await apiGet(`${endpoints.order.details}?orderId=${orderId}`);
+      const res = await api(`${endpoints.order.details}?orderId=${orderId}`);
       setOrder(res.data.data);
     } catch (error) {
       console.log(error);

@@ -16,7 +16,7 @@ import useQuantity from "../../../hooks/useQuantity";
 import OrderDetailsView from "../../orders/components/OrderDetailsView";
 import OrderPreview from "../../orders/components/OrderPreview";
 import FloatingLabel from "../../../components/common/FloatingLabel";
-import { apiPost } from "../../../api/api";
+import { api } from "../../../api/api";
 
 import { toast } from "react-toastify";
 import { useLocationStore } from "../../../stores/location/useLocationStore";
@@ -61,7 +61,7 @@ function FoodDetail({ food, shopName, shopId, navigate }) {
     setBuyNowLoading(true);
 
     try {
-      const res = await apiPost(`${endpoints.order.buyNow}`, {
+      const res = await api.post(`${endpoints.order.buyNow}`, {
         foodId: food.foodId,
         quantity,
         fromLatitude: currentLocation.latitude,

@@ -21,6 +21,12 @@ function SideBar({ isOpen }) {
   const navigate = useNavigate();
 
   const items = routes[role].children.filter((item) => item.showInSideBar);
+  const handleLogout = async () => {
+    const logoutSuccess = await clearAuth();
+    if (logoutSuccess) {
+      navigate("/login");
+    }
+  };
 
   return (
     <div
@@ -40,8 +46,7 @@ function SideBar({ isOpen }) {
 
       <button
         onClick={() => {
-          clearAuth();
-          navigate("/login");
+          handleLogout();
         }}
       >
         log out

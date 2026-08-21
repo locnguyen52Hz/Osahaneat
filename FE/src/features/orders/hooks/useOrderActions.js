@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { apiPost } from "../../../api/api";
+import { api } from "../../../api/api";
 import endpoints from "../../../api/endpoints";
 import { updateOrderStatus } from "../service/OrderServices";
 
@@ -66,7 +66,7 @@ function useOrderActions(setState) {
     });
 
     try {
-      // await apiPost(endpoints.order.createRating, { orderId, rating });
+      await api.post(endpoints.order.createRating, { orderId, rating });
       toast.success("Rating success");
     } catch (err) {
       setState(snapshot);

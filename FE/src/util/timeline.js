@@ -2,7 +2,7 @@ export const STATUS_ORDER = ["PENDING", "PROCESSING", "SHIPPING", "COMPLETED"];
 
 export const BUYER_TIMELINE_TEXT = {
   PENDING: {
-    current: "Đặt hàng lúc",
+    current: "Đặt hàng ",
     done: "Đã xác nhận",
   },
   PROCESSING: {

@@ -54,7 +54,7 @@ public class RegisterServiceImp implements com.example.restaurant.management.Ser
             throw new FieldValidationException("email","Email already exists", HttpStatus.CONFLICT);
         }
         if (shopsRepository.findByShopName(shopManagerRegister.getShopName()) != null) {
-            throw new FieldValidationException("shopName","Shop already exists", HttpStatus.CONFLICT);
+            throw new FieldValidationException("shopName","Shop name already exists", HttpStatus.CONFLICT);
         }
         Role role  = rolesRepository.findByRoleName("ROLE_SHOP_MANAGER");
         User user = new User();

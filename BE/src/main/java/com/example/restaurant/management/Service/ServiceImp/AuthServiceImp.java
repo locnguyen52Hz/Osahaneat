@@ -38,10 +38,10 @@ public class AuthServiceImp implements AuthService {
         User user = userRepository.findUserByEmail(email);
 
         if (user == null) {
-            throw new FieldValidationException("email", "Email not found", HttpStatus.NOT_FOUND);
+            throw new FieldValidationException("email", "Tài khoản không tồn tại", HttpStatus.NOT_FOUND);
         }
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new FieldValidationException("password", "Password not match", HttpStatus.BAD_REQUEST);
+            throw new FieldValidationException("password", "Sai mật khẩu", HttpStatus.BAD_REQUEST);
         }
         LoginResponseDto responseDto = new LoginResponseDto();
         UserDto userDto = new UserDto();

@@ -1,20 +1,12 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
 import { Client } from "@stomp/stompjs";
-import { apiGet } from "../api/api";
-import endpoints from "../api/endpoints";
-import { useConversationStore } from "../stores/messages/useConversationStore";
-import { useChatScroll } from "../features/messages/hooks/useChatScroll";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+
 import { useAuthStore } from "../stores/Auth/useAuthStore";
+import { useConversationStore } from "../stores/messages/useConversationStore";
 
 const WebSocketContext = createContext(null);
 
-export function WebSocketProvider({ token, children }) {
+export function WebSocketProvider({ accessToken, children }) {
   const clientRef = useRef(null);
 
   const [ordersNotify, setOrdersNotify] = useState([]);
@@ -37,18 +29,17 @@ export function WebSocketProvider({ token, children }) {
   // message listeners (event-based)
   const messageListenersRef = useRef(new Set());
 
-  // console.log(token);
+  // console.log(accessToken);
 
   useEffect(() => {
-    if (!token) return;
+    if (!accessToken) return;
 
     const client = new Client({
       brokerURL: "ws://localhost:8080/websocket",
       connectHeaders: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       onConnect: (frame) => {
-        // console.log("✅ WebSocket connected:");
         // Lắng nghe tin nhắn riêng
         client.subscribe("/user/queue/notify", (message) => {
           const data = JSON.parse(message.body);
@@ -58,18 +49,17 @@ export function WebSocketProvider({ token, children }) {
 
         client.subscribe("/user/queue/message", (messages) => {
           const message = JSON.parse(messages.body);
-
+          console.log(message);
           const myId = useAuthStore.getState().myId;
           const newMessage = {
             ...message,
             isMine: message.senderId === myId,
           };
-          console.log(newMessage)
 
           const store = useConversationStore.getState();
 
           store.ensureConversationExists(newMessage);
-          // console.log(newMessage)
+          // console.log(newMessage);
           store.onIncomingMessage(newMessage);
         });
 
@@ -91,24 +81,7 @@ export function WebSocketProvider({ token, children }) {
         clientRef.current.deactivate();
       }
     };
-  }, [token]);
-
-  // useEffect(() => {
-  //   if (!token) {
-  //     setOrdersNotify([]);
-  //     return;
-  //   }
-  //   const fetchUnreadMessage = async () => {
-  //     try {
-  //       const res = await apiGet(endpoints.messages.countUnreadMessage);
-
-  //       console.log(res.data.data)
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   fetchUnreadMessage();
-  // }, [token]);
+  }, [accessToken]);
 
   // Hàm gửi tin nhắn
   const sendMessage = (destination, body) => {

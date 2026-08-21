@@ -1,23 +1,22 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "../../../assets/styles/ConversationDetails.module.css";
-import { useWebSocketContext } from "../../../contexts/WebSocketContext";
+import { useAuthStore } from "../../../stores/Auth/useAuthStore";
+import { useConversationStore } from "../../../stores/messages/useConversationStore";
+import { createScrollIdleHandler } from "../../../util/util";
 import { useChatScroll } from "../hooks/useChatScroll";
 import ChatBody from "./ChatBody";
-import { useConversationMessages } from "../../messages/hooks/useConversationMessages";
 import ChatInput from "./ChatInput";
-import { createScrollIdleHandler } from "../../../util/util";
-import { useConversationStore } from "../../../stores/messages/useConversationStore";
-import { useAuthStore } from "../../../stores/Auth/useAuthStore";
 
 function ConversationDetails({ conversation }) {
+  // console.log(conversation)
   const chatBody = useRef(null);
   const { isAtBottom, isAtTop, onScrollToBottom, canScroll } =
     useChatScroll(chatBody);
 
   // const { sendMessage } = useConversationMessages();
-  const authStore = useAuthStore.getState();
-  authStore.loadUserFromToken();
-  const myId = authStore.myId;
+
+  const myId = useAuthStore((s) => s.myId);
+
 
   const [hasNewMessage, setHasNewMessage] = useState(false);
 
@@ -87,6 +86,7 @@ function ConversationDetails({ conversation }) {
   const handleScrollIdle = useRef(
     createScrollIdleHandler(() => {
       const cursor = oldestVisibleMsgCursor.current;
+   
       if (!cursor) return;
 
       // tránh call lại cùng 1 message
@@ -101,7 +101,6 @@ function ConversationDetails({ conversation }) {
   /* ================= DETECT MESSAGE VISIBLE ================= */
   const onMessageVisible = (visibleMessage) => {
     const current = oldestVisibleMsgCursor.current;
-
 
     // chọn message có id nhỏ nhất (cũ nhất trong viewport)
     if (

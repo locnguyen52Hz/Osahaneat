@@ -1,18 +1,14 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Suspense, useEffect } from "react";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import PrivateRouter from "../components/PrivateRouter.jsx";
+import Login from "../features/pages/common/Login.jsx";
 import MainLayout from "../layouts/MainLayout.jsx";
 import routes from "../routes/config.jsx";
-import { useAuth } from "./providers/UseContext.jsx";
-import Login from "../features/pages/common/Login.jsx";
-import { ToastContainer } from "react-toastify";
-import { useConversationStore } from "../stores/messages/useConversationStore.js";
-import { useCartStore } from "../stores/Cart/useCartStore.js";
-import { useLocationStore } from "../stores/location/useLocationStore.js";
 import { useAuthStore } from "../stores/Auth/useAuthStore.js";
-import { apiPost } from "../api/api.js";
-import endpoints from "../api/endpoints.js";
-import axios from "axios";
+import { useLocationStore } from "../stores/location/useLocationStore.js";
+import { useConversationStore } from "../stores/messages/useConversationStore.js";
+
 
 // helper
 function mapRoutes(routeTree) {
@@ -41,7 +37,7 @@ function App() {
   const accessToken = useAuthStore((s) => s.accessToken);
   const refresh = useAuthStore((s) => s.refresh);
   const role = useAuthStore((s) => s.role);
-  console.log("isInitializing: ", isInitializing);
+  // console.log(accessToken)
 
   const Initializer = role ? routes[role]?.initializer : null;
 

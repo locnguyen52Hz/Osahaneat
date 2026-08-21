@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import styles from "../../../assets/styles/Orders.module.css";
-import { apiGet, apiPatch } from "../../../api/api";
 import endpoints from "../../../api/endpoints";
 import { ORDER_STATUS } from "../../orders/config/OrdersStatusConfig";
 import { groupOrdersByDateArray } from "../../../util/grouped";

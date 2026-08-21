@@ -43,12 +43,12 @@ public class ShopManagerMessageService implements MessageService {
 
     //    =========================================== SEND MESSAGE ===========================================
     @Override
-    public MessageDto sendMessage(Integer senderId, Integer buyerId, String content) {
-        User receiver = userRepository.findById(buyerId).orElseThrow(() -> new EntityNotFoundException("User not found"));
+    public MessageDto sendMessage(Integer senderId, Integer receiverId, String content) {
+        User receiver = userRepository.findById(receiverId).orElseThrow(() -> new EntityNotFoundException("User not found"));
 
 
         Shop shop = shopsRepository.findShopsByManager_Id(senderId);
-        Conversation conversation = conversationRepository.getConversationByBuyerIdAndShopId(buyerId, shop.getId());
+        Conversation conversation = conversationRepository.getConversationByBuyerIdAndShopId(receiverId, shop.getId());
         if (conversation == null) {
             conversation = new Conversation();
             conversation.setBuyer(receiver);
@@ -67,7 +67,14 @@ public class ShopManagerMessageService implements MessageService {
         conversation.setLastMessageAt(Instant.now());
         conversationRepository.save(conversation);
 
-        MessageDto messageDTO = new MessageDto(message.getId(), message.getContent(), message.getSender().getId(), message.getSender().getFullName(),message.getCreatedAt(), message.getReadAt(), message.getConversation().getId());
+        MessageDto messageDTO = new MessageDto(
+                message.getId(),
+                message.getContent(),
+                message.getSender().getId(),
+                message.getSender().getFullName(),
+                message.getCreatedAt(),
+                message.getReadAt(),
+                message.getConversation().getId());
 
         simpMessagingTemplate.convertAndSendToUser(String.valueOf(receiver.getId()), "/queue/message", messageDTO);
         simpMessagingTemplate.convertAndSendToUser(String.valueOf(message.getSender().getId() ), "/queue/message", messageDTO);

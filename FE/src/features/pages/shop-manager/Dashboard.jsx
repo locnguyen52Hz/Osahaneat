@@ -1,20 +1,12 @@
-import React, { useEffect, useMemo, useState } from "react";
-import ShopCard from "../../shops/ShopCard";
-import { apiGet } from "../../../api/api";
+import { useEffect, useMemo, useState } from "react";
+import { api } from "../../../api/api";
 import endpoints from "../../../api/endpoints";
-import ShopDetail from "../../shops/ShopDetail";
-import DashboardSummary from "../../../components/DashboardSummary";
 import styles from "../../../assets/styles/Dashboard.module.css";
 import CustomChart from "../../../components/CustomChart";
-import {
-  getDaysFromStartOfMonthToTodayUTC,
-  getMonthsFromStartOfYearToNowUTC,
-  getStartOfMonthUTC,
-  getStartOfYearUTC,
-} from "../../../util/DateTime";
-import { data } from "react-router-dom";
-import OrdersTable from "../../orders/components/OrdersTable";
+import DashboardSummary from "../../../components/DashboardSummary";
+import { getStartOfMonthUTC, getStartOfYearUTC } from "../../../util/DateTime";
 import { formatCurrency, formatDateTime } from "../../../util/format";
+import OrdersTable from "../../orders/components/OrdersTable";
 
 function Dashboard() {
   const [monthlyRevenue, setMonthlyRevenue] = useState({
@@ -43,8 +35,8 @@ function Dashboard() {
     const fetchRevenue = async () => {
       try {
         const [dailyRevenueRes, monthlyRevenueRes] = await Promise.all([
-          apiGet(`${endpoints.chart.dailyRevenue}?startDate=${startDate}`),
-          apiGet(`${endpoints.chart.monthlyRevenue}?startMonth=${startMonth}`),
+          api.get(`${endpoints.chart.dailyRevenue}?startDate=${startDate}`),
+          api.get(`${endpoints.chart.monthlyRevenue}?startMonth=${startMonth}`),
         ]);
 
         const days = dailyRevenueRes.data.data.labels.map((d) =>
@@ -87,7 +79,7 @@ function Dashboard() {
   useEffect(() => {
     const fetchRecentOrders = async () => {
       try {
-        const ordersRes = await apiGet(
+        const ordersRes = await api.get(
           `${endpoints.order.get_orders}/all?page=${currentPage}&pageSize=${tableSize}&includeTotalQuantity=true`,
         );
         const { list, page, size, totalElement, totalPages } =

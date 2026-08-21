@@ -1,14 +1,10 @@
-import { create } from "zustand";
 import { debounce, isEqual } from "lodash";
 import { v4 as uuidv4 } from "uuid";
+import { create } from "zustand";
 
-import { apiGet, apiPost, apiPut } from "../../api/api";
+import { api } from "../../api/api";
 import endpoints from "../../api/endpoints";
-import {
-  calculateCartTotal,
-  getTotalCartItems,
-  normalizeItems,
-} from "../../util/cart";
+import { getTotalCartItems, normalizeItems } from "../../util/cart";
 
 const createCart = (shop, food, quantity) => ({
   id: uuidv4(),
@@ -44,7 +40,7 @@ export const useCartStore = create((set, get) => ({
     set({ isLoading: true });
 
     try {
-      const res = await apiGet(endpoints.cart.listCart);
+      const res = await api.get(endpoints.cart.listCart);
 
       const carts = res.data.data;
 
@@ -64,7 +60,7 @@ export const useCartStore = create((set, get) => ({
 
   // ============================= CEATE ORDER FROM CART =============================
   createOrderFromCart: async (cart) => {
-    const res = await apiPost(endpoints.order.createOrderFromCart, {
+    const res = await api.post(endpoints.order.createOrderFromCart, {
       shopId: cart.shopId,
       fromLatitude: cart.fromLatitude,
       fromLongitude: cart.fromLongitude,
@@ -214,7 +210,7 @@ export const useCartStore = create((set, get) => ({
   fetchShippingFee: async (shopId, latitude, longitude, signal) => {
     set({ cartShippingLoading: true });
     try {
-      const res = await apiGet(
+      const res = await api(
         `${endpoints.routes.shippingFee}?fromLongitude=${longitude}&fromLatitude=${latitude}&shopID=${shopId}`,
         {
           signal: controllers.signal,

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { apiGet } from "../../../api/api";
+import { api} from "../../../api/api";
 import endpoints from "../../../api/endpoints";
 
 export default function useOrderTimeline(orderId) {
@@ -13,7 +13,7 @@ export default function useOrderTimeline(orderId) {
   const fetchOrderTimeline = async () => {
     setLoadingTimeline(true);
     try {
-      const res = await apiGet(
+      const res = await api(
         `${endpoints.order.timeline}?orderId=${orderId}`,
       );
       // console.log(res.data.data);

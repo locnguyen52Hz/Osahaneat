@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
         responseData.setStatus(exception.getStatus().value());
         responseData.setSuccess(false);
         List<FieldErrorMessage> errors = new ArrayList<>();
-        errors.add(new FieldErrorMessage(exception.getFieldName(), exception.getMessage()));
+        errors.add(new FieldErrorMessage(exception.getMessage(), exception.getFieldName()));
         responseData.setErrors(errors);
         return new ResponseEntity<>(responseData, HttpStatus.BAD_REQUEST);
     }

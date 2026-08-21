@@ -1,6 +1,6 @@
 // conversation/useConversationMessages.js
 import { useEffect, useRef, useState } from "react";
-import { apiGet, apiPost } from "../../../api/api";
+import { api } from "../../../api/api";
 import endpoints from "../../../api/endpoints";
 import {
   normalizeMessages,
@@ -93,9 +93,8 @@ export const useConversationMessages = () => {
       content: newMessage.trim(),
     };
 
-
     try {
-      const res = await apiPost(endpoints.messages.send, msgBody);
+      const res = await api.post(endpoints.messages.send, msgBody);
       // console.log(res.data.data);
       addNewMessageToGroupedMessages(res.data.data);
     } catch (error) {
@@ -120,7 +119,7 @@ export const useConversationMessages = () => {
       setLoading(true);
 
       try {
-        const res = await apiGet(endpoints.messages.latestMessage, {
+        const res = await api.get(endpoints.messages.latestMessage, {
           params: {
             conversationId: activeConversationId,
             partnerId: activeConversation.partnerId,

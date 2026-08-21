@@ -1,34 +1,56 @@
 import { Link } from "react-router-dom";
 
+import { useState } from "react";
 import shared from "../../../assets/styles/Shared.module.css";
-import axios from "axios";
-import endpoints from "../../../api/endpoints";
 import AuthForm from "../../../components/AuthForm";
+import ResultModal from "../../../components/common/ResultModal";
+import { useModal } from "../../../contexts/ModalContext";
 
+const user = { name: "Alex", age: 28, role: "Admin" };
 function RegisterShop() {
+  const [externalErrors, setExternalErrors] = useState([]);
+  const { openModal, closeAllModal } = useModal();
+
   const onSubmit = async (data) => {
-    try {
-      const res = await axios.post(
-        `${endpoints.auth.register}/shop-manager`,
-        {
-          fullName: data.fullName,
-          email: data.email,
-          password: data.password,
-          shopName: data.shopName,
-          description: data.description,
-        },
-        { headers: { "Content-Type": "application/json" } }
-      );
-      console.log("Đăng ký thành công:", res.data);
-    } catch (error) {
-      console.error("Lỗi đăng ký:", error.response?.data || error.message);
-    }
+    // try {
+    //   const res = await axios.post(
+    //     `${endpoints.auth.register}/shop-manager`,
+    //     {
+    //       fullName: data.fullName,
+    //       email: data.email,
+    //       password: data.password,
+    //       shopName: data.shopName,
+    //       description: data.description,
+    //     },
+    //     { headers: { "Content-Type": "application/json" } },
+    //   );
+    //   console.log("Đăng ký thành công:", res.data);
+    openModal(
+      <ResultModal
+        title={"Đăng ký thành công"}
+        icon={<i className="bi bi-check-circle-fill"></i>}
+        actions={
+          <>
+            <button>Đăng nhập</button>
+            <button onClick={() => closeAllModal()}>Đóng</button>
+          </>
+        }
+      >
+        <h1>ok</h1>
+      </ResultModal>,
+      { type: "popup" },
+    );
+    // } catch (error) {
+    //   console.error(error.response.data.errors);
+    //   setExternalErrors(error.response.data.errors);
+    // }
   };
 
   return (
     <div>
       <AuthForm
         onSubmit={onSubmit}
+        externalErrors={externalErrors}
         pathnameUrl={window.location.pathname}
         title="Create a shop account"
         description="Please create an account to continue using our service"
@@ -41,7 +63,7 @@ function RegisterShop() {
             type: "text",
             icon: "bi bi-person",
             rules: {
-              required: { value: true, message: "Không để trống" },
+              required: { value: false, message: "Không để trống" },
               maxLength: { value: 50, message: "Tối đa 50 ký tự" },
               minLength: { value: 2, message: "Tối thiểu 2 ký tự" },
               pattern: {
@@ -59,7 +81,7 @@ function RegisterShop() {
             icon: "bi bi-envelope",
             autoComplete: "email",
             rules: {
-              required: { value: true, message: "Không để trống" },
+              required: { value: false, message: "Không để trống" },
               pattern: {
                 value:
                   /^(?!.*\.\.)[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
@@ -75,7 +97,7 @@ function RegisterShop() {
             type: "password",
             icon: "bi bi-eye-slash",
             rules: {
-              required: { value: true, message: "Không để trống" },
+              required: { value: false, message: "Không để trống" },
               minLength: { value: 8, message: "Tối thiểu 8 ký tự" },
               maxLength: { value: 72, message: "Tối đa 72 ký tự" },
               pattern: {
@@ -92,7 +114,7 @@ function RegisterShop() {
             type: "text",
             icon: "bi bi-shop-window",
             rules: {
-              required: { value: true, message: "Không để trống" },
+              required: { value: false, message: "Không để trống" },
               minLength: { value: 3, message: "Tối thiểu 3 ký tự" },
               maxLength: { value: 72, message: "Tối đa 72 ký tự" },
               pattern: {

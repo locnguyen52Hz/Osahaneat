@@ -115,8 +115,11 @@ public class OrdersController {
     }
 
     @GetMapping("/all")
-    @PreAuthorize("hasAnyRole('ROLE_SHOP_MANAGER','ROLE_BUYER')")
-    public ResponseEntity<ResponseData> getOrders(@RequestHeader("Authorization") String authorization, @RequestParam int page, @RequestParam(required = false, defaultValue = "10") int pageSize, @RequestParam(required = false, defaultValue = "false") boolean includeTotalQuantity) {
+    @PreAuthorize("hasAnyRole('SHOP_MANAGER','BUYER')")
+    public ResponseEntity<ResponseData> getOrders(@RequestHeader("Authorization") String authorization,
+                                                  @RequestParam int page,
+                                                  @RequestParam(required = false, defaultValue = "10") int pageSize,
+                                                  @RequestParam(required = false, defaultValue = "false") boolean includeTotalQuantity) {
 
         Page<OrdersDto> ordersDTOS = commonOrdersService.getOrders(authorization, page, pageSize, includeTotalQuantity);
         ResponseData responseData = new ResponseData();

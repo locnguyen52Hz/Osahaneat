@@ -1,7 +1,7 @@
 import { Marker, Popup, Tooltip, useMapEvents } from "react-leaflet";
 
 import { useEffect, useState } from "react";
-import { apiGet } from "../../../api/api";
+import { api } from "../../../api/api";
 import endpoints from "../../../api/endpoints";
 import L from "leaflet";
 import useReverseGeocode from "../../../hooks/useReverseGeocode";
@@ -29,7 +29,7 @@ function LocationPicker() {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const res = await apiGet(`${endpoints.shop.locations}`);
+        const res = await api.get(`${endpoints.shop.locations}`);
         setShops(res.data.data);
       } catch (error) {
         console.log(error);

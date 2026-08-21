@@ -1,20 +1,14 @@
-import React, { useMemo } from "react";
-import StatusBadge from "./StatusBadge";
-import DateTime from "../../../components/common/DateTime";
-import shared from "../../../assets/styles/Shared.module.css";
-import { useModal } from "../../../contexts/ModalContext";
-import OrderDetails from "./OrderDetails";
 import styles from "../../../assets/styles/OrderCard.module.css";
+import shared from "../../../assets/styles/Shared.module.css";
+import DateTime from "../../../components/common/DateTime";
+import { useModal } from "../../../contexts/ModalContext";
 import {
-  formatDateTime,
-  formatDistance,
-  formatDuration,
+  formatDistance
 } from "../../../util/format";
 import ProgressTimeline from "../../TimeLine/ProgressTimeline";
-import OrderAddress from "./OrderAddress";
-import FoodItems from "../../foods/components/FoodItems";
+import OrderDetails from "./OrderDetails";
+import StatusBadge from "./StatusBadge";
 import TrackStatus from "./TrackStatus";
-import OrderActions from "./OrderActions";
 
 function UpcomingOrderCard({ order, updateOrderStatus, handleCancelOrder }) {
   const { openModal } = useModal();

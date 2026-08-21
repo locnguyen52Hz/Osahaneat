@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "../../../assets/styles/OrdersTable.module.css";
 import Paginate from "../../../components/common/Paginate";
+import { formatCurrency, formatDateTime } from "../../../util/format";
 import StatusBadge from "../../orders/components/StatusBadge";
-import { formatDateTime, formatCurrency } from "../../../util/format";
-import { useNavigate } from "react-router-dom";
 
 const TABLE_HEAD = [
   { label: "Order ID", key: "orderId" },
@@ -31,7 +30,6 @@ function OrdersTable({
 }) {
   const start = totalElement === 0 ? 0 : currentPage * tableSize + 1;
   const end = Math.min((currentPage + 1) * tableSize, totalElement);
-  console.log(data);
   const navigate = useNavigate();
   const handleNavigate = (orderId) => {
     navigate(`/order-details/${orderId}`);

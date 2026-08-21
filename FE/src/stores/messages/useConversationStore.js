@@ -1,12 +1,12 @@
 import { create } from "zustand";
-import { apiGet, apiPatch, apiPost } from "../../api/api";
+import { api } from "../../api/api";
 import endpoints from "../../api/endpoints";
-import { useAuthStore } from "../Auth/useAuthStore";
 import {
   groupMessagesByDate,
   mergeGroupedMessages,
   normalizeMessages,
 } from "../../util/message";
+import { useAuthStore } from "../Auth/useAuthStore";
 
 // thêm message realtime đã xong
 
@@ -26,8 +26,8 @@ export const useConversationStore = create((set, get) => ({
   fetchConversations: async () => {
     set({ isLoadingConversations: true });
     try {
-      const res = await apiGet(`${endpoints.messages.conversation}?page=0`);
-      // console.log(res.data);
+      const res = await api.get(`${endpoints.messages.conversation}?page=0`);
+
       const list = res.data.data;
 
       const map = {};
@@ -55,7 +55,7 @@ export const useConversationStore = create((set, get) => ({
     };
     // console.log(msgBody);
     try {
-      const res = await apiPost(endpoints.messages.send, msgBody);
+      const res = await api.post(endpoints.messages.send, msgBody);
       // console.log(res.data.data);
     } catch (error) {
       console.log(error);
@@ -82,14 +82,14 @@ export const useConversationStore = create((set, get) => ({
     }));
 
     try {
-      const res = await apiGet(endpoints.messages.latestMessage, {
+      const res = await api.get(endpoints.messages.latestMessage, {
         params: { conversationId, partnerId },
       });
 
       const { messages, oldestCursor, latestCursor } = res.data.data;
 
       const myId = useAuthStore.getState().myId;
-      console.log(myId)
+
 
       const grouped = groupMessagesByDate(normalizeMessages(messages, myId));
 
@@ -149,7 +149,7 @@ export const useConversationStore = create((set, get) => ({
     // console.log(body);
 
     try {
-      const res = await apiPost(endpoints.messages.olderMessages, body);
+      const res = await api.post(endpoints.messages.olderMessages, body);
       const { messages, oldestCursor } = res.data?.data;
       if (!res.data?.data) return;
 
@@ -274,6 +274,8 @@ export const useConversationStore = create((set, get) => ({
 
       // ===== 2. HANDLE CONVERSATION LIST =====
       const conversation = state.conversationMap[conversationId];
+ 
+
       if (!conversation) return state;
 
       const updatedConversation = {
@@ -287,7 +289,7 @@ export const useConversationStore = create((set, get) => ({
         senderId: message.senderId,
       };
 
-      console.log(updatedConversation);
+  
 
       return {
         messagesByConversation: updatedMessagesByConversation,
@@ -351,18 +353,21 @@ export const useConversationStore = create((set, get) => ({
     }),
 
   markMessagesAsRead: async (conversationId, readUpToMsg) => {
+    console.log('call api ')
     if (!readUpToMsg) return;
     const state = get();
     const conv = state.messagesByConversation[conversationId];
+    console.log(conv)
     if (!conv) return;
 
     try {
-      const res = await apiPatch(
+      const res = await api.patch(
         endpoints.messages.markUpMessages,
         readUpToMsg,
       );
 
       const { conversationUnreadCount, totalUnreadCount } = res.data.data;
+      console.log(res.data.data)
 
       set((prev) => {
         /* ===== Update conversationMap ===== */
@@ -416,7 +421,8 @@ export const useConversationStore = create((set, get) => ({
   /* ================= Unread ================= */
   fetchUnreadMessage: async () => {
     try {
-      const res = await apiGet(endpoints.messages.countUnreadMessage);
+      const res = await api.get(endpoints.messages.countUnreadMessage);
+
       set({ totalUnreadCount: res.data.data });
     } catch (error) {
       console.log(error);

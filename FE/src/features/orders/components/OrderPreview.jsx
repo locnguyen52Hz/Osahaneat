@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { apiGet, apiPost } from "../../../api/api";
+import { api } from "../../../api/api";
 import endpoints from "../../../api/endpoints";
 import OrderDetails from "./OrderDetails";
 import OrderActions from "./OrderActions";
@@ -22,7 +22,7 @@ function OrderPreview({ orderInfo, createOrder, loading, location }) {
     setLoadShippingFee(true);
     const fetchShippingFee = async () => {
       try {
-        const resPreview = await apiPost(endpoints.order.shippingFee, {
+        const resPreview = await api.post(endpoints.order.shippingFee, {
           shopId: orderInfo.shopId,
           foods: orderInfo.foods,
           fromLatitude: location.latitude,

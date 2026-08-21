@@ -1,0 +1,8 @@
+.container{
+    max-width: 512px;
+    padding: 33px;
+    background-color: white;
+    border-radius: 8px;
+}
+
+.header{}

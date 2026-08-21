@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { apiGet } from "../api/api";
+import { api } from "../api/api";
 import endpoints from "../api/endpoints";
 import { useCartStore } from "../stores/Cart/useCartStore";
 
@@ -19,7 +19,7 @@ export default function useShippingFee(selectedCart, currentLocation, loading) {
       setIsLoadingShippingFee(true);
 
       try {
-        const res = await apiGet(
+        const res = await api.get(
           `${endpoints.routes.shippingFee}?fromLongitude=${currentLocation.longitude}&fromLatitude=${currentLocation.latitude}&shopID=${selectedCart.shopId}`,
           { signal: controller.signal },
         );

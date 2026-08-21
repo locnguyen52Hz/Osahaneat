@@ -1,11 +1,12 @@
-import React, { useMemo } from "react";
-import DateTime from "../../components/common/DateTime";
+import { useMemo } from "react";
 import styles from "../../assets/styles/ProgressTimeline.module.css";
+import DateTime from "../../components/common/DateTime";
 
-import { BUYER_TIMELINE_TEXT, buildTimelineData } from "../../util/timeline";
 import { timeAgo } from "../../util/format";
+import { BUYER_TIMELINE_TEXT, buildTimelineData } from "../../util/timeline";
 
 function ProgressTimeline({ currentStatus, statuses }) {
+  // console.log(statuses);
   const timelineData = useMemo(
     () =>
       buildTimelineData(currentStatus, statuses).items.filter(
@@ -14,7 +15,7 @@ function ProgressTimeline({ currentStatus, statuses }) {
     [currentStatus, statuses],
   );
 
-  // console.log(timelineData)
+  console.log(timelineData.map((item) => item));
 
   return (
     <div className={styles.timeLineTracks}>
@@ -24,7 +25,7 @@ function ProgressTimeline({ currentStatus, statuses }) {
             <div className={styles.tooltip}>
               <p>{BUYER_TIMELINE_TEXT[item.status][item.state]}</p>
 
-              {item.isCurrent ? (
+              {item.state === "current" ? (
                 timeAgo(item.startTime)
               ) : (
                 <DateTime time={item.endTime} />

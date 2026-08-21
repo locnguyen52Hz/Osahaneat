@@ -1,5 +1,4 @@
-import { toast } from "react-toastify";
-import { apiGet, apiPatch, apiPost } from "../../../api/api";
+import { api } from "../../../api/api";
 import endpoints from "../../../api/endpoints";
 import { sanitizeInput } from "../../../util/format";
 
@@ -22,7 +21,7 @@ export const createOrder = async (shopId, note, carts, location) => {
   console.log(payload);
 
   try {
-    const res = await apiPost(endpoints.order.create, payload);
+    const res = await api.post(endpoints.order.create, payload);
     console.log(res.data.data);
     return true;
   } catch (err) {
@@ -32,26 +31,26 @@ export const createOrder = async (shopId, note, carts, location) => {
 };
 
 export const updateOrderStatus = async (orderId, newStatus) => {
-  const res = await apiPatch(endpoints.order.updateStatus(orderId, newStatus));
+  const res = await api.patch(endpoints.order.updateStatus(orderId, newStatus));
 
   return res.data.data;
 };
 
 export const getUpcomingOrders = async (currentPage) => {
-  const res = await apiGet(`${endpoints.order.active}?page=${currentPage}`);
+  const res = await api.get(`${endpoints.order.active}?page=${currentPage}`);
 
   return res.data.data;
 };
 
 export const getOrderItems = async (orderId) => {
-  const res = await apiGet(`${endpoints.order.items}?orderId=${orderId}`);
+  const res = await api.get(`${endpoints.order.items}?orderId=${orderId}`);
   return res.data.data;
 };
 
 export const createRating = async (request) => {
-  const res = await apiPost(`${endpoints.order.createRating}, ${request}`);
+  const res = await api.post(`${endpoints.order.createRating}, ${request}`);
 };
 export const getPreviousOrders = async (page) => {
-  const res = await apiGet(`${endpoints.order.previous}?page=${page}`);
+  const res = await api.get(`${endpoints.order.previous}?page=${page}`);
   return res.data.data;
 };

@@ -1,6 +1,4 @@
-import React from "react";
 import { formatDate, formatTime } from "../../util/format";
-import shared from "../../assets/styles/Shared.module.css";
 
 function DateTime({ time, color }) {
   const styles = {

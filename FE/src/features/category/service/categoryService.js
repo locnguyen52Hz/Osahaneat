@@ -1,8 +1,8 @@
-import { apiGet } from "../../../api/api";
+import { api } from "../../../api/api";
 import endpoints from "../../../api/endpoints";
 
 export const getCategories = async () => {
-  const res = await apiGet(endpoints.category.all);
+  const res = await api.get(endpoints.category.all);
   return res.data.data;
 };
 

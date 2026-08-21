@@ -56,7 +56,7 @@ export const formatDateTime = (time) =>
   });
 
 export const timeAgo = (timestamp) => {
-  // console.log(timestamp)
+  // console.log(timestamp);
   const past = new Date(timestamp);
   const now = new Date();
 
@@ -68,13 +68,12 @@ export const timeAgo = (timestamp) => {
   const month = Math.floor(day / 30);
   const year = Math.floor(month / 365);
 
-  if (sec < 60) return `${sec} seconds ago`;
-  if (min < 60) return `${min} minutes ago`;
+  if (sec < 60) return `${sec} giây trước`;
+  if (min < 60) return `${min} phút trước`;
 
-  if (hour < 24) return `${hour} hours ago`;
-  if (day < 30) return `${day} days ago`;
-  if (month < 12) return `${month} months ago`;
+  if (hour < 24) return `${hour} giờ trước`;
+  if (day < 30) return `${day} ngày trước`;
+  if (month < 12) return `${month} tháng trước`;
 
   return `${year} năm trước`;
 };
-7687.9;

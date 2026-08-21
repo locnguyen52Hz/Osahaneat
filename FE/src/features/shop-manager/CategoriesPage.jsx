@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { apiGet, apiPost } from "../../api/api";
+import { api } from "../../api/api";
 import endpoints from "../../api/endpoints";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 
@@ -12,8 +12,8 @@ function Categories() {
     const fetchCategories = async () => {
       try {
         const [resCategories, resShopCategories] = await Promise.all([
-          apiGet(`${endpoints.category.all}`),
-          apiGet(`${endpoints.category.shopCategories}`),
+          api.get(`${endpoints.category.all}`),
+          api.get(`${endpoints.category.shopCategories}`),
         ]);
         setCategories(resCategories.data.data);
         setShopCategories(resShopCategories.data.data);
@@ -30,8 +30,8 @@ function Categories() {
     if (loading) return;
 
     try {
-      const res = await apiPost(
-        `${endpoints.category.toggle}?categoryId=${category.id}`
+      const res = await api.post(
+        `${endpoints.category.toggle}?categoryId=${category.id}`,
       );
       console.log(res.data);
 

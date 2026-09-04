@@ -1,6 +1,3 @@
-import React from "react";
-import { AuthProvider, useAuth } from "../providers/UseContext";
-
 import { ModalProvider } from "../../contexts/ModalContext";
 
 import { WebSocketProvider } from "../../contexts/WebSocketContext";

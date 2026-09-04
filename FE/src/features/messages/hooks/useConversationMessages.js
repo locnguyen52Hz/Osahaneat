@@ -1,15 +1,14 @@
 // conversation/useConversationMessages.js
+import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { api } from "../../../api/api";
 import endpoints from "../../../api/endpoints";
-import {
-  normalizeMessages,
-  groupMessagesByDate,
-  mergeGroupedMessages,
-} from "../../../util/message";
-import axios from "axios";
-import { useConversationStore } from "../../../stores/messages/useConversationStore";
 import { useAuthStore } from "../../../stores/Auth/useAuthStore";
+import { useConversationStore } from "../../../stores/messages/useConversationStore";
+import {
+  groupMessagesByDate,
+  normalizeMessages
+} from "../../../util/message";
 
 export const useConversationMessages = () => {
   const activeConversationId = useConversationStore(

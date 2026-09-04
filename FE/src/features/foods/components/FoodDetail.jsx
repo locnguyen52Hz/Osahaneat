@@ -1,22 +1,21 @@
-import React, { useEffect, useState } from "react";
-import shared from "../../../assets/styles/Shared.module.css";
+import { useEffect, useState } from "react";
+import { api } from "../../../api/api";
+import endpoints from "../../../api/endpoints";
 import style from "../../../assets/styles/FoodDetail.module.css";
-import { useModal } from "../../../contexts/ModalContext";
+import shared from "../../../assets/styles/Shared.module.css";
+import FloatingLabel from "../../../components/common/FloatingLabel";
+import QuantitySelector from "../../../components/common/QuantitySelector";
 import {
-  MODAL_ANIMATION_DURATION,
+  MAX_LENGTH_NOTE,
   MAX_QUANTITY_FOOD,
   MIN_QUANTITY_FOOD,
-  MAX_LENGTH_NOTE,
+  MODAL_ANIMATION_DURATION,
 } from "../../../constants";
-import { createQuantityRegex } from "../../../util/regex";
-import { formatCurrency } from "../../../util/format";
-import endpoints from "../../../api/endpoints";
-import QuantitySelector from "../../../components/common/QuantitySelector";
+import { useModal } from "../../../contexts/ModalContext";
 import useQuantity from "../../../hooks/useQuantity";
-import OrderDetailsView from "../../orders/components/OrderDetailsView";
+import { formatCurrency } from "../../../util/format";
+import { createQuantityRegex } from "../../../util/regex";
 import OrderPreview from "../../orders/components/OrderPreview";
-import FloatingLabel from "../../../components/common/FloatingLabel";
-import { api } from "../../../api/api";
 
 import { toast } from "react-toastify";
 import { useLocationStore } from "../../../stores/location/useLocationStore";
@@ -38,6 +37,7 @@ function FoodDetail({ food, shopName, shopId, navigate }) {
     increase,
     setQuantity,
   } = useQuantity(MAX_QUANTITY_FOOD, MAX_QUANTITY_FOOD);
+
   useEffect(() => {
     //đợi cho đến khi animation chạy xong thì mới có thể bấm thêm giỏ hàng
     setTimeout(() => {
@@ -54,7 +54,7 @@ function FoodDetail({ food, shopName, shopId, navigate }) {
   ];
 
   const normalize = { shopName, shopId, note, foods };
-  console.log(normalize);
+  // console.log(normalize);
 
   const createOrderBuyNow = async () => {
     if (!currentLocation) return;
@@ -88,7 +88,7 @@ function FoodDetail({ food, shopName, shopId, navigate }) {
       return;
     }
 
-    openModal(
+    const stackId = openModal(
       <OrderPreview
         orderInfo={normalize}
         loading={buyNowLoading}
@@ -99,6 +99,7 @@ function FoodDetail({ food, shopName, shopId, navigate }) {
         type: "slide",
       },
     );
+    console.log(stackId);
 
     setTimeout(() => {
       setIsProCessing(false);

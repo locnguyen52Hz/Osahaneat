@@ -10,26 +10,6 @@ export function WebSocketProvider({ accessToken, children }) {
   const clientRef = useRef(null);
 
   const [ordersNotify, setOrdersNotify] = useState([]);
-  const onIncomingMessage = useConversationStore((s) => s.onIncomingMessage);
-  const conversationMap = useConversationStore((s) => s.conversationMap);
-  const conversationList = useConversationStore((s) => s.conversationList);
-  const ensureConversationExists = useConversationStore(
-    (s) => s.ensureConversationExists,
-  );
-  const messagesByConversation = useConversationStore(
-    (s) => s.messagesByConversation,
-  );
-  const bufferRealtimeMessage = useConversationStore(
-    (s) => s.bufferRealtimeMessage,
-  );
-  const pendingMessagesByConversation = useConversationStore(
-    (s) => s.pendingMessagesByConversation,
-  );
-
-  // message listeners (event-based)
-  const messageListenersRef = useRef(new Set());
-
-  // console.log(accessToken);
 
   useEffect(() => {
     if (!accessToken) return;

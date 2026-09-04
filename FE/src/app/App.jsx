@@ -9,7 +9,6 @@ import { useAuthStore } from "../stores/Auth/useAuthStore.js";
 import { useLocationStore } from "../stores/location/useLocationStore.js";
 import { useConversationStore } from "../stores/messages/useConversationStore.js";
 
-
 // helper
 function mapRoutes(routeTree) {
   let result = [];

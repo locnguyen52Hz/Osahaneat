@@ -1,9 +1,8 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import styles from "../../assets/styles/InsertFood.module.css";
-import EditAbleText from "../../components/EditableText";
+import shared from '../../assets/styles/Shared.module.css';
 import FloatingLabel from "../../components/common/FloatingLabel";
 import { MAX_LENGTH_NOTE } from "../../constants/limits";
-import shared from '../../assets/styles/Shared.module.css'
 
 function InsertFood({ onSubmitNewFood }) {
   const [newFood, setNewFood] = useState({

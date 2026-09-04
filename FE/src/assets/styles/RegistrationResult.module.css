@@ -1,0 +1,45 @@
+.fieldContainer {
+    background-color: #F2F4F6;
+    padding: 0 24px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.field {
+    /* display: flex; */
+
+    line-height: 20px;
+    /* column-gap: auto; */
+    padding: 16px 0;
+}
+
+.field:not(:last-child) {
+    border-bottom: 1px #C6C6CD solid;
+}
+
+.key {
+    color: #45464D;
+    font-size: 14px;
+    /* padding: 24px 0; */
+}
+
+.value {
+    color: #191C1E;
+    font-weight: 600;
+    font-size: 16px;
+    /* padding: 24px 0; */
+}
+
+@media(min-width:768px) {
+
+    .fieldContainer{
+        min-width: 446px;
+    }
+    .field{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+}

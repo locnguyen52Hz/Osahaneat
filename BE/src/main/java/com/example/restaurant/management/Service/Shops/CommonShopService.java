@@ -1,53 +1,44 @@
 package com.example.restaurant.management.Service.Shops;
 
-import com.example.restaurant.management.dto.ShopDto;
-import com.example.restaurant.management.Repository.ShopsRepository;
 import com.example.restaurant.management.Repository.UserRepository;
-import com.example.restaurant.management.Service.FileService;
-import com.example.restaurant.management.Service.RoutesService;
+import com.example.restaurant.management.Security.UserSecurityContext;
 import com.example.restaurant.management.Service.Shops.Imp.BuyerShopServiceImp;
-import com.example.restaurant.management.Service.Shops.Imp.ShopManagerShopServiceImp;
+import com.example.restaurant.management.Service.UserSecurity.UserSecurityService;
 import com.example.restaurant.management.Util.JwtHelper;
+import com.example.restaurant.management.dto.ShopDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CommonShopService {
 
-    @Autowired
-    ShopsRepository shopsRepository;
 
     @Autowired
     JwtHelper jwtHelper;
 
-    @Autowired
-    FileService fileService;
 
     @Autowired
-    RoutesService routesService;
+    UserRepository userRepository;
+
 
     @Autowired
-    UserRepository  userRepository;
+    BuyerShopServiceImp buyerShopServiceImp;
 
     @Autowired
-    ShopManagerShopServiceImp  shopManagerShopServiceImp;
+    UserSecurityService userSecurityService;
 
-    @Autowired
-    BuyerShopServiceImp  buyerShopServiceImp;
+    public ShopDto getShopById(String authHeader, Integer shopId, double longitude, double latitude) {
 
-    public ShopDto getShopById(String authHeader, Integer shopId, double longitude, double latitude ) {
+        UserSecurityContext userSecurityContext = userSecurityService.getUserSecurityContext(authHeader);
 
-        Integer userId = jwtHelper.getUserID(authHeader);
-        String role = userRepository.findUserById(userId).getRole().getRoleName();
 
-        return switch (role) {
+        return switch (userSecurityContext.role()) {
 //            case "ROLE_SHOP_MANAGER" ->  shopManagerShopServiceImp.getShopById(userId);
-            case "ROLE_BUYER" ->  buyerShopServiceImp.getShopById(shopId, longitude, latitude);
-            default -> throw new IllegalStateException("Unexpected value: " + role);
+            case ROLE_BUYER -> buyerShopServiceImp.getShopById(shopId, longitude, latitude);
+            default -> throw new IllegalStateException("Unexpected value: " + userSecurityContext.role());
         };
 
     }
-
 
 
 }

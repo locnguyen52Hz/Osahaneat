@@ -1,13 +1,9 @@
 import styles from "../../../assets/styles/Conversation.module.css";
 import { useAuthStore } from "../../../stores/Auth/useAuthStore";
 import { timeAgo } from "../../../util/format";
-// import { useMessagesListStore } from "../../stores/messages/useConversationStore";
+
 
 function Conversation({ conversation, onClick }) {
-  // if (conversation.unreadCount === undefined) {
-  //   console.log(conversation);
-  // }
-
   const myId = useAuthStore((s) => s.myId);
 
   return (

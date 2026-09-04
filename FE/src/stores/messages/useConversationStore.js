@@ -90,7 +90,6 @@ export const useConversationStore = create((set, get) => ({
 
       const myId = useAuthStore.getState().myId;
 
-
       const grouped = groupMessagesByDate(normalizeMessages(messages, myId));
 
       set((prev) => ({
@@ -274,7 +273,6 @@ export const useConversationStore = create((set, get) => ({
 
       // ===== 2. HANDLE CONVERSATION LIST =====
       const conversation = state.conversationMap[conversationId];
- 
 
       if (!conversation) return state;
 
@@ -288,8 +286,6 @@ export const useConversationStore = create((set, get) => ({
         senderName: message.senderName,
         senderId: message.senderId,
       };
-
-  
 
       return {
         messagesByConversation: updatedMessagesByConversation,
@@ -353,11 +349,11 @@ export const useConversationStore = create((set, get) => ({
     }),
 
   markMessagesAsRead: async (conversationId, readUpToMsg) => {
-    console.log('call api ')
+    console.log("call api ");
     if (!readUpToMsg) return;
     const state = get();
     const conv = state.messagesByConversation[conversationId];
-    console.log(conv)
+    console.log(conv);
     if (!conv) return;
 
     try {
@@ -367,7 +363,7 @@ export const useConversationStore = create((set, get) => ({
       );
 
       const { conversationUnreadCount, totalUnreadCount } = res.data.data;
-      console.log(res.data.data)
+      console.log(res.data.data);
 
       set((prev) => {
         /* ===== Update conversationMap ===== */

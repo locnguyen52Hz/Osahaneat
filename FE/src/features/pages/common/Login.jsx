@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import shared from "../../../assets/styles/Shared.module.css";
-import AuthForm from "../../../components/AuthForm";
+import AuthForm from "../../auth/components/AuthForm";
 
 import { useState } from "react";
 import LoadingSpinner from "../../../components/common/LoadingSpinner";

@@ -1,6 +1,9 @@
 package com.example.restaurant.management.Service.Categories;
 
 
+import com.example.restaurant.management.Enums.Roles;
+import com.example.restaurant.management.Security.UserSecurityContext;
+import com.example.restaurant.management.Service.UserSecurity.UserSecurityService;
 import com.example.restaurant.management.dto.CategoryDto;
 import com.example.restaurant.management.Entity.Category;
 import com.example.restaurant.management.Entity.User;
@@ -24,19 +27,15 @@ public class CommonCategoryService {
     CategoryRepository categoryRepository;
 
     @Autowired
-    ShopsRepository shopsRepository;
-
-    @Autowired
-    JwtHelper jwtHelper;
-
-    @Autowired
     ShopManagerCategoriesServiceImp shopManagerCategoriesServiceImp;
 
     @Autowired
     BuyerCategoryServiceImp buyerCategoryServiceImp;
 
+
+
     @Autowired
-    UserRepository userRepository;
+    UserSecurityService userSecurityService;
 
 
     public List<CategoryDto> getAllCategories() {
@@ -55,13 +54,11 @@ public class CommonCategoryService {
 
     public List<CategoryDto> getCategoriesOfShop(@RequestHeader("Authorization") String authHeader, Integer shopId) {
 
-        Integer userId = jwtHelper.getUserID(authHeader);
-        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        UserSecurityContext userSecurityContext = userSecurityService.getUserSecurityContext(authHeader);
 
-        String role = user.getRole().getRoleName();
-        return switch (role) {
-            case "ROLE_SHOP_MANAGER" -> shopManagerCategoriesServiceImp.getCategoriesOfShop(authHeader, shopId);
-            case "ROLE_BUYER" -> buyerCategoryServiceImp.getCategoriesOfShop(authHeader, shopId);
+        return switch (userSecurityContext.role()) {
+            case ROLE_SHOP_MANAGER -> shopManagerCategoriesServiceImp.getCategoriesOfShop(authHeader, shopId);
+            case ROLE_BUYER -> buyerCategoryServiceImp.getCategoriesOfShop(authHeader, shopId);
             default -> throw new RuntimeException("Role not authorized to access categories");
         };
 

@@ -1,11 +1,9 @@
-import React, { useEffect } from "react";
 import style from "../assets/styles/SideBar.module.css";
 import routes from "../routes/config.jsx";
 import SidebarItem from "./SidebarItem.jsx";
-import { useConversationStore } from "../stores/messages/useConversationStore.js";
-import { useAuth } from "../app/providers/UseContext.jsx";
+
 import { useNavigate } from "react-router-dom";
-import { useCartStore } from "../stores/Cart/useCartStore.js";
+
 import useSidebarBadges from "../hooks/useSidebarBadges.js";
 import { useAuthStore } from "../stores/Auth/useAuthStore.js";
 
@@ -13,8 +11,6 @@ function SideBar({ isOpen }) {
   const role = useAuthStore((s) => s.role);
   const username = useAuthStore((s) => s.username);
   const clearAuth = useAuthStore((s) => s.clearAuth);
-
-  const totalUnreadCount = useConversationStore((s) => s.totalUnreadCount);
 
   const badgeCounts = useSidebarBadges();
 

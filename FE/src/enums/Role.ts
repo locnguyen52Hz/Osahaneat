@@ -1,0 +1,5 @@
+export enum Role {
+  BUYER = "ROLE_BUYER",
+  SHOP_MANAGER = "ROLE_SHOP_MANAGER",
+  ADMIN = "ROLE_ADMIN",
+}

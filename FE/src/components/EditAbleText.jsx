@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "../assets/styles/EditAble.module.css";
 
-function EditAbleText({
+function EditableText({
   as: Tag = "span",
   value,
   onChange,
@@ -91,4 +91,4 @@ function EditAbleText({
   );
 }
 
-export default EditAbleText;
+export default EditableText;

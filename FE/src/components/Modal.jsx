@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import style from "../assets/styles/Modal.module.css";
-import { MODAL_ANIMATION_DURATION } from "../constants";
 
-function Modal({ isOpen, onClose, children, zIndex, type }) {
+function Modal({ isOpen, onClose, children, zIndex, type, onCloseAll }) {
   const [closing, setClosing] = useState(false);
 
   useEffect(() => {
@@ -15,18 +14,17 @@ function Modal({ isOpen, onClose, children, zIndex, type }) {
     };
   }, [isOpen]);
 
-const handleClose = (e) => {
-  e?.stopPropagation?.();
+  const handleClose = (e) => {
+    e?.stopPropagation?.();
 
-  if (closing) return;
+    if (closing) return;
 
-  setClosing(true);
+    setClosing(true);
 
-  setTimeout(() => {
-    onClose();
-  }, 300); // bằng thời gian animation
-};
-
+    setTimeout(() => {
+      onClose();
+    }, 300); // bằng thời gian animation
+  };
 
   if (!isOpen) return null;
 
@@ -34,7 +32,7 @@ const handleClose = (e) => {
     <div
       className={`${style.modalOverlay} `}
       style={{ zIndex }}
-      onClick={() => handleClose()}
+      onClick={() => onCloseAll()}
     >
       {type === "slide" && (
         <div
@@ -53,7 +51,12 @@ const handleClose = (e) => {
           {children}
         </div>
       )}
-      {type === "popup" && <div className={style.popup}>{children}</div>}
+
+      {type === "popup" && (
+        <div onClick={(e) => e.stopPropagation()} className={style.popup}>
+          {children}
+        </div>
+      )}
     </div>,
     document.body,
   );

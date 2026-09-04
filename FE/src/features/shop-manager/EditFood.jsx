@@ -1,11 +1,10 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import endpoints from "../../api/endpoints";
-import EditAbleText from "../../components/EditableText";
+import styles from "../../assets/styles/InsertFood.module.css";
 import shared from "../../assets/styles/Shared.module.css";
 import FloatingLabel from "../../components/common/FloatingLabel";
-import styles from "../../assets/styles/InsertFood.module.css";
-import { useModal } from "../../contexts/ModalContext";
 import PopupComfirm from "../../components/common/PopupComfirm";
+import { useModal } from "../../contexts/ModalContext";
 
 function EditFood({ food, onSubmitEditFood, onDeleteFood }) {
   const [foodDetail, setFoodDetail] = useState(food);

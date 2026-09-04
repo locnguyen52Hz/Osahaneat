@@ -17,7 +17,6 @@ function ConversationDetails({ conversation }) {
 
   const myId = useAuthStore((s) => s.myId);
 
-
   const [hasNewMessage, setHasNewMessage] = useState(false);
 
   const {
@@ -86,7 +85,7 @@ function ConversationDetails({ conversation }) {
   const handleScrollIdle = useRef(
     createScrollIdleHandler(() => {
       const cursor = oldestVisibleMsgCursor.current;
-   
+
       if (!cursor) return;
 
       // tránh call lại cùng 1 message

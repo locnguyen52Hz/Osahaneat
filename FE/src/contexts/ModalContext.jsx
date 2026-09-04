@@ -1,32 +1,29 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useCallback,
-  useEffect,
-} from "react";
-import Modal from "../components/Modal";
+import { createContext, useCallback, useContext, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { MODAL_ANIMATION_DURATION } from "../constants";
+import Modal from "../components/Modal";
 
 const ModalContext = createContext();
 
 export const ModalProvider = ({ children }) => {
   const [modalStack, setModalStack] = useState([]);
 
-
   const openModal = useCallback((content, props = {}) => {
     const id = uuidv4(); // ID duy nhất cho modal
     setModalStack((prev) => [...prev, { id, content, props }]);
 
-    // return id; // trả về ID để đóng modal theo ID nếu cần
+    return id; // trả về ID để đóng modal theo ID nếu cần
   });
 
   const closeModal = useCallback((id) => {
     setModalStack((prev) => prev.filter((modal) => modal.id !== id));
   }, []);
 
+  const closeTopMostModal = () => {
+    setModalStack((prev) => prev.slice(0, -1));
+  };
+
   const closeAllModal = () => {
+    console.log("close all");
     setModalStack([]);
   };
 
@@ -38,14 +35,22 @@ export const ModalProvider = ({ children }) => {
 
   return (
     <ModalContext.Provider
-      value={{ openModal, closeModal, closeAllModal, closeModalWithDelay, modalStack }}
+      value={{
+        openModal,
+        closeModal,
+        closeAllModal,
+        closeModalWithDelay,
+        closeTopMostModal,
+        modalStack,
+      }}
     >
       {children}
       {modalStack.map((modal, index) => (
         <Modal
           key={modal.id}
           isOpen={true}
-          onClose={() => closeAllModal()}
+          onClose={() => closeTopMostModal()}
+          onCloseAll={() => closeAllModal()}
           zIndex={1000 + index} // modal sau nằm trên modal trước
           {...modal.props}
         >

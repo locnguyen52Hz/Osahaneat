@@ -1,10 +1,10 @@
-import { create } from "zustand";
-import endpoints from "../../api/endpoints";
-
 import axios from "axios";
+import { create } from "zustand";
 import { authApi } from "../../api/authApi";
+import endpoints from "../../api/endpoints";
+import type { AuthState } from "../../types/auth";
 
-export const useAuthStore = create((set, get) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   accessToken: null,
   myId: null,
   username: null,

@@ -302,7 +302,7 @@ export const useCartStore = create((set, get) => ({
           })),
       };
 
-      const res = await apiPut(endpoints.cart.syncCart, payload);
+      const res = await api.put(endpoints.cart.syncCart, payload);
 
       const carts = res.data.data;
 

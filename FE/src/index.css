@@ -1,7 +1,8 @@
 ::-webkit-scrollbar {
-  width: 3px; 
-  height: 8px; 
+  width: 3px;
+  height: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
@@ -17,10 +18,19 @@
   background: #555;
 }
 
-body{
+body {
   font-family: 'Circular Std Book', sans-serif;
 }
 
 html {
-    scrollbar-gutter: stable;
+  scrollbar-gutter: stable;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: circular std book, sans-serif;
+  text-decoration: none;
+
 }

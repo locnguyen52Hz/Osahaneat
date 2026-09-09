@@ -1,4 +1,6 @@
-import { Role } from "../enums/Role";
+import { Role } from "../../enums/Role";
+import { LoginCredentials } from "./LoginCredentials";
+
 
 export interface AuthState {
   accessToken: string | null;
@@ -25,7 +27,5 @@ export interface AuthState {
   setInitializing: (value: boolean) => void;
 }
 
-export interface LoginCredentials {
-  email: string;
-  password: string;
-}
+
+ 

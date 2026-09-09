@@ -12,6 +12,7 @@ function OrderPreview({ orderInfo, createOrder, loading, location }) {
   const [details, setDetails] = useState(orderInfo);
   const [loadShippingFee, setLoadShippingFee] = useState(false);
   const { openModal } = useModal();
+
   const handleSelectAddress = () => {
     openModal(<AddressSelector />, { type: "slide" });
   };

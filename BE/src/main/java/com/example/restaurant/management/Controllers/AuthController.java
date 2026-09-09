@@ -35,7 +35,7 @@ public class AuthController {
 
         ResponseCookie responseCookie = ResponseCookie.from("refreshToken", responseDto.getRefreshToken())
                 .httpOnly(true)
-                .secure(false) // true : chỉ gửi qua https, http ko đc
+                .secure(true) // true : chỉ gửi qua https, http ko đc
                 .sameSite("Lax")
                 .path("/api/auth/")
                 .maxAge(Duration.ofDays(7))

@@ -1,19 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { api } from "../../api/api";
-import style from "../../assets/styles/ShopDetail.module.css";
-import ShopCard from "../../features/shops/ShopCard";
-import shared from "../../assets/styles/Shared.module.css";
-import FoodList from "../foods/components/FoodList";
 import endpoints from "../../api/endpoints";
-import { toast } from "react-toastify";
+import shared from "../../assets/styles/Shared.module.css";
+import style from "../../assets/styles/ShopDetail.module.css";
+import FoodList from "../foods/components/FoodList";
 
+import { useLocationStore } from "../../stores/location/useLocationStore";
 import ActiveCategories from "../category/components/ActiveCategories";
 import ShopHeader from "./ShopHeader";
-import FoodDetail from "../foods/components/FoodDetail";
-import { useCartStore } from "../../stores/Cart/useCartStore";
-import { useLocationStore } from "../../stores/location/useLocationStore";
-import { useFoodActions } from "../../hooks/useFoodActions";
 
 function ShopDetail() {
   const { id } = useParams();
@@ -24,9 +19,6 @@ function ShopDetail() {
   const [foods, setFoods] = useState([]);
 
   const currentLocation = useLocationStore((s) => s.currentLocation);
-  const { handleBuyNow, handleAddToCart } = useFoodActions();
-
-  const addItem = useCartStore((s) => s.addItem);
 
   // ===== Lấy thông tin shop + categories =====
   useEffect(() => {
@@ -96,11 +88,7 @@ function ShopDetail() {
           />
         )}
 
-        <FoodList
-          foods={foods}
-          handleBuyNow={handleBuyNow}
-          handleAddToCart={handleAddToCart}
-        />
+        <FoodList foods={foods} />
       </div>
     </>
   );

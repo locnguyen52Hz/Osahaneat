@@ -56,7 +56,7 @@ public class RegisterServiceImp implements com.example.restaurant.management.Ser
         RegisterResponseDto registerResponseDto = new RegisterResponseDto();
         registerResponseDto.setEmail(user.getEmail());
         registerResponseDto.setFullName(user.getFullName());
-
+        registerResponseDto.setDescriptionRole(defaultRole.getDescription());
 
         return registerResponseDto;
     }

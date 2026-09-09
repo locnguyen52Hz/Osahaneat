@@ -1,23 +1,12 @@
-import React, { useRef } from "react";
-import FoodCard from "./FoodCard";
-import Modal from "../../../components/Modal";
-import FoodDetail from "./FoodDetail";
 import style from "../../../assets/styles/FoodList.module.css";
+import FoodCard from "./FoodCard";
 
-function FoodList({ foods, handleBuyNow, handleAddToCart }) {
-
+function FoodList({ foods }) {
   return (
     <>
       <div className={style.foodList}>
         {foods?.map((food) => (
-          <FoodCard
-            key={food.foodId}
-            food={food}
-            onBuyNow={() => handleBuyNow(food, food.shopName, food.shopId)}
-            onAddItemToCart={() =>
-              handleAddToCart(food, food.shopName, food.shopId)
-            }
-          />
+          <FoodCard key={food.foodId} food={food} />
         ))}
       </div>
     </>

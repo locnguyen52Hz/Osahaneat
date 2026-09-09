@@ -2,7 +2,7 @@ import { Suspense, useEffect } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import PrivateRouter from "../components/PrivateRouter.jsx";
-import Login from "../features/pages/common/Login.jsx";
+import Login from "../features/pages/common/Login.tsx";
 import MainLayout from "../layouts/MainLayout.jsx";
 import routes from "../routes/config.jsx";
 import { useAuthStore } from "../stores/Auth/useAuthStore.js";

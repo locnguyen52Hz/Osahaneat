@@ -7,7 +7,7 @@ export const useLocationStore = create((set, get) => ({
   currentLocation: null,
   selectedAddress: null,
   savedAddresses: [],
-  loading: false,
+  loading: true,
   error: null,
 
   // ======================

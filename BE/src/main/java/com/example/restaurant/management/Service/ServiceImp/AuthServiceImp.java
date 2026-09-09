@@ -70,7 +70,6 @@ public class AuthServiceImp implements AuthService {
             Role role = user.getRole();
             RoleDto roleDTO = new RoleDto();
             roleDTO.setRoleName(role.getRoleName());
-            roleDTO.setDescription(role.getDescription());
 
             return roleDTO;
         }

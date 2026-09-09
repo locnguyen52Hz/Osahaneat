@@ -2,7 +2,12 @@ import axios from "axios";
 import { create } from "zustand";
 import { authApi } from "../../api/authApi";
 import endpoints from "../../api/endpoints";
-import type { AuthState } from "../../types/auth";
+
+import { Role } from "../../enums/Role";
+import { AuthState, LoginResponse } from "../../types/auth/Auth";
+import { ApiResponse } from "../../types/common/Api";
+import { RoleResponse } from "../../types/auth/RoleResponse";
+import { RefreshResponse } from "../../types/auth/RefreshResponse";
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   accessToken: null,
@@ -33,19 +38,30 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   login: async (credentials) => {
+    if (get().isLoading) {
+      return;
+    }
+
     set({ isLoading: true });
     try {
-      const res = await authApi.post(endpoints.auth.login, {
-        email: credentials.email,
-        password: credentials.password,
-      });
-      const { accessToken, refreshToken, user } = res.data.data;
+      const res = await authApi.post<ApiResponse<LoginResponse>>(
+        endpoints.auth.login,
+        {
+          email: credentials.email,
+          password: credentials.password,
+        },
+      );
+      const { accessToken, user } = res.data.data;
       console.log(res);
 
       if (accessToken) {
-        const resRole = await axios.get(endpoints.auth.role, {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
+        const resRole = await axios.get<ApiResponse<RoleResponse>>(
+          endpoints.auth.role,
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          },
+        );
+        console.log(resRole.data.data);
         const { setAuth, setInitializing } = get();
         setAuth(
           accessToken,
@@ -54,7 +70,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           resRole.data.data.roleName,
         );
         setInitializing(false);
-        // console.log(resRole.data.data);
+
         return resRole.data.data.roleName;
       }
     } finally {
@@ -64,7 +80,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   refresh: async () => {
     try {
-      const res = await authApi.post(endpoints.auth.refresh);
+      const res = await authApi.post<ApiResponse<RefreshResponse>>(
+        endpoints.auth.refresh,
+      );
 
       const { accessToken, user } = res.data.data;
       // console.log(accessToken);

@@ -309,15 +309,10 @@ export const useCartStore = create((set, get) => ({
       set({
         carts,
         originalCarts: structuredClone(carts),
-
         totalCartItem: getTotalCartItems(carts),
-
         dirtyShopIds: new Set(),
-
         hasPendingChanges: false,
-
         isSyncing: false,
-
         lastSync: Date.now(),
       });
     } catch (err) {

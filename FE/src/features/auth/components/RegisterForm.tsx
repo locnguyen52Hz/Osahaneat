@@ -1,21 +1,26 @@
 import axios from "axios";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { FieldValues } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import shared from "../../../assets/styles/Shared.module.css";
 import ResultModal from "../../../components/common/ResultModal";
 import RegistrationResult from "../../../components/RegistrationResult";
 import { useModal } from "../../../contexts/ModalContext";
+import { RegisterFormProps } from "../../../types/auth/RegisterFormProps";
+import { FieldErrorMessage } from "../../../types/FieldErrorMessage";
 import { flattenObject } from "../../../util/objectUtils";
 import AuthForm from "./AuthForm";
 
-function RegisterForm({
+function RegisterForm<T extends FieldValues>({
   endpoint,
   fields,
   title,
   description,
   transformData,
-  customFooter,
-}) {
-  const [externalErrors, setExternalErrors] = useState([]);
+}: RegisterFormProps<T>) {
+  const [externalErrors, setExternalErrors] = useState<FieldErrorMessage[]>([]);
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const navigate = useNavigate();
   const { openModal, closeAllModal } = useModal();
@@ -25,8 +30,9 @@ function RegisterForm({
     navigate("/login");
   };
 
-  const onSubmit = async (data) => {
-    console.log(data);
+  const onSubmit = async (data: T): Promise<boolean> => {
+    if (isLoading) return false;
+    setIsLoading(true);
     try {
       const requestData = transformData ? transformData(data) : data;
 
@@ -49,20 +55,35 @@ function RegisterForm({
       return true;
     } catch (error) {
       console.error(error);
-      setExternalErrors(error.response.data.errors);
 
+      if (axios.isAxiosError(error)) {
+        console.log(error)
+        setExternalErrors(error.response?.data?.errors ?? []);
+      }
+
+      setIsLoading(false);
       return false;
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <AuthForm
+    <AuthForm<T>
       title={title}
       description={description}
       fields={fields}
       onSubmit={onSubmit}
       externalErrors={externalErrors}
-      customFooter={customFooter}
+      submitLabel="Tạo tài khoản"
+      options={
+        <p style={{ textAlign: "center" }} className={shared.paragraph}>
+          Already have an account?{" "}
+          <Link className={shared.link} to="/login">
+            Sign in
+          </Link>
+        </p>
+      }
     />
   );
 }

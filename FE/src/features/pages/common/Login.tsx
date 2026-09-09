@@ -1,38 +1,47 @@
+import axios from "axios";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import shared from "../../../assets/styles/Shared.module.css";
-import AuthForm from "../../auth/components/AuthForm";
-
-import { useState } from "react";
-import LoadingSpinner from "../../../components/common/LoadingSpinner";
 import { useAuthStore } from "../../../stores/Auth/useAuthStore";
+
+import { FieldErrorMessage } from "../../../types/FieldErrorMessage";
+import AuthForm from "../../auth/components/AuthForm";
+import { Role } from "../../../enums/Role";
+import { LoginCredentials } from "../../../types/auth/LoginCredentials";
 
 function Login() {
   const navigate = useNavigate();
-  const [externalErrors, setExternalErrors] = useState([]);
-
+  const [externalErrors, setExternalErrors] = useState<FieldErrorMessage[]>([]);
   const login = useAuthStore((s) => s.login);
   const isLoading = useAuthStore((s) => s.isLoading);
 
-  const onSubmit = async (data) => {
-    if (isLoading) return;
+  const onSubmit = async (data: LoginCredentials): Promise<boolean> => {
+    if (isLoading) return false;
 
     setExternalErrors([]);
+
     try {
       const role = await login(data);
-      if (role === "ROLE_BUYER") {
+
+      if (role === Role.BUYER) {
         navigate("/buyer/home", { replace: true });
       }
-      if (role === "ROLE_SHOP_MANAGER") {
+
+      if (role === Role.SHOP_MANAGER) {
         navigate("/manager/dashboard", { replace: true });
       }
+
+      return true;
     } catch (error) {
-      setExternalErrors(error.response.data.errors);
+      if (axios.isAxiosError(error)) {
+        setExternalErrors(error.response?.data?.errors ?? []);
+      }
+      return false;
     }
   };
 
   return (
-    <AuthForm
-      pathnameUrl={window.location.pathname}
+    <AuthForm<LoginCredentials>
       externalErrors={externalErrors}
       title="Welcome"
       description="Sign in to your account to continue"
@@ -56,12 +65,14 @@ function Login() {
         },
         {
           name: "password",
+
           id: "password",
           label: "Password",
           placeholder: "Enter your password",
           type: "password",
           icon: "bi-eye-slash",
           rules: {
+            // value:'toidaidot',
             required: { value: true, message: "Không để trống" },
             pattern: {
               value: /^[A-Za-z\d]{8,72}$/,
@@ -70,18 +81,9 @@ function Login() {
           },
         },
       ]}
-      customFooter={
+      submitLabel={"Đăng nhập"}
+      options={
         <>
-          <button className={shared.submitBtn}>
-            {isLoading ? <LoadingSpinner /> : "Sign in"}
-          </button>
-          <a
-            className={shared.paragraph}
-            style={{ textAlign: "center" }}
-            href=""
-          >
-            Forgot password?
-          </a>
           <Link className={shared.a} to="/register">
             Create an account
           </Link>

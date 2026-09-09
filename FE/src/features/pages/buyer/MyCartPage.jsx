@@ -1,22 +1,21 @@
-import React, { useEffect, useMemo, useState } from "react";
-import styles from "../../../assets/styles/MyCartPage.module.css";
-import ShopCart from "../../cart/component/ShopCart";
-import OrderSummary from "../../cart/component/OrderSummary";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import styles from "../../../assets/styles/MyCartPage.module.css";
 import "../../../assets/styles/variables.css";
-import { useCartStore } from "../../../stores/Cart/useCartStore";
 import LoadingSpinner from "../../../components/common/LoadingSpinner";
+import { useCartStore } from "../../../stores/Cart/useCartStore";
 import { calculateCartTotal } from "../../../util/cart";
+import OrderSummary from "../../cart/component/OrderSummary";
+import ShopCart from "../../cart/component/ShopCart";
 
-import endpoints from "../../../api/endpoints";
 import CartEmpty from "../../cart/component/CartEmpty";
 
-import { useLocationStore } from "../../../stores/location/useLocationStore";
-import { useModal } from "../../../contexts/ModalContext";
-import OrderDetailsView from "../../orders/components/OrderDetailsView";
-import OrderActions from "../../orders/components/OrderActions";
 import { toast } from "react-toastify";
+import { useModal } from "../../../contexts/ModalContext";
 import useShippingFee from "../../../hooks/useShippingFee";
+import { useLocationStore } from "../../../stores/location/useLocationStore";
+import OrderActions from "../../orders/components/OrderActions";
+import OrderDetailsView from "../../orders/components/OrderDetailsView";
 
 function MyCartPage() {
   const { showSideBar } = useOutletContext();
@@ -28,11 +27,11 @@ function MyCartPage() {
   const fetchCart = useCartStore((s) => s.fetchCart);
   const isLoading = useCartStore((s) => s.isLoading);
   const totalCartItem = useCartStore((s) => s.totalCartItem);
-  const updateShippingFee = useCartStore((s) => s.updateShippingFee);
+
   const currentLocation = useLocationStore((s) => s.currentLocation);
   const loading = useLocationStore((s) => s.loading);
 
-  const setShippingLoading = useLocationStore((s) => s.setShippingLoading);
+
   const cartShippingLoading = useLocationStore((s) => s.cartShippingLoading);
 
   const { openModal } = useModal();

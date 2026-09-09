@@ -1,33 +1,45 @@
-import "bootstrap-icons/font/bootstrap-icons.css";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import {
+  FieldPath,
+  FieldValues,
+  get,
+  useForm
+} from "react-hook-form";
 import styles from "../../../assets/styles/AuthForm.module.css";
+import shared from "../../../assets/styles/Shared.module.css";
+import LoadingSpinner from "../../../components/common/LoadingSpinner";
+import { AuthFormProps } from "../../../types/auth/AuthFormProps";
 
-export default function AuthForm({
+export default function AuthForm<T extends FieldValues>({
   title,
   description,
   onSubmit,
   fields,
-  customFooter,
+  submitLabel,
   externalErrors,
-}) {
+  options,
+}: AuthFormProps<T>) {
   const {
     register,
     handleSubmit,
     setError,
     clearErrors,
     reset,
-    formState: { errors },
-  } = useForm();
+    formState: { errors, isSubmitting },
+  } = useForm<T>();
 
   useEffect(() => {
     if (!Array.isArray(externalErrors)) return;
+
     externalErrors.forEach((error) => {
-      setError(error.field, { type: "server", message: error.message });
+      setError(error.field as FieldPath<T>, {
+        type: "server",
+        message: error.message,
+      });
     });
   }, [externalErrors, setError]);
 
-  const handleFormSubmit = async (data) => {
+  const handleFormSubmit = async (data: T) => {
     const success = await onSubmit(data);
     if (success) {
       reset();
@@ -50,7 +62,11 @@ export default function AuthForm({
             {fields.map((field) => {
               const registration = register(field.name, field.rules);
               return (
-                <div className={styles.row} key={field.name}>
+                <fieldset
+                  disabled={isSubmitting}
+                  className={styles.row}
+                  key={field.name}
+                >
                   <div className={styles.bgIcon}>
                     <i className={`bi ${field.icon}`} />
                   </div>
@@ -75,17 +91,21 @@ export default function AuthForm({
                       }}
                     />
                     <p className={styles.error}>
-                      {errors[field.name]?.message || (
+                      {get(errors, field.name)?.message || (
                         <span style={{ visibility: "hidden" }}> ẩn </span>
                       )}
                     </p>
                   </div>
-                </div>
+                </fieldset>
               );
             })}
-            {customFooter && (
-              <div className={styles.form}> {customFooter} </div>
-            )}
+
+            <div className={styles.form}>
+              <button disabled={isSubmitting} className={shared.submitBtn}>
+                {isSubmitting ? <LoadingSpinner /> : submitLabel}
+              </button>
+              {options && options}
+            </div>
           </form>
         </div>
       </div>

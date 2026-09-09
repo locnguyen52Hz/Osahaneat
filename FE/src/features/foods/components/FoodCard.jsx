@@ -1,25 +1,25 @@
-import React, { useState } from "react";
-import FreeShipIcon from "../../../components/common/FreeShipIcon";
-import style from "../../../assets/styles/FoodCard.module.css";
-import { formatCurrency, formatDistance } from "../../../util/format";
+import { useState } from "react";
 import endpoints from "../../../api/endpoints";
-import { useCartStore } from "../../../stores/Cart/useCartStore";
-import RatingDisplay from "../../../components/common/RatingDisplay";
+import style from "../../../assets/styles/FoodCard.module.css";
 import GeographyIcon from "../../../components/common/GeographyIcon";
+import RatingDisplay from "../../../components/common/RatingDisplay";
+import { formatCurrency, formatDistance } from "../../../util/format";
+import { useFoodActions } from "../../../hooks/useFoodActions";
 
-function FoodCard({ food, onBuyNow, onAddItemToCart }) {
+function FoodCard({ food }) {
   const {
     image,
     foodName,
     price,
-    description,
     foodId,
     shopName,
     ratingAvg,
     ratingCount,
     distance,
+    shopId,
   } = food;
 
+  const { handleBuyNow, handleAddToCart } = useFoodActions();
 
   const [effects, setEffects] = useState([]);
 
@@ -31,7 +31,7 @@ function FoodCard({ food, onBuyNow, onAddItemToCart }) {
     setTimeout(() => {
       setEffects((prev) => prev.filter((i) => i !== id));
     }, 800);
-    onAddItemToCart(food);
+    handleAddToCart(food, shopName, shopId);
   };
 
   return (
@@ -54,7 +54,10 @@ function FoodCard({ food, onBuyNow, onAddItemToCart }) {
         <p className={style.price}>Giá: {formatCurrency(price)}</p>
       </div>
       <div className={style.action}>
-        <button onClick={onBuyNow} className={style.buyNow}>
+        <button
+          onClick={() => handleBuyNow(food, food.shopName, food.shopId)}
+          className={style.buyNow}
+        >
           Mua nhanh
         </button>
 

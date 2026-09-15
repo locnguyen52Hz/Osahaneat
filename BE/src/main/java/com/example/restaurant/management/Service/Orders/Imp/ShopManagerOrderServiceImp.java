@@ -154,6 +154,7 @@ public class ShopManagerOrderServiceImp implements OrdersService {
             orderItemDTO.setFoodName(ordersItem.getFood().getName());
             orderItemDTO.setPrice(ordersItem.getFood().getPrice());
             orderItemDTO.setQuantity(ordersItem.getQuantity());
+            orderItemDTO.setImage(ordersItem.getFood().getImage());
             orderItemDtos.add(orderItemDTO);
         }
         return orderItemDtos;

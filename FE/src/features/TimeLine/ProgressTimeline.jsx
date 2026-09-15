@@ -15,7 +15,7 @@ function ProgressTimeline({ currentStatus, statuses }) {
     [currentStatus, statuses],
   );
 
-  console.log(timelineData.map((item) => item));
+  
 
   return (
     <div className={styles.timeLineTracks}>

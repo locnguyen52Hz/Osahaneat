@@ -1,4 +1,13 @@
-function OrderActions({ action, label, color, backGroundColor, icon, border }) {
+import { OrderActionsProps } from "../../../types/order/OrderActionsProps";
+
+function OrderActions({
+  action,
+  label,
+  color,
+  backGroundColor,
+  icon,
+  border,
+}: OrderActionsProps) {
   // console.log(cancelBtn);
   return (
     <>

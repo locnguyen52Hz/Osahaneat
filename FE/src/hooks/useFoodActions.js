@@ -11,24 +11,18 @@ export const useFoodActions = () => {
   const { openModal } = useModal();
   const addItem = useCartStore((s) => s.addItem);
 
-  const handleBuyNow = (food, shopName, shopId) => {
+  const handleBuyNow = (food) => {
     openModal(
       React.createElement(FoodDetail, {
         food,
-        shopName,
-        shopId,
         navigate,
       }),
       { type: "slide" },
     );
   };
 
-  const handleAddToCart = (food, shopName, shopId) => {
-    const shop = {
-      shopName,
-      shopId,
-    };
-    addItem(shop, food);
+  const handleAddToCart = (food) => {
+    addItem(food);
   };
 
   return {

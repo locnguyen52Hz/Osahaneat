@@ -18,7 +18,6 @@ function ShopCart({
   const removeItem = useCartStore((s) => s.removeItem);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
 
-  // console.log(carts);
   const handleUpdateQuantity = (foodId, quantity) => {
     updateQuantity(shopId, foodId, quantity);
   };

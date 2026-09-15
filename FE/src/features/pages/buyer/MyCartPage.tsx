@@ -14,15 +14,17 @@ import { toast } from "react-toastify";
 import { useModal } from "../../../contexts/ModalContext";
 import useShippingFee from "../../../hooks/useShippingFee";
 import { useLocationStore } from "../../../stores/location/useLocationStore";
+import { CheckoutCart } from "../../../types/cart/CheckoutCart";
 import OrderActions from "../../orders/components/OrderActions";
 import OrderDetailsView from "../../orders/components/OrderDetailsView";
 
 function MyCartPage() {
-  const { showSideBar } = useOutletContext();
+  const { showSideBar } = useOutletContext<{ showSideBar: boolean }>();
 
-  const [selectedCartId, setSelectedCartId] = useState(null);
+  const [selectedCartId, setSelectedCartId] = useState<number | null>(null);
 
   const carts = useCartStore((s) => s.carts);
+
   const createOrderFromCart = useCartStore((s) => s.createOrderFromCart);
   const fetchCart = useCartStore((s) => s.fetchCart);
   const isLoading = useCartStore((s) => s.isLoading);
@@ -30,7 +32,6 @@ function MyCartPage() {
 
   const currentLocation = useLocationStore((s) => s.currentLocation);
   const loading = useLocationStore((s) => s.loading);
-
 
   const cartShippingLoading = useLocationStore((s) => s.cartShippingLoading);
 
@@ -58,7 +59,7 @@ function MyCartPage() {
     [selectedCart],
   );
 
-  const onCheckoutCart = async (cart) => {
+  const onCheckoutCart = async (cart: CheckoutCart) => {
     try {
       await createOrderFromCart(cart);
 
@@ -77,10 +78,13 @@ function MyCartPage() {
   };
 
   const handleOpenCheckout = () => {
+    console.log(carts);
     if (loading || cartShippingLoading || !selectedCart?.shippingFee) return;
+    const shippingFee = selectedCart.shippingFee;
     const cart = {
       ...selectedCart,
       subtotal,
+      shippingFee,
       totalAmount: subtotal + selectedCart.shippingFee,
       deliveredTo: currentLocation.address,
       fromLatitude: currentLocation.latitude,

@@ -1,70 +1,36 @@
-import React from "react";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import styles from "../../../assets/styles/ManagerOrderDetails.module.css";
-import ProductTable from "../../orders/components/ProductTable";
-import ManagerOrderSummary from "../../orders/components/ManagerOrderSummary";
 import CustomerInfo from "../../../components/CustomerInfo";
-import { calcCartTotal } from "../../../util/cart";
-import StatusBadge from "../../orders/components/StatusBadge";
-import OrderActions from "../../orders/components/OrderActions";
-import { NEXT_STATUS } from "../../orders/config/OrdersStatusConfig";
+import DeliveryLocation from "../../../components/DeliveryLocation";
 import DateTime from "../../../components/common/DateTime";
 import ManagerProgressTimeLine from "../../TimeLine/ManagerProgressTimeLine";
-import useOrderDetails from "../../orders/hooks/useOrderDetails";
-import DeliveryLocation from "../../../components/DeliveryLocation";
-import useOrderTimeline from "../../orders/hooks/useOrderTimeline";
 import StatusTimeline from "../../TimeLine/StatusTimeLine";
-import useOrderActions from "../../orders/hooks/useOrderActions";
-import { toast } from "react-toastify";
-import { updateOrderStatus } from "../../orders/service/OrderServices";
-
-const MOCK = {
-  orderId: 1,
-  shippingFee: 15000,
-  deliveredTo: "Ngõ Tiểu học Phượng Cách, Xã Quốc Oai, Hà Nội, 01234, Việt Nam",
-  status: "PENDING",
-  created_at: "2026-05-22 05:15:20.030466",
-  subtotal: 12000,
-  totalAmount: 2312323,
-  totalQuantity: 4,
-  status: "PENDING",
-  orderItems: [
-    {
-      foodId: 1,
-      foodName:
-        "Ngõ Tiểu học Phượng Cách, Xã Quốc Oai, Hà Nội, 01234, Việt Nam",
-      quantity: 1,
-      price: 3500000,
-    },
-    {
-      foodId: 2,
-      foodName: "xyz",
-      quantity: 3,
-      price: 120000,
-    },
-  ],
-};
-
-const CUSTOMER_INFO = {
-  fullName: "Nguyễn Lâm Anh",
-  email: "lamanh.nguyen@email.com",
-};
+import ManagerOrderSummary from "../../orders/components/ManagerOrderSummary";
+import OrderActions from "../../orders/components/OrderActions";
+import ProductTable from "../../orders/components/ProductTable";
+import StatusBadge from "../../orders/components/StatusBadge";
+import { NEXT_STATUS } from "../../orders/config/OrdersStatusConfig";
+import useOrderDetails from "../../orders/hooks/useOrderDetails";
+import useOrderItems from "../../orders/hooks/useOrderItems";
+import useOrderTimeline from "../../orders/hooks/useOrderTimeline";
+import { updateOrderStatus } from "../../orders/service/orderApi";
 
 function ManagerOrderDetails() {
   const { id } = useParams();
+  const orderId = Number(id);
 
-  const { loading, order, fectchOrderDetails, setOrder } = useOrderDetails(id);
+  const { loading, order, fectchOrderDetails } = useOrderDetails(orderId);
   const { loadingTimeLine, timeline, fetchOrderTimeline } =
     useOrderTimeline(id);
-  // const { updateStatus, cancelOrder } = useOrderActions(setOrder);
-  // console.log(NEXT_STATUS[order.status]);
 
-  const nextStatus = NEXT_STATUS[order.status];
-  console.log(nextStatus);
+  const { items } = useOrderItems(id);
+
+  const nextStatus = order ? NEXT_STATUS[order.status] : null;
 
   const handleCancel = async () => {
     try {
-      await updateOrderStatus(id, "CANCELLED");
+      await updateOrderStatus(orderId, "CANCELLED");
       toast.success("Hủy thành công");
       await fectchOrderDetails();
       await fetchOrderTimeline();
@@ -76,15 +42,19 @@ function ManagerOrderDetails() {
 
   const handleUpdateStatus = async () => {
     try {
-      await updateOrderStatus(id, nextStatus.next);
-      toast.success("Cập nhật thành công");
-      await fectchOrderDetails();
-      await fetchOrderTimeline();
+      if (nextStatus) {
+        await updateOrderStatus(orderId, nextStatus.next);
+        toast.success("Cập nhật thành công");
+        await fectchOrderDetails();
+        await fetchOrderTimeline();
+      }
     } catch (error) {
       console.log(error);
       toast.error("Cập nhật thất bại");
     }
   };
+
+  if (!order) return;
 
   return (
     <div className={styles.wrapper}>
@@ -94,7 +64,7 @@ function ManagerOrderDetails() {
             <h3 className={styles.orderId}>
               {!loading && (
                 <>
-                  Đơn hàng #{order.orderId}{" "}
+                  Đơn hàng #{order.orderId}
                   <StatusBadge status={order.status} />
                 </>
               )}
@@ -134,7 +104,7 @@ function ManagerOrderDetails() {
         <div className={styles.body}>
           <div className={styles.table}>
             <div className={styles.productTable}>
-              <ProductTable orderItems={MOCK.orderItems} />
+              <ProductTable orderItems={items} />
             </div>
 
             <div className={styles.summary}>

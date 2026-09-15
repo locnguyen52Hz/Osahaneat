@@ -1,5 +1,4 @@
 export const ORDER_STATUS = {
-  // all:{},
   PENDING: {
     color: "rgba(54, 185, 204, 1)",
     backgroundColor: "rgba(47, 86, 99, 0.1)",
@@ -38,7 +37,6 @@ export const ORDER_STATUS = {
     status: "CANCELLED",
     label: null,
   },
-  all: null,
 };
 
 // Trạng thái kế tiếp + label cho nút

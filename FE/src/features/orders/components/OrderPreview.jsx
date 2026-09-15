@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { api } from "../../../api/api";
 import endpoints from "../../../api/endpoints";
-import OrderDetails from "./OrderDetails";
+import AddressSelector from "../../../components/common/AddressSelector";
+import { useModal } from "../../../contexts/ModalContext";
 import OrderActions from "./OrderActions";
 import OrderDetailsView from "./OrderDetailsView";
-import { useModal } from "../../../contexts/ModalContext";
-import AddressSelector from "../../../components/common/AddressSelector";
 
 function OrderPreview({ orderInfo, createOrder, loading, location }) {
+
   const [details, setDetails] = useState(orderInfo);
   const [loadShippingFee, setLoadShippingFee] = useState(false);
   const { openModal } = useModal();
@@ -16,7 +16,6 @@ function OrderPreview({ orderInfo, createOrder, loading, location }) {
   const handleSelectAddress = () => {
     openModal(<AddressSelector />, { type: "slide" });
   };
-  console.log(orderInfo);
 
   useEffect(() => {
     if (!location) return;
@@ -48,7 +47,9 @@ function OrderPreview({ orderInfo, createOrder, loading, location }) {
 
     fetchShippingFee();
   }, [location, orderInfo]);
+
   if (loadShippingFee) return <p>Loading...</p>;
+
   return (
     <OrderDetailsView
       handleSelectAddress={handleSelectAddress}

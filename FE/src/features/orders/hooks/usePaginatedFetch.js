@@ -12,7 +12,6 @@ function usePaginatedFetch(fetchFunction) {
     try {
       const res = await fetchFunction(currentPage);
 
-      // normalize response (rất quan trọng để reuse)
       const { list, page, totalElement, totalPages } = res;
 
       setData(list);

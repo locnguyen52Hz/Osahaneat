@@ -20,8 +20,10 @@ import OrderPreview from "../../orders/components/OrderPreview";
 import { toast } from "react-toastify";
 import { useLocationStore } from "../../../stores/location/useLocationStore";
 
-function FoodDetail({ food, shopName, shopId, navigate }) {
-  const { foodName, image, price, description, foodId } = food;
+function FoodDetail({ food, navigate }) {
+  const { foodName, image, price, description, foodId, shopName, shopId } =
+    food;
+
   const [isProcessing, setIsProCessing] = useState(true);
   const regex = createQuantityRegex(MIN_QUANTITY_FOOD, MAX_QUANTITY_FOOD);
   const [note, setNote] = useState("");
@@ -45,7 +47,7 @@ function FoodDetail({ food, shopName, shopId, navigate }) {
     }, MODAL_ANIMATION_DURATION);
   }, []);
 
-  const { openModal, closeAllModal, modalStack } = useModal();
+  const { openModal, closeAllModal } = useModal();
   const foods = [
     {
       ...food,
@@ -53,7 +55,6 @@ function FoodDetail({ food, shopName, shopId, navigate }) {
     },
   ];
 
-  const normalize = { shopName, shopId, note, foods };
   // console.log(normalize);
 
   const createOrderBuyNow = async () => {
@@ -61,12 +62,13 @@ function FoodDetail({ food, shopName, shopId, navigate }) {
     setBuyNowLoading(true);
 
     try {
-      const res = await api.post(`${endpoints.order.buyNow}`, {
+      await api.post(`${endpoints.order.buyNow}`, {
         foodId: food.foodId,
         quantity,
         fromLatitude: currentLocation.latitude,
         fromLongitude: currentLocation.longitude,
         deliveredTo: currentLocation.address,
+        note: note,
       });
       closeAllModal();
 
@@ -83,12 +85,14 @@ function FoodDetail({ food, shopName, shopId, navigate }) {
     }
   };
 
-  const handleBuyNow = (payload) => {
+  const handleBuyNow = () => {
     if (isProcessing) {
       return;
     }
 
-    const stackId = openModal(
+    const normalize = { shopName, shopId, note, foods };
+
+    openModal(
       <OrderPreview
         orderInfo={normalize}
         loading={buyNowLoading}
@@ -99,7 +103,6 @@ function FoodDetail({ food, shopName, shopId, navigate }) {
         type: "slide",
       },
     );
-    console.log(stackId);
 
     setTimeout(() => {
       setIsProCessing(false);
@@ -149,7 +152,7 @@ function FoodDetail({ food, shopName, shopId, navigate }) {
         </div>
 
         <button
-          onClick={() => handleBuyNow(normalize)}
+          onClick={() => handleBuyNow()}
           className={style.addToCartBtn}
           disabled={quantity <= 0}
         >

@@ -1,6 +1,7 @@
 import { formatDate, formatTime } from "../../util/format";
 
 function DateTime({ time, color }) {
+
   const styles = {
     wrapper: {
       display: "inline-flex",

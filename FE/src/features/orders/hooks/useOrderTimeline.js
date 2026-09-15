@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
-import { api} from "../../../api/api";
-import endpoints from "../../../api/endpoints";
+import { getTimeLine } from "../service/orderApi";
 
 export default function useOrderTimeline(orderId) {
-
   const [loadingTimeLine, setLoadingTimeline] = useState(true);
   const [timeline, setTimeline] = useState({
     currentStatus: "",
@@ -13,11 +11,7 @@ export default function useOrderTimeline(orderId) {
   const fetchOrderTimeline = async () => {
     setLoadingTimeline(true);
     try {
-      const res = await api(
-        `${endpoints.order.timeline}?orderId=${orderId}`,
-      );
-      // console.log(res.data.data);
-      setTimeline(res.data.data);
+      setTimeline(await getTimeLine(orderId));
     } catch (error) {
       console.log(error);
     } finally {
@@ -27,11 +21,11 @@ export default function useOrderTimeline(orderId) {
 
   useEffect(() => {
     fetchOrderTimeline();
-  }, []);
+  }, [orderId]);
 
   return {
     loadingTimeLine,
     timeline,
-    fetchOrderTimeline
+    fetchOrderTimeline,
   };
 }

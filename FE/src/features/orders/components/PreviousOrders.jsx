@@ -1,9 +1,7 @@
-import { getPreviousOrders } from "../service/OrderServices";
-import styles from "../../../assets/styles/WrapperOrders.module.css";
-import PreviousOrderCard from "./PreviousOrdersCard";
-import OrdersList from "./OrdersList";
-import useOrders from "../hooks/useOrders";
 import useOrderActions from "../hooks/useOrderActions";
+import useOrders from "../hooks/useOrders";
+import { getPreviousOrders } from "../service/orderApi";
+import OrdersList from "./OrdersList";
 import PreviousOrdersCard from "./PreviousOrdersCard";
 
 function PreviousOrders() {

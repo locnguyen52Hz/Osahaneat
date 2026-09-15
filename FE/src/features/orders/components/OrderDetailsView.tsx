@@ -1,11 +1,10 @@
-import React from "react";
-import OrderAddress from "./OrderAddress";
-import { formatCurrency } from "../../../util/format";
 import styles from "../../../assets/styles/OrderDetails.module.css";
 import shared from "../../../assets/styles/Shared.module.css";
-import StatusBadge from "./StatusBadge";
-import FoodItems from "../../foods/components/FoodItems";
 import AddressDisplay from "../../../components/common/AddressDisplay";
+import { OrderDetailsViewProps } from "../../../types/order/OrderDetailsViewProps";
+import { formatCurrency } from "../../../util/format";
+import FoodItems from "../../foods/components/FoodItems";
+import StatusBadge from "./StatusBadge";
 
 function OrderDetailsView({
   order,
@@ -13,9 +12,7 @@ function OrderDetailsView({
   loadingItems,
   footer,
   handleSelectAddress,
-}) {
-  if (!order) return <p>Loading...</p>;
-
+}: OrderDetailsViewProps) {
   return (
     <div className={styles.wrapper}>
       {/* HEADER */}
@@ -26,7 +23,7 @@ function OrderDetailsView({
           <p>
             #{order.orderId}{" "}
             {order.status && (
-              <StatusBadge status={order.status} size={10} />
+              <StatusBadge status={order.status} size={"10px"} />
             )}
           </p>
         )}
@@ -43,7 +40,7 @@ function OrderDetailsView({
       <div className={styles.details}>
         <div className={styles.list}>
           {loadingItems && <p>Loading...</p>}
-          {foods?.length > 0 && <FoodItems listItem={foods} />}
+          {foods.length > 0 && <FoodItems listItem={foods} />}
         </div>
 
         <div className={styles.pay}>

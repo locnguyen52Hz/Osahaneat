@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "../../../assets/styles/ProductTable.module.css";
+import endpoints from "../../../api/endpoints";
 
 function ProductTable({ orderItems }) {
   return (
@@ -41,7 +42,12 @@ function ProductTable({ orderItems }) {
             <tr className={styles.row} key={item.foodId}>
               <td className={styles.productCol}>
                 <div className={styles.productCell}>
-                  <div className={styles.foodImage}></div>
+                  <img
+                    className={styles.foodImage}
+                    src={`${endpoints.image.food}/${item.image}`}
+                    alt=""
+                  />
+
                   <p className={styles.foodName}>{item.foodName}</p>
                 </div>
               </td>

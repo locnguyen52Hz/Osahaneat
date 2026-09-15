@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from "react";
 import UpcomingOrderCard from "../../orders/components/UpcomingOrderCard";
 
-import Paginate from "../../../components/common/Paginate";
-import { updateOrderStatus, getUpcomingOrders } from "../service/OrderServices";
-import { useModal } from "../../../contexts/ModalContext";
-import OrdersList from "./OrdersList";
-import useOrders from "../hooks/useOrders";
-import useOrderActions from "../hooks/useOrderActions";
 import { toast } from "react-toastify";
+import { useModal } from "../../../contexts/ModalContext";
+import useOrders from "../hooks/useOrders";
+import OrdersList from "./OrdersList";
+import { getUpcomingOrders } from "../service/orderApi";
 
 function UpcomingOrders() {
   const { loading, state, setState, setCurrentPage } =

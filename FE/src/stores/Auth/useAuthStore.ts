@@ -4,10 +4,11 @@ import { authApi } from "../../api/authApi";
 import endpoints from "../../api/endpoints";
 
 import { Role } from "../../enums/Role";
-import { AuthState, LoginResponse } from "../../types/auth/Auth";
+import { AuthState } from "../../types/auth/Auth";
 import { ApiResponse } from "../../types/common/Api";
 import { RoleResponse } from "../../types/auth/RoleResponse";
 import { RefreshResponse } from "../../types/auth/RefreshResponse";
+import { LoginResponse } from "../../types/auth/LoginResponse";
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   accessToken: null,

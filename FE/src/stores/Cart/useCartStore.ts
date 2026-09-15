@@ -1,19 +1,23 @@
 import { debounce, isEqual } from "lodash";
-import { v4 as uuidv4 } from "uuid";
 import { create } from "zustand";
 
 import { api } from "../../api/api";
 import endpoints from "../../api/endpoints";
+import { Cart } from "../../types/cart/Cart";
 import { getTotalCartItems, normalizeItems } from "../../util/cart";
 
-const createCart = (shop, food, quantity) => ({
-  id: uuidv4(),
-  shopId: shop.shopId,
-  shopName: shop.shopName,
+import { CartStore } from "../../types/cart/CartStore";
+import { CheckoutCart } from "../../types/cart/CheckoutCart";
+import { Food } from "../../types/food/Food";
+import { ApiResponse } from "../../types/common/Api";
+import { Order } from "../../types/order/Order";
+
+const createCart = (food: Food, quantity: number) => ({
+  shopId: food.shopId,
+  shopName: food.shopName,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
   lastAddedAt: new Date().toISOString(),
-
   cartItems: [
     {
       ...food,
@@ -22,14 +26,14 @@ const createCart = (shop, food, quantity) => ({
   ],
 });
 
-export const useCartStore = create((set, get) => ({
-  carts: [],
-  originalCarts: [],
+export const useCartStore = create<CartStore>((set, get) => ({
+  carts: [] as Cart[],
+  originalCarts: [] as Cart[],
 
   isLoading: false,
   isSyncing: false,
   hasPendingChanges: false,
-
+  cartShippingLoading: {},
   dirtyShopIds: new Set(),
 
   totalCartItem: 0,
@@ -40,9 +44,10 @@ export const useCartStore = create((set, get) => ({
     set({ isLoading: true });
 
     try {
-      const res = await api.get(endpoints.cart.listCart);
+      const res = await api.get<ApiResponse<Cart[]>>(endpoints.cart.listCart);
 
       const carts = res.data.data;
+      console.log(res.data.data);
 
       set({
         carts,
@@ -59,14 +64,17 @@ export const useCartStore = create((set, get) => ({
   },
 
   // ============================= CEATE ORDER FROM CART =============================
-  createOrderFromCart: async (cart) => {
-    const res = await api.post(endpoints.order.createOrderFromCart, {
-      shopId: cart.shopId,
-      fromLatitude: cart.fromLatitude,
-      fromLongitude: cart.fromLongitude,
-      deliveredTo: cart.deliveredTo,
-      note: cart.note,
-    });
+  createOrderFromCart: async (cart: CheckoutCart) => {
+    const res = await api.post<ApiResponse<Order>>(
+      endpoints.order.createOrderFromCart,
+      {
+        shopId: cart.shopId,
+        fromLatitude: cart.fromLatitude,
+        fromLongitude: cart.fromLongitude,
+        deliveredTo: cart.deliveredTo,
+        note: cart.note,
+      },
+    );
 
     useCartStore.getState().removeCartLocal(cart.shopId);
 
@@ -117,6 +125,7 @@ export const useCartStore = create((set, get) => ({
       };
 
       const dirtyState = get().updateDirtyState(state, shopId, updatedItems);
+      console.log(dirtyState);
 
       return {
         carts,
@@ -127,19 +136,19 @@ export const useCartStore = create((set, get) => ({
   },
 
   // ============================= ADD ITEM =============================
-  addItem: (shop, food, quantity = 1) => {
+  addItem: (food, quantity = 1) => {
     set((state) => {
       const carts = [...state.carts];
-
-      let index = carts.findIndex((c) => c.shopId === shop.shopId);
+      console.log(food);
+      let index = carts.findIndex((c) => c.shopId === food.shopId);
 
       // tạo cart mới
       if (index === -1) {
-        carts.unshift(createCart(shop, food, quantity));
+        carts.unshift(createCart(food, quantity));
 
         const dirtyShopIds = new Set(state.dirtyShopIds);
 
-        dirtyShopIds.add(shop.shopId);
+        dirtyShopIds.add(food.shopId);
 
         return {
           carts,
@@ -183,7 +192,7 @@ export const useCartStore = create((set, get) => ({
 
       const dirtyState = get().updateDirtyState(
         state,
-        shop.shopId,
+        food.shopId,
         updatedItems,
       );
 
@@ -207,27 +216,20 @@ export const useCartStore = create((set, get) => ({
     })),
 
   // ============================= FETCH SHIPPING FEE =============================
-  fetchShippingFee: async (shopId, latitude, longitude, signal) => {
-    set({ cartShippingLoading: true });
-    try {
-      const res = await api(
-        `${endpoints.routes.shippingFee}?fromLongitude=${longitude}&fromLatitude=${latitude}&shopID=${shopId}`,
-        {
-          signal: controllers.signal,
-        },
-        updateShippingFee(shopId, res.data.data),
-      );
-    } catch (error) {
-      const isCanceled =
-        error.name === "AbortError" || error.name === "CanceledError";
+  fetchShippingFee: async (shopId, latitude, longitude) => {
+    get().setShippingLoading(shopId, true);
 
-      if (!isCanceled) {
-        console.error(error);
-      }
+    try {
+      const res = await api.get<ApiResponse<number>>(
+        `${endpoints.routes.shippingFee}?fromLongitude=${longitude}&fromLatitude=${latitude}&shopID=${shopId}`,
+      );
+
+      get().updateShippingFee(shopId, res.data.data);
+    } catch (error) {
+      // xử lý sau
+      console.log(error);
     } finally {
-      if (!controllers.signal.aborted) {
-        set({ cartShippingLoading: false });
-      }
+      get().setShippingLoading(shopId, false);
     }
   },
 
@@ -296,15 +298,30 @@ export const useCartStore = create((set, get) => ({
 
             items: cart.cartItems.map((item) => ({
               foodId: item.foodId,
-
               quantity: item.quantity,
             })),
           })),
       };
 
-      const res = await api.put(endpoints.cart.syncCart, payload);
+      const res = await api.put<ApiResponse<Cart[]>>(
+        endpoints.cart.syncCart,
+        payload,
+      );
 
-      const carts = res.data.data;
+      const serverCarts = res.data.data;
+
+      const carts = state.carts.map((cart) => {
+        const serverCart = serverCarts.find((c) => c.shopId === cart.shopId);
+
+        if (!serverCart) {
+          return cart;
+        }
+
+        return {
+          ...cart,
+          ...serverCart,
+        };
+      });
 
       set({
         carts,

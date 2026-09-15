@@ -1,21 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import ActiveCategories from "../../category/components/ActiveCategories";
-import styles from "../../../assets/styles/SearchResults.module.css";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { api } from "../../../api/api";
 import endpoints from "../../../api/endpoints";
-import ShopsList from "../../shops/ShopsList";
-import FoodCard from "../../foods/components/FoodCard";
-import { useModal } from "../../../contexts/ModalContext";
-import FoodDetail from "../../foods/components/FoodDetail";
+import styles from "../../../assets/styles/SearchResults.module.css";
+import LoadingSpinner from "../../../components/common/LoadingSpinner";
 import Paginate from "../../../components/common/Paginate";
 import { useLocationStore } from "../../../stores/location/useLocationStore";
 import FoodList from "../../foods/components/FoodList";
-import { SORT_BY, RADIUS } from "../../search/constant/searchConstant";
-import { useFoodActions } from "../../../hooks/useFoodActions";
-import { updateParams } from "../../search/helper/helper";
-import LoadingSpinner from "../../../components/common/LoadingSpinner";
 import SearchToolbar from "../../search/components/SearchToolbar";
+import { RADIUS } from "../../search/constant/searchConstant";
+import { updateParams } from "../../search/helper/helper";
 
 function SearchResults() {
   const [params, setParams] = useSearchParams();
@@ -30,8 +24,6 @@ function SearchResults() {
   };
 
   const { keyword, categoryId, category, sort, page, radius } = query;
-
-  const { handleBuyNow, handleAddToCart } = useFoodActions();
 
   const [loading, setLoading] = useState(true);
 
@@ -119,19 +111,15 @@ function SearchResults() {
               <h3 className={styles.keyword}>"{searchText}"</h3>
 
               <p>
-                Tìm thấy {results.totalElement} kết quả cho "{searchText}" tại
-                khu vực của bạn
+                Tìm thấy {results.totalElement} kết quả cho "{searchText}" trong
+                bán kính {radius / 1000} km
               </p>
             </div>
           </div>
 
           <div className={styles.content}>
             <div className={styles.listResults}>
-              <FoodList
-                foods={results.list}
-                handleAddToCart={handleAddToCart}
-                handleBuyNow={handleBuyNow}
-              />
+              <FoodList foods={results.list} />
             </div>
           </div>
 

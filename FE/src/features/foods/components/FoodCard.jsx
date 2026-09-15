@@ -6,7 +6,7 @@ import RatingDisplay from "../../../components/common/RatingDisplay";
 import { formatCurrency, formatDistance } from "../../../util/format";
 import { useFoodActions } from "../../../hooks/useFoodActions";
 
-function FoodCard({ food }) {
+export default function FoodCard({ food }) {
   const {
     image,
     foodName,
@@ -35,7 +35,7 @@ function FoodCard({ food }) {
   };
 
   return (
-    <div className={style.card} id={`food-${foodId}`}>
+    <div className={style.card}>
       <div className={style.imageWrapper}>
         <img src={`${endpoints.image.food}/${image}`} alt={image} />
       </div>
@@ -54,10 +54,7 @@ function FoodCard({ food }) {
         <p className={style.price}>Giá: {formatCurrency(price)}</p>
       </div>
       <div className={style.action}>
-        <button
-          onClick={() => handleBuyNow(food, food.shopName, food.shopId)}
-          className={style.buyNow}
-        >
+        <button onClick={() => handleBuyNow(food)} className={style.buyNow}>
           Mua nhanh
         </button>
 
@@ -77,5 +74,3 @@ function FoodCard({ food }) {
     </div>
   );
 }
-
-export default FoodCard;

@@ -64,8 +64,6 @@ function ShopDetail() {
 
   return (
     <>
-      {/* Banner */}
-
       <img className={style.bannerImg} src="/banner.jpg" alt="Banner" />
       <div className={style.pagePadding}>
         {loading ? (
@@ -87,8 +85,9 @@ function ShopDetail() {
             getLabel={(item) => item.name}
           />
         )}
-
-        <FoodList foods={foods} />
+        <div className={style.foodList}>
+          <FoodList foods={foods} />
+        </div>
       </div>
     </>
   );

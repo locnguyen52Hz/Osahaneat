@@ -17,10 +17,10 @@ import CategoriesPage from "../features/shop-manager/CategoriesPage";
 import ShopDetail from "../features/shops/ShopDetail";
 
 import BuyerInitializer from "../features/buyer/components/BuyerInitializer";
-import ManagerOrderDetails from "../features/pages/shop-manager/ManagerOrderDetails";
-import ManagerInitializer from "../features/shop-manager/components/ManagerInitializer";
-import RegisterShop from "../features/pages/shop-manager/RegisterShop";
 import Register from "../features/pages/buyer/Register";
+import ManagerOrderDetails from "../features/pages/shop-manager/ManagerOrderDetails";
+import RegisterShop from "../features/pages/shop-manager/RegisterShop";
+import ManagerInitializer from "../features/shop-manager/components/ManagerInitializer";
 
 const routes = {
   public: [

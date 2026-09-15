@@ -1,11 +1,9 @@
-import React from "react";
-import styles from "../../assets/styles/ShopHeader.module.css";
 import endpoints from "../../api/endpoints.js";
-import GeographyIcon from "../../components/common/GeographyIcon.jsx";
+import styles from "../../assets/styles/ShopHeader.module.css";
 import { formatDistance } from "../../util/format.js";
 import ShopAvatar from "./components/ShopAvatar.jsx";
-import ShopMeta from "./components/ShopMeta.jsx";
 import ShopInfo from "./components/ShopInfo.jsx";
+import ShopMeta from "./components/ShopMeta.jsx";
 
 function ShopHeader({ shop }) {
   return (

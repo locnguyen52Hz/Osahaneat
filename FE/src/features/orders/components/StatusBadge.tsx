@@ -1,12 +1,13 @@
 import React from "react";
 import { ORDER_STATUS } from "../config/OrdersStatusConfig";
+import { StatusBadgeProps } from "../../../types/order/StatusBadgeProps";
 
 function StatusBadge({
   status,
   size = "11px",
   showIcon = true,
   fullWidth = false,
-}) {
+}: StatusBadgeProps) {
   const config = ORDER_STATUS[status];
 
   if (!config) return null;

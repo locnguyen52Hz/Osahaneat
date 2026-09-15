@@ -2,7 +2,7 @@
     object-fit: cover;
     width: 100%;
     max-height: 50vh;
-    
+
 }
 
 .pagePadding {
@@ -47,9 +47,6 @@
 }
 
 
-
-
-
 .description {
     margin-top: 20px;
 }
@@ -62,3 +59,7 @@
 .navCategories {}
 
 .category {}
+
+.foodList{
+    margin-top: 20px;
+}

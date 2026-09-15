@@ -1,11 +1,26 @@
 package com.example.restaurant.management.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderItemDto {
     private  String foodName;
     private Integer foodId;
     private  double price;
     private  int quantity;
+    private String image;
 
+    public void setFoodId(Integer foodId) {
+        this.foodId = foodId;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 
     public String getFoodName() {
         return foodName;

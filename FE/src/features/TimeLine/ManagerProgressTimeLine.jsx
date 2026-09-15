@@ -8,7 +8,7 @@ import DateTime from "../../components/common/DateTime";
 
 function ManagerProgressTimeLine({ loadingTimeLine, timeline }) {
   const { id } = useParams();
-
+  // console.log(timeline);
   const timelineData = buildTimelineData(
     timeline.currentStatus,
     timeline.statuses,

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import OrderDetailsView from "./OrderDetailsView";
-import OrderActions from "./OrderActions";
+import { useEffect, useState } from "react";
 import Review from "../../review/Review";
-import { getOrderItems } from "../service/OrderServices";
+import OrderActions from "./OrderActions";
+import OrderDetailsView from "./OrderDetailsView";
+import { getOrderItems } from "../service/orderApi";
 
 function OrderDetails({ order, onSubmitRating, action, actionsLabel }) {
   const [orderDetails, setOrderDetails] = useState(order);

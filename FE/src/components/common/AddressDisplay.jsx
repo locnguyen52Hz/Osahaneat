@@ -2,8 +2,7 @@ import React from "react";
 import styles from "../../assets/styles/AddressDisplay.module.css";
 import shared from "../../assets/styles/Shared.module.css";
 
-function AddressDisplay({ address, border , onClick }) {
-  console.log(onClick)
+function AddressDisplay({ address, border, onClick }) {
   return (
     <div
       className={`${styles.location} ${border && styles.border}`}

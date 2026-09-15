@@ -1,16 +1,14 @@
-import React from "react";
 import styles from "../../../assets/styles/PreviousOrdersCard.module.css";
-import StatusBadge from "./StatusBadge";
 import DateTime from "../../../components/common/DateTime";
+import { useModal } from "../../../contexts/ModalContext";
 import { formatCurrency } from "../../../util/format";
 import OrderAddress from "./OrderAddress";
-import { useModal } from "../../../contexts/ModalContext";
 import OrderDetails from "./OrderDetails";
-import Rating from "../../review/Rating";
-import Review from "../../review/Review";
+import StatusBadge from "./StatusBadge";
 
 function PreviousOrdersCard({ order, submitRating, loading }) {
   const { openModal } = useModal();
+
   return (
     <div className={styles.cardOrder}>
       <div className={styles.header}>
@@ -22,7 +20,7 @@ function PreviousOrdersCard({ order, submitRating, loading }) {
       <div className={styles.time}>
         <DateTime time={order.createdAt} />
       </div>
-      <OrderAddress address={order.address} border={false} />
+      <OrderAddress address={order.deliveredTo} border={false} />
       <div className={styles.cost}>
         <p>Total: {formatCurrency(order.totalAmount)} </p>
       </div>

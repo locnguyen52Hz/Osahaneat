@@ -1,12 +1,12 @@
 import styles from "../../../assets/styles/PreviousOrdersCard.module.css";
+import AddressDisplay from "../../../components/common/AddressDisplay";
 import DateTime from "../../../components/common/DateTime";
 import { useModal } from "../../../contexts/ModalContext";
 import { formatCurrency } from "../../../util/format";
-import OrderAddress from "./OrderAddress";
 import OrderDetails from "./OrderDetails";
 import StatusBadge from "./StatusBadge";
 
-function PreviousOrdersCard({ order, submitRating, loading }) {
+function PreviousOrdersCard({ order, submitRating }) {
   const { openModal } = useModal();
 
   return (
@@ -20,7 +20,8 @@ function PreviousOrdersCard({ order, submitRating, loading }) {
       <div className={styles.time}>
         <DateTime time={order.createdAt} />
       </div>
-      <OrderAddress address={order.deliveredTo} border={false} />
+
+      <AddressDisplay address={order.deliveredTo} />
       <div className={styles.cost}>
         <p>Total: {formatCurrency(order.totalAmount)} </p>
       </div>
@@ -30,7 +31,7 @@ function PreviousOrdersCard({ order, submitRating, loading }) {
             <OrderDetails
               key={order.orderId}
               order={order}
-              onSubmitRating= {submitRating}
+              onSubmitRating={submitRating}
             />,
             { type: "slide" },
           )

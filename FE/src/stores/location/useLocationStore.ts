@@ -1,6 +1,7 @@
 import { create } from "zustand";
+import { LocationStore } from "../../types/location/LocationStore";
 
-export const useLocationStore = create((set, get) => ({
+export const useLocationStore = create<LocationStore>((set, get) => ({
   // ======================
   // state
   // ======================
@@ -52,9 +53,11 @@ export const useLocationStore = create((set, get) => ({
     });
 
     try {
-      const position = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject);
-      });
+      const position = await new Promise<GeolocationPosition>(
+        (resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject);
+        },
+      );
 
       const { latitude, longitude } = position.coords;
 

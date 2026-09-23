@@ -2,17 +2,15 @@ import styles from "../../../assets/styles/OrderCard.module.css";
 import shared from "../../../assets/styles/Shared.module.css";
 import DateTime from "../../../components/common/DateTime";
 import { useModal } from "../../../contexts/ModalContext";
-import {
-  formatDistance
-} from "../../../util/format";
+import { formatDistance } from "../../../util/format";
 import ProgressTimeline from "../../TimeLine/ProgressTimeline";
 import OrderDetails from "./OrderDetails";
 import StatusBadge from "./StatusBadge";
 import TrackStatus from "./TrackStatus";
 
-function UpcomingOrderCard({ order, updateOrderStatus, handleCancelOrder }) {
+function UpcomingOrderCard({ order, handleCancelOrder }) {
   const { openModal } = useModal();
-  // console.log(order)
+
   return (
     <div className={styles.cardOrder}>
       {/* Header */}

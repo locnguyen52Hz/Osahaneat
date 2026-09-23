@@ -1,8 +1,7 @@
-import React from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
-import LocationPicker from "./LocationPicker";
 import Routing from "../../../components/Routing";
 import { useLocationStore } from "../../../stores/location/useLocationStore";
+import LocationPicker from "./LocationPicker";
 
 function ShopLocation({ latitude, longitude }) {
   const currentLocation = useLocationStore((s) => s.currentLocation);

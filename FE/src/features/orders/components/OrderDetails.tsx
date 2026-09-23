@@ -1,17 +1,24 @@
 import { useEffect, useState } from "react";
-import Review from "../../review/Review";
+import { OrderDetailsProps } from "../../../types/order/OrderDetailsProps";
+
+import { getOrderItems } from "../service/orderApi";
 import OrderActions from "./OrderActions";
 import OrderDetailsView from "./OrderDetailsView";
-import { getOrderItems } from "../service/orderApi";
+import Review from "../../review/Review";
 
-function OrderDetails({ order, onSubmitRating, action, actionsLabel }) {
+function OrderDetails({
+  order,
+  onSubmitRating,
+  action,
+  actionsLabel,
+}: OrderDetailsProps) {
   const [orderDetails, setOrderDetails] = useState(order);
   const [foods, setFoods] = useState([]);
   const [loadingItems, setLoadingItems] = useState(false);
   const [loadingRating, setLoadingRating] = useState(false);
 
   const isReviewMode = orderDetails?.status === "COMPLETED";
-
+  console.log(order);
   // fetch foods
   useEffect(() => {
     if (!orderDetails?.orderId) return;
@@ -21,7 +28,7 @@ function OrderDetails({ order, onSubmitRating, action, actionsLabel }) {
     const fetch = async () => {
       try {
         const res = await getOrderItems(orderDetails.orderId);
-        console.log(res);
+
         setFoods(res);
       } catch (err) {
         console.log(err);
@@ -34,7 +41,7 @@ function OrderDetails({ order, onSubmitRating, action, actionsLabel }) {
   }, [orderDetails?.orderId]);
 
   // submit rating
-  const handleSubmitRating = async (rating) => {
+  const handleSubmitRating = async (rating: number) => {
     if (loadingRating) return;
 
     const prev = { ...orderDetails };
@@ -64,7 +71,6 @@ function OrderDetails({ order, onSubmitRating, action, actionsLabel }) {
         isReviewMode ? (
           <Review
             rating={orderDetails?.rating}
-            orderId={orderDetails?.orderId}
             onSubmit={handleSubmitRating}
             loading={loadingRating}
           />

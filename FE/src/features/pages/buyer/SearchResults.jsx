@@ -32,7 +32,6 @@ function SearchResults() {
     page,
     totalElement: 0,
     totalPages: 0,
-    totalPages: 0,
   });
 
   console.log(results);

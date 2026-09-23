@@ -47,8 +47,7 @@ export const useCartStore = create<CartStore>((set, get) => ({
       const res = await api.get<ApiResponse<Cart[]>>(endpoints.cart.listCart);
 
       const carts = res.data.data;
-      console.log(res.data.data);
-
+  
       set({
         carts,
         originalCarts: structuredClone(carts),
@@ -139,7 +138,7 @@ export const useCartStore = create<CartStore>((set, get) => ({
   addItem: (food, quantity = 1) => {
     set((state) => {
       const carts = [...state.carts];
-      console.log(food);
+
       let index = carts.findIndex((c) => c.shopId === food.shopId);
 
       // tạo cart mới

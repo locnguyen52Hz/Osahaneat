@@ -1,4 +1,3 @@
-import { Order } from "./Order";
 import { OrderDetailsViewData } from "./OrderDetailsViewData";
 import { OrderItem } from "./OrderItem";
 

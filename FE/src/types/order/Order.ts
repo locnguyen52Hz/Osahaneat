@@ -24,7 +24,7 @@ export interface Order {
   partnerLongitude?: number;
 
   shopId?: number;
-  shopName?: string;
+  shopName: string;
 
   foods?: OrderItem[];
 }

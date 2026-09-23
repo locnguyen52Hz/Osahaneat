@@ -6,10 +6,16 @@ import AddressSelector from "../../../components/common/AddressSelector";
 import { useModal } from "../../../contexts/ModalContext";
 import OrderActions from "./OrderActions";
 import OrderDetailsView from "./OrderDetailsView";
+import { OrderPreviewProps } from "../../../types/order/OrderPreviewProps";
+import { OrderPreviewDetails } from "../../../types/order/OrderPreviewDetails";
 
-function OrderPreview({ orderInfo, createOrder, loading, location }) {
-
-  const [details, setDetails] = useState(orderInfo);
+function OrderPreview({
+  orderInfo,
+  createOrder,
+  loading,
+  location,
+}: OrderPreviewProps) {
+  const [details, setDetails] = useState<OrderPreviewDetails | null>(null);
   const [loadShippingFee, setLoadShippingFee] = useState(false);
   const { openModal } = useModal();
 
@@ -31,13 +37,13 @@ function OrderPreview({ orderInfo, createOrder, loading, location }) {
 
         const { shippingFee, subtotal, totalAmount } = resPreview.data.data;
 
-        setDetails((prev) => ({
-          ...prev,
+        setDetails({
+          ...orderInfo,
           shippingFee,
           subtotal,
           totalAmount,
           deliveredTo: location.address,
-        }));
+        });
       } catch (error) {
         console.log(error);
       } finally {
@@ -48,7 +54,7 @@ function OrderPreview({ orderInfo, createOrder, loading, location }) {
     fetchShippingFee();
   }, [location, orderInfo]);
 
-  if (loadShippingFee) return <p>Loading...</p>;
+  if (loadShippingFee || !details) return <p>Loading...</p>;
 
   return (
     <OrderDetailsView

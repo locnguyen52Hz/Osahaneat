@@ -1,4 +1,3 @@
-import React from "react";
 import styles from "../../assets/styles/AddressDisplay.module.css";
 import shared from "../../assets/styles/Shared.module.css";
 

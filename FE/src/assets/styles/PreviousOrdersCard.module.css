@@ -1,9 +1,9 @@
 .cardOrder {
     background-color: white;
-    box-shadow: 0 0.125rem 0.25rem 0 rgba(58, 59, 69, 0.2) !important;
+    box-shadow: 0 0.125rem 0.25rem 0 rgba(58, 59, 69, 0.2);
     padding: 16px;
     display: flex;
-
+    justify-content: space-between;
     flex-direction: column;
     border-radius: 9px;
 }
@@ -20,7 +20,7 @@
     margin-bottom: 12px;
 }
 
-.header > h6{
+.header>h6 {
     font-size: 1rem;
 }
 

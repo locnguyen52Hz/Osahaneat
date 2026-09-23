@@ -1,12 +1,12 @@
-import ShopCard from "../../features/shops/ShopCard";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { api } from "../../api/api";
+import endpoints from "../../api/endpoints";
 import style from "../../assets/styles/FeaturedShops.module.css";
 import shared from "../../assets/styles/Shared.module.css";
-import endpoints from "../../api/endpoints";
-import { useEffect, useState } from "react";
-import { api } from "../../api/api";
-import { formatDistance } from "../../util/format";
+import ShopCard from "../../features/shops/ShopCard";
 import { useLocationStore } from "../../stores/location/useLocationStore";
+import { formatDistance } from "../../util/format";
 
 function FeaturedShops() {
   const navigate = useNavigate();

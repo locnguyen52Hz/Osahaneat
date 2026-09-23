@@ -21,7 +21,6 @@ function OrderDetailsView({
 
         {order.orderId && (
           <p>
-            #{order.orderId}{" "}
             {order.status && (
               <StatusBadge status={order.status} size={"10px"} />
             )}

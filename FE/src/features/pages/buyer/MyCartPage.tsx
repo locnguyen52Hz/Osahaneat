@@ -33,7 +33,7 @@ function MyCartPage() {
   const currentLocation = useLocationStore((s) => s.currentLocation);
   const loading = useLocationStore((s) => s.loading);
 
-  const cartShippingLoading = useLocationStore((s) => s.cartShippingLoading);
+  const cartShippingLoading = useCartStore((s) => s.cartShippingLoading);
 
   const { openModal } = useModal();
   const visibleCarts = carts.filter((c) => c.cartItems.length > 0);
@@ -78,6 +78,14 @@ function MyCartPage() {
   };
 
   const handleOpenCheckout = () => {
+    if (
+      loading ||
+      cartShippingLoading ||
+      !selectedCart?.shippingFee ||
+      !currentLocation
+    ) {
+      return;
+    }
     console.log(carts);
     if (loading || cartShippingLoading || !selectedCart?.shippingFee) return;
     const shippingFee = selectedCart.shippingFee;

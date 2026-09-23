@@ -1,9 +1,6 @@
-import React from "react";
 import styles from "../../../assets/styles/OrderSummary.module.css";
-import { formatCurrency } from "../../../util/format";
 import LoadingSpinner from "../../../components/common/LoadingSpinner";
-import OrderAddress from "../../orders/components/OrderAddress";
-import AddressDisplay from "../../../components/common/AddressDisplay";
+import { formatCurrency } from "../../../util/format";
 
 function OrderSummary({
   subtotal = 0,

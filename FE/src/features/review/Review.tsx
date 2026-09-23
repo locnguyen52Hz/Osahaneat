@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
-import Rating from "./Rating";
-import shared from "../../assets/styles/Shared.module.css";
+import { useEffect, useState } from "react";
 import styles from "../../assets/styles/Review.module.css";
+import shared from "../../assets/styles/Shared.module.css";
+import { ReviewProps } from "../../types/order/ReviewProps";
+import Rating from "./Rating";
 
-function Review({ onSubmit, rating, loading }) {
+function Review({ onSubmit, rating, loading }: ReviewProps) {
   const [stars, setStars] = useState(rating);
 
   useEffect(() => {
@@ -17,7 +18,7 @@ function Review({ onSubmit, rating, loading }) {
     onSubmit(stars);
   };
 
-  const handleSetStars = (star) => {
+  const handleSetStars = (star: number) => {
     console.log(star);
     if (hasRated || loading) return;
     setStars(star);

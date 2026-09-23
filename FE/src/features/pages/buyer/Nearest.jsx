@@ -1,15 +1,11 @@
-import { MapContainer, TileLayer } from "react-leaflet";
-import LocationPicker from "../../location/components/LocationPicker";
-import Routing from "../../../components/Routing";
 import { useEffect, useState } from "react";
 import { api } from "../../../api/api";
 import endpoints from "../../../api/endpoints";
 import styles from "../../../assets/styles/Nearest.module.css";
-import MapContainerBase from "../../map/MapContainerBase";
-import UserMarker from "../../map/UserMarker";
-import ShopMarker from "../../map/ShopMarker";
-import { latLng } from "leaflet";
 import { useLocationStore } from "../../../stores/location/useLocationStore";
+import MapContainerBase from "../../map/MapContainerBase";
+import ShopMarker from "../../map/ShopMarker";
+import UserMarker from "../../map/UserMarker";
 
 function Nearest() {
   const currentLocation = useLocationStore((s) => s.currentLocation);

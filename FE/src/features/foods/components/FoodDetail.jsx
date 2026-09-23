@@ -25,20 +25,13 @@ function FoodDetail({ food, navigate }) {
     food;
 
   const [isProcessing, setIsProCessing] = useState(true);
-  const regex = createQuantityRegex(MIN_QUANTITY_FOOD, MAX_QUANTITY_FOOD);
   const [note, setNote] = useState("");
   const [buyNowLoading, setBuyNowLoading] = useState(false);
 
   const currentLocation = useLocationStore((s) => s.currentLocation);
 
-  const {
-    quantity,
-    decrease,
-    handleBlur,
-    handleChange,
-    increase,
-    setQuantity,
-  } = useQuantity(MAX_QUANTITY_FOOD, MAX_QUANTITY_FOOD);
+  const { quantity, decrease, handleBlur, handleChange, increase } =
+    useQuantity(MAX_QUANTITY_FOOD, MAX_QUANTITY_FOOD);
 
   useEffect(() => {
     //đợi cho đến khi animation chạy xong thì mới có thể bấm thêm giỏ hàng
@@ -91,6 +84,7 @@ function FoodDetail({ food, navigate }) {
     }
 
     const normalize = { shopName, shopId, note, foods };
+    console.log(normalize);
 
     openModal(
       <OrderPreview

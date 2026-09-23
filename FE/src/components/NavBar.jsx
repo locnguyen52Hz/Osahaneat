@@ -6,11 +6,12 @@ import { useState } from "react";
 import { useSearch } from "../features/search/hooks/useSearch";
 import IconBadge from "./common/IconBadge";
 import { useCartStore } from "../stores/Cart/useCartStore";
-import { useLocationStore } from "../stores/location/useLocationStore";
+
 import AddressSelector from "./common/AddressSelector";
 import LoadingSpinner from "./common/LoadingSpinner";
 import { buildSearchUrl } from "../features/search/service/searchService";
 import SearchBox from "../features/search/components/SearchBox";
+import { useLocationStore } from "../stores/location/useLocationStore";
 
 function NavBar({ onToggleSideBar }) {
   const currentLocation = useLocationStore((s) => s.currentLocation);

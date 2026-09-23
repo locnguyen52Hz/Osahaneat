@@ -1,11 +1,11 @@
 import { Marker, Popup, Tooltip, useMapEvents } from "react-leaflet";
 
+import L from "leaflet";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { api } from "../../../api/api";
 import endpoints from "../../../api/endpoints";
-import L from "leaflet";
 import useReverseGeocode from "../../../hooks/useReverseGeocode";
-import { toast } from "react-toastify";
 import { useLocationStore } from "../../../stores/location/useLocationStore";
 
 function LocationPicker() {

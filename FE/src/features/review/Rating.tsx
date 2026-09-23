@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import styles from "../../assets/styles/Rating.module.css";
+import { RatingProps } from "../../types/order/RatingProps";
 
-function Rating({ value = 0, onChange, disabled = false }) {
-  const [hover, setHover] = useState(null);
-
+function Rating({ value = 0, onChange, disabled = false }: RatingProps) {
+  const [hover, setHover] = useState<number | null>(null);
 
   const displayValue = hover ?? value;
 
-  const handleMouseEnter = (index) => {
+  const handleMouseEnter = (index: number) => {
     if (disabled) return;
     setHover(index);
   };
@@ -17,8 +17,8 @@ function Rating({ value = 0, onChange, disabled = false }) {
     setHover(null);
   };
 
-  const handleClick = (index) => {
-    console.log(index)
+  const handleClick = (index: number) => {
+    console.log(index);
     if (disabled) return;
     onChange(index);
   };

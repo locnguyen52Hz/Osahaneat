@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { useModal } from "../../../contexts/ModalContext";
 import useOrders from "../hooks/useOrders";
 import OrdersList from "./OrdersList";
-import { getUpcomingOrders } from "../service/orderApi";
+import { getUpcomingOrders, updateOrderStatus } from "../service/orderApi";
 
 function UpcomingOrders() {
   const { loading, state, setState, setCurrentPage } =
@@ -16,9 +16,10 @@ function UpcomingOrders() {
   const { closeAllModal } = useModal();
 
   const handleCancel = async (orderId) => {
+    console.log(orderId);
     try {
-      await updateOrderStatus(orderId, "CANCELLED");
-
+      const res = await updateOrderStatus(orderId, "CANCELLED");
+      console.log(res.data);
       setState((prev) => {
         const newOrders = prev.orders.filter((o) => o.orderId !== orderId);
 
@@ -38,6 +39,7 @@ function UpcomingOrders() {
       toast.success("Hủy thành công");
       closeAllModal();
     } catch (error) {
+      console.log(error);
       toast.error("Hủy thất bại");
     }
   };

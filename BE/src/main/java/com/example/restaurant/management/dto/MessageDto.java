@@ -9,6 +9,8 @@ public class MessageDto {
     private String content;
     private Instant readAt;
     private Instant createdAt;
+    private Long clientSequence;
+    private Instant sentAt;
     private String senderName;
 
     public MessageDto(
@@ -18,7 +20,9 @@ public class MessageDto {
             String senderName,
             Instant createdAt,
             Instant readAt,
-            Integer conversationId
+            Integer conversationId,
+            Long clientSequence,
+            Instant sentAt
     ) {
         this.id = id;
         this.content = content;
@@ -27,9 +31,19 @@ public class MessageDto {
         this.createdAt = createdAt;
         this.readAt = readAt;
         this.conversationId = conversationId;
+        this.clientSequence = clientSequence;
+        this.sentAt = sentAt;
     }
 
-    public MessageDto(Integer id, String content, String senderName, Integer conversationId, Instant createdAt, Integer senderId, Instant readAt) {
+    public MessageDto(Integer id,
+                      String content,
+                      String senderName,
+                      Integer conversationId,
+                      Instant createdAt,
+                      Integer senderId,
+                      Instant readAt,
+                      Long clientSequence,
+                      Instant sentAt) {
         this.id = id;
         this.content = content;
         this.senderName = senderName;
@@ -37,9 +51,25 @@ public class MessageDto {
         this.createdAt = createdAt;
         this.senderId = senderId;
         this.readAt = readAt;
-
+        this.clientSequence = clientSequence;
+        this.sentAt = sentAt;
     }
 
+    public Long getClientSequence() {
+        return clientSequence;
+    }
+
+    public void setClientSequence(Long clientSequence) {
+        this.clientSequence = clientSequence;
+    }
+
+    public Instant getSentAt() {
+        return sentAt;
+    }
+
+    public void setSentAt(Instant sentAt) {
+        this.sentAt = sentAt;
+    }
 
     public Integer getConversationId() {
         return conversationId;

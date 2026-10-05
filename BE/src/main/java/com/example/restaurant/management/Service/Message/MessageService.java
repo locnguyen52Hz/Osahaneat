@@ -1,6 +1,7 @@
 package com.example.restaurant.management.Service.Message;
 
-import com.example.restaurant.management.dto.ConversationWithLatestMessageDto;
+import com.example.restaurant.management.Payload.Request.MessageRequest;
+import com.example.restaurant.management.dto.ConversationMeta;
 import com.example.restaurant.management.dto.MessageDto;
 import com.example.restaurant.management.dto.MessagePageResponseDto;
 import com.example.restaurant.management.dto.UnreadCount;
@@ -13,9 +14,9 @@ import java.util.List;
 
 @Service
 public interface MessageService {
-    MessageDto sendMessage(Integer senderId, Integer receiverId, String content);
+    MessageDto sendMessage(MessageRequest messageRequest, Integer userId);
 
-    List<ConversationWithLatestMessageDto> getLatestMessages(Integer id, Pageable pageable);
+    List<ConversationMeta> getConversations(Integer userId, Pageable pageable);
 
     MessagePageResponseDto latestMessage(Integer userId, Integer conversationId, Integer partnerId, Pageable pageable);
 

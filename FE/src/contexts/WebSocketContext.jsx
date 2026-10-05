@@ -23,13 +23,13 @@ export function WebSocketProvider({ accessToken, children }) {
         // Lắng nghe tin nhắn riêng
         client.subscribe("/user/queue/notify", (message) => {
           const data = JSON.parse(message.body);
-          console.log("📩 Notify: ", data);
+
           setOrdersNotify((prev) => [...prev, data]);
         });
 
         client.subscribe("/user/queue/message", (messages) => {
           const message = JSON.parse(messages.body);
-          console.log(message);
+
           const myId = useAuthStore.getState().myId;
           const newMessage = {
             ...message,
@@ -45,11 +45,11 @@ export function WebSocketProvider({ accessToken, children }) {
 
         // Lắng nghe broadcast
         client.subscribe("/topic/greetings", (message) => {
-          console.log("📢 Broadcast:", message.body);
+          console.log(" Broadcast:", message.body);
         });
       },
       onStompError: (frame) => {
-        console.error("❌ Broker error:", frame.headers["message"]);
+        console.error(" Broker error:", frame.headers["message"]);
       },
     });
 

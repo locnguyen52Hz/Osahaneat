@@ -28,6 +28,28 @@ public class Message {
     @Column(name = "read_at")
     private Instant readAt;
 
+    @Column(name = "client_sequence", nullable = false)
+    private Long clientSequence;
+
+    @Column(name = "sent_at", nullable = false)
+    private Instant sentAt;
+
+    public Instant getSentAt() {
+        return sentAt;
+    }
+
+    public void setSentAt(Instant sentAt) {
+        this.sentAt = sentAt;
+    }
+
+    public Long getClientSequence() {
+        return clientSequence;
+    }
+
+    public void setClientSequence(Long clientSequence) {
+        this.clientSequence = clientSequence;
+    }
+
     private Instant createdAt =  Instant.now();
 
     public Integer getId() {

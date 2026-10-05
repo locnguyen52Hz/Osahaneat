@@ -1,15 +1,16 @@
 package com.example.restaurant.management.Controllers;
 
 
-import com.example.restaurant.management.dto.ConversationWithLatestMessageDto;
-import com.example.restaurant.management.dto.MessageDto;
-import com.example.restaurant.management.dto.MessagePageResponseDto;
-import com.example.restaurant.management.dto.UnreadCount;
 import com.example.restaurant.management.Payload.Request.GetOlderMessagesRequest;
 import com.example.restaurant.management.Payload.Request.MarkReadMessage;
 import com.example.restaurant.management.Payload.Request.MessageRequest;
 import com.example.restaurant.management.Payload.ResponseData;
 import com.example.restaurant.management.Service.Message.CommonMessageService;
+import com.example.restaurant.management.dto.ConversationMeta;
+import com.example.restaurant.management.dto.MessageDto;
+import com.example.restaurant.management.dto.MessagePageResponseDto;
+import com.example.restaurant.management.dto.UnreadCount;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class MessageController {
 
     @PostMapping("/send")
     @PreAuthorize("hasAnyRole('ROLE_BUYER','ROLE_SHOP_MANAGER')")
-    public ResponseEntity<?> sendMessage(@RequestHeader("Authorization") String authorization, @RequestBody MessageRequest messageRequest) {
+    public ResponseEntity<?> sendMessage(@RequestHeader("Authorization") String authorization, @Valid @RequestBody MessageRequest messageRequest) {
         ResponseData responseData = new ResponseData();
         MessageDto messageDTO = commonMessageService.sendMessage(authorization, messageRequest);
         responseData.setData(messageDTO);
@@ -38,7 +39,7 @@ public class MessageController {
     @PreAuthorize("hasAnyRole('ROLE_BUYER','ROLE_SHOP_MANAGER')")
     public ResponseEntity<?> getLatestMessages(@RequestHeader("Authorization") String authorization, @RequestParam int page) {
         ResponseData responseData = new ResponseData();
-        List<ConversationWithLatestMessageDto> conversations = commonMessageService.getConversations(authorization, page);
+        List<ConversationMeta> conversations = commonMessageService.getConversations(authorization, page);
         responseData.setData(conversations);
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }

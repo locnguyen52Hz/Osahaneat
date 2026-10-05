@@ -29,6 +29,7 @@ export const useConversationStore = create((set, get) => ({
       const res = await api.get(`${endpoints.messages.conversation}?page=0`);
 
       const list = res.data.data;
+      console.log(res.data)
 
       const map = {};
       for (const c of list) {
@@ -87,6 +88,7 @@ export const useConversationStore = create((set, get) => ({
       });
 
       const { messages, oldestCursor, latestCursor } = res.data.data;
+      // console.log(res.data.data);
 
       const myId = useAuthStore.getState().myId;
 
@@ -194,7 +196,7 @@ export const useConversationStore = create((set, get) => ({
       },
     })),
 
-  onIncomingMessage: (message) =>
+  onIncomingMessage: (message) => {
     set((state) => {
       const conversationId = message.conversationId;
       const isActive = conversationId === state.activeConversationId;
@@ -210,7 +212,6 @@ export const useConversationStore = create((set, get) => ({
         //  chưa fetch → buffer
         const pending =
           state.pendingMessagesByConversation[conversationId] || [];
-        // console.log(pending);
 
         // tránh duplicate trong buffer
         const exists = pending.some((m) => m.id === message.id);
@@ -219,6 +220,7 @@ export const useConversationStore = create((set, get) => ({
             ...state.pendingMessagesByConversation,
             [conversationId]: [...pending, message],
           };
+          console.log(updatedPending);
         }
       } else {
         //  đã fetch → append realtime
@@ -227,6 +229,7 @@ export const useConversationStore = create((set, get) => ({
 
         const lastIndex = groups.length - 1;
         const lastGroup = groups[lastIndex];
+        console.log(lastGroup);
 
         const date = new Date(message.createdAt);
         const dateKey = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
@@ -305,7 +308,8 @@ export const useConversationStore = create((set, get) => ({
           ? state.totalUnreadCount
           : state.totalUnreadCount + 1,
       };
-    }),
+    });
+  },
 
   clearPendingMessages: (conversationId) =>
     set((state) => ({
@@ -349,11 +353,10 @@ export const useConversationStore = create((set, get) => ({
     }),
 
   markMessagesAsRead: async (conversationId, readUpToMsg) => {
-    console.log("call api ");
     if (!readUpToMsg) return;
     const state = get();
     const conv = state.messagesByConversation[conversationId];
-    console.log(conv);
+
     if (!conv) return;
 
     try {
@@ -363,7 +366,6 @@ export const useConversationStore = create((set, get) => ({
       );
 
       const { conversationUnreadCount, totalUnreadCount } = res.data.data;
-      console.log(res.data.data);
 
       set((prev) => {
         /* ===== Update conversationMap ===== */

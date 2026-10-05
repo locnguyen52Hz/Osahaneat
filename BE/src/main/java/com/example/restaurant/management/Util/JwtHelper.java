@@ -29,7 +29,9 @@ public class JwtHelper {
     public String generateAccessToken(String email, String fullName, int id) {
 
         Date now = new Date();
-        Duration expiration = Duration.ofMinutes(15);
+//        Duration expiration = Duration.ofMinutes(15);
+        Duration expiration = Duration.ofDays(15);
+
         Date expiryDate = new Date(now.getTime() + expiration.toMillis());
 
         return Jwts.builder()

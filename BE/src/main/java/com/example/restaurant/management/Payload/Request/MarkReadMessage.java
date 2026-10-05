@@ -1,12 +1,19 @@
 package com.example.restaurant.management.Payload.Request;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 public class MarkReadMessage {
     Integer conversationId;
-    Integer lastSeenMessageId;
+    Long firstSeenClientSequence;
+    Long lastSeenClientSequence;
     Instant lastSeenAt;
+
+    public MarkReadMessage(Integer conversationId, Long firstSeenClientSequence, Long lastSeenClientSequence, Instant lastSeenAt) {
+        this.conversationId = conversationId;
+        this.firstSeenClientSequence = firstSeenClientSequence;
+        this.lastSeenClientSequence = lastSeenClientSequence;
+        this.lastSeenAt = lastSeenAt;
+    }
 
     public Integer getConversationId() {
         return conversationId;
@@ -16,12 +23,20 @@ public class MarkReadMessage {
         this.conversationId = conversationId;
     }
 
-    public Integer getLastSeenMessageId() {
-        return lastSeenMessageId;
+    public Long getFirstSeenClientSequence() {
+        return firstSeenClientSequence;
     }
 
-    public void setLastSeenMessageId(Integer lastSeenMessageId) {
-        this.lastSeenMessageId = lastSeenMessageId;
+    public void setFirstSeenClientSequence(Long firstSeenClientSequence) {
+        this.firstSeenClientSequence = firstSeenClientSequence;
+    }
+
+    public Long getLastSeenClientSequence() {
+        return lastSeenClientSequence;
+    }
+
+    public void setLastSeenClientSequence(Long lastSeenClientSequence) {
+        this.lastSeenClientSequence = lastSeenClientSequence;
     }
 
     public Instant getLastSeenAt() {

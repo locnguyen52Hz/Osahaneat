@@ -8,7 +8,6 @@ import ChatBody from "./ChatBody";
 import ChatInput from "./ChatInput";
 
 function ConversationDetails({ conversation }) {
-  // console.log(conversation)
   const chatBody = useRef(null);
   const { isAtBottom, isAtTop, onScrollToBottom, canScroll } =
     useChatScroll(chatBody);

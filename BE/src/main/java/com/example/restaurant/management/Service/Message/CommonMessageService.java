@@ -1,22 +1,17 @@
 package com.example.restaurant.management.Service.Message;
 
 
-import com.example.restaurant.management.Entity.User;
-import com.example.restaurant.management.Enums.Roles;
 import com.example.restaurant.management.Payload.Request.GetOlderMessagesRequest;
 import com.example.restaurant.management.Payload.Request.MarkReadMessage;
 import com.example.restaurant.management.Payload.Request.MessageRequest;
-import com.example.restaurant.management.Repository.UserRepository;
 import com.example.restaurant.management.Security.UserSecurityContext;
 import com.example.restaurant.management.Service.Message.Imp.BuyerMessageService;
 import com.example.restaurant.management.Service.Message.Imp.ShopManagerMessageService;
 import com.example.restaurant.management.Service.UserSecurity.UserSecurityService;
-import com.example.restaurant.management.Util.JwtHelper;
-import com.example.restaurant.management.dto.ConversationWithLatestMessageDto;
+import com.example.restaurant.management.dto.ConversationMeta;
 import com.example.restaurant.management.dto.MessageDto;
 import com.example.restaurant.management.dto.MessagePageResponseDto;
 import com.example.restaurant.management.dto.UnreadCount;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -44,23 +39,20 @@ public class CommonMessageService {
         UserSecurityContext userSecurityContext = userSecurityService.getUserSecurityContext(authHeader);
 
         return switch (userSecurityContext.role()) {
-            case ROLE_BUYER ->
-                    buyerChatService.sendMessage(userSecurityContext.userId(), messageRequest.getReceiverId(), messageRequest.getContent());
-            case ROLE_SHOP_MANAGER ->
-                    shopManagerChatService.sendMessage(userSecurityContext.userId(), messageRequest.getReceiverId(), messageRequest.getContent());
+            case ROLE_BUYER -> buyerChatService.sendMessage(messageRequest, userSecurityContext.userId());
+            case ROLE_SHOP_MANAGER -> shopManagerChatService.sendMessage(messageRequest, userSecurityContext.userId());
             default -> throw new IllegalStateException("Unexpected value: " + userSecurityContext.role());
         };
 
     }
 
-    public List<ConversationWithLatestMessageDto> getConversations(@RequestHeader("Authorization") String authHeader, int page) {
+    public List<ConversationMeta> getConversations(@RequestHeader("Authorization") String authHeader, int page) {
         UserSecurityContext userSecurityContext = userSecurityService.getUserSecurityContext(authHeader);
-
 
         Pageable pageable = PageRequest.of(page, 10);
         return switch (userSecurityContext.role()) {
-            case ROLE_BUYER -> buyerChatService.getLatestMessages(userSecurityContext.userId(), pageable);
-            case ROLE_SHOP_MANAGER -> shopManagerChatService.getLatestMessages(userSecurityContext.userId(), pageable);
+            case ROLE_BUYER -> buyerChatService.getConversations(userSecurityContext.userId(), pageable);
+            case ROLE_SHOP_MANAGER -> shopManagerChatService.getConversations(userSecurityContext.userId(), pageable);
             default -> throw new IllegalStateException("Unexpected value: " + userSecurityContext.role());
         };
 
@@ -70,7 +62,7 @@ public class CommonMessageService {
 
         UserSecurityContext userSecurityContext = userSecurityService.getUserSecurityContext(authHeader);
 
-        Pageable pageable = PageRequest.ofSize(10);
+        Pageable pageable = PageRequest.ofSize(5);
 
         return switch (userSecurityContext.role()) {
             case ROLE_BUYER ->
@@ -90,7 +82,8 @@ public class CommonMessageService {
         Pageable pageable = PageRequest.ofSize(5);
 
         return switch (userSecurityContext.role()) {
-            case ROLE_BUYER -> buyerChatService.getOlderMessages(userSecurityContext.userId(), getOlderMessagesRequest, pageable);
+            case ROLE_BUYER ->
+                    buyerChatService.getOlderMessages(userSecurityContext.userId(), getOlderMessagesRequest, pageable);
             case ROLE_SHOP_MANAGER ->
                     shopManagerChatService.getOlderMessages(userSecurityContext.userId(), getOlderMessagesRequest, pageable);
             default -> throw new IllegalStateException("Unexpected value: " + userSecurityContext.role());
@@ -114,10 +107,10 @@ public class CommonMessageService {
         UserSecurityContext userSecurityContext = userSecurityService.getUserSecurityContext(authHeader);
 
 
-
         return switch (userSecurityContext.role()) {
             case ROLE_BUYER -> buyerChatService.markUnreadMessages(userSecurityContext.userId(), markReadMessage);
-            case ROLE_SHOP_MANAGER -> shopManagerChatService.markUnreadMessages(userSecurityContext.userId(), markReadMessage);
+            case ROLE_SHOP_MANAGER ->
+                    shopManagerChatService.markUnreadMessages(userSecurityContext.userId(), markReadMessage);
             default -> throw new IllegalStateException("Unexpected value: " + userSecurityContext.role());
         };
 

@@ -2,7 +2,7 @@ package com.example.restaurant.management.dto;
 
 import java.time.Instant;
 
-public class ConversationWithLatestMessageDto {
+public class ConversationMeta {
 
     private Integer id;
     private String lastMessage;
@@ -14,10 +14,11 @@ public class ConversationWithLatestMessageDto {
     private Integer partnerId;
     private String partnerType;
     private Number unreadCount;
+    private ConversationSequenceDto clientSequence;
 
-    public ConversationWithLatestMessageDto(Integer id, String lastMessage, Instant lastMessageAt,
-                                            String senderName, Integer senderId, Instant readAt, String partnerName,
-                                            Integer partnerId, String partnerType, Number unreadCount) {
+    public ConversationMeta(Integer id, String lastMessage, Instant lastMessageAt,
+                            String senderName, Integer senderId, Instant readAt, String partnerName,
+                            Integer partnerId, String partnerType, Number unreadCount) {
         this.id = id;
         this.lastMessage = lastMessage;
         this.lastMessageAt = lastMessageAt;
@@ -28,6 +29,14 @@ public class ConversationWithLatestMessageDto {
         this.partnerId = partnerId;
         this.partnerType = partnerType;
         this.unreadCount = unreadCount;
+    }
+
+    public ConversationSequenceDto getClientSequence() {
+        return clientSequence;
+    }
+
+    public void setClientSequence(ConversationSequenceDto clientSequence) {
+        this.clientSequence = clientSequence;
     }
 
     public Integer getId() {

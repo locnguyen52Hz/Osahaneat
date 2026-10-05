@@ -65,7 +65,7 @@ function App() {
     if (accessToken) {
       fetchUnreadMessage();
 
-      detectCurrentLocation();
+      // detectCurrentLocation();
     }
   }, [accessToken]);
 

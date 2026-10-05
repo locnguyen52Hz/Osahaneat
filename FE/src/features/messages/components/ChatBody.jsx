@@ -6,22 +6,13 @@ import styles from "../../../assets/styles/ConversationDetails.module.css";
 
 const ChatBody = forwardRef(
   (
-    {
-      messages,
-      loading,
-      conversationId,
-      onMessageVisible,
-      onHandleScrollIdle,
-
-    },
+    { messages, loading, conversationId, onMessageVisible, onHandleScrollIdle },
     ref,
   ) => {
     const initialScroll = useRef(false);
     const { isAtTop, canScroll } = useChatScroll(ref);
     const prevScrollHeight = useRef(0);
-
-    // console.log("messages: ", messages);
-
+    // console.log(messages);
     useEffect(() => {
       if (isAtTop && canScroll && !loading) {
         prevScrollHeight.current = ref.current.scrollHeight;
@@ -72,16 +63,16 @@ const ChatBody = forwardRef(
 
     return (
       <div ref={ref} className={styles.body}>
-        {loading ? <LoadingSpinner /> : ""}
-        {messages?.map((group) => (
-          <MessageGroup
-            key={group.createdAt}
-            group={group}
-            containerRef={ref}
-            onMessageVisible={onMessageVisible}
-          />
-        ))}
-     
+        <div className={styles.chatContent}>
+          {messages?.map((group) => (
+            <MessageGroup
+              key={group.createdAt}
+              group={group}
+              containerRef={ref}
+              onMessageVisible={onMessageVisible}
+            />
+          ))}
+        </div>
       </div>
     );
   },

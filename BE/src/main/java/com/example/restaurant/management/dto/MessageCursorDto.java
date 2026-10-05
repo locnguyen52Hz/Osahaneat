@@ -3,20 +3,32 @@ package com.example.restaurant.management.dto;
 import java.time.Instant;
 
 public class MessageCursorDto {
-    private Instant createdAt;
+    private Instant sentAt;
     private Integer id;
+    private Long clientSequence;
 
-    public MessageCursorDto(Instant createdAt, Integer id) {
-        this.createdAt = createdAt;
+    public MessageCursorDto(Instant sentAt,  Long clientSequence, Integer id) {
+        this.sentAt = sentAt;
         this.id = id;
+        this.clientSequence = clientSequence;
     }
 
-    public Instant getCreatedAt() {
-        return createdAt;
+
+
+    public Long getClientSequence() {
+        return clientSequence;
     }
 
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
+    public void setClientSequence(Long clientSequence) {
+        this.clientSequence = clientSequence;
+    }
+
+    public Instant getSentAt() {
+        return sentAt;
+    }
+
+    public void setSentAt(Instant sentAt) {
+        this.sentAt = sentAt;
     }
 
     public Integer getId() {

@@ -1,10 +1,12 @@
 package com.example.restaurant.management.Repository;
 
-import com.example.restaurant.management.dto.ConversationWithLatestMessageDto;
 import com.example.restaurant.management.Entity.Conversation;
+import com.example.restaurant.management.dto.ConversationSequenceDto;
+import com.example.restaurant.management.dto.ConversationMeta;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,13 +15,17 @@ import java.util.List;
 public interface ConversationRepository extends JpaRepository<Conversation, Integer> {
     Conversation getConversationByBuyerIdAndShopId(Integer buyerId, Integer shopsId);
 
+    Conversation getConversationsByIdAndBuyer_Id(Integer conversationId, Integer buyerId);
+
+    Conversation getConversationsByIdAndShop_Id(Integer conversationId, Integer shopsId);
+
     Conversation getConversationsByIdAndBuyer_IdAndShop_Id(Integer conversationId, Integer buyerId, Integer shopsId);
 
     @Query("""
-            SELECT new com.example.restaurant.management.dto.ConversationWithLatestMessageDto(
+            SELECT new com.example.restaurant.management.dto.ConversationMeta(
                 c.id,
                 m.content,
-                m.createdAt,
+                m.sentAt,
                 CASE
                     WHEN m.sender.id = b.id THEN b.fullName
                     WHEN m.sender.id = sm.id THEN s.shopName
@@ -48,19 +54,35 @@ public interface ConversationRepository extends JpaRepository<Conversation, Inte
             JOIN s.manager sm
             JOIN c.messages m
             JOIN m.sender u
-            WHERE m.createdAt = (
-                SELECT MAX(m2.createdAt)
-                FROM Message m2
-                WHERE m2.conversation.id = c.id
-            )
-            AND c.buyer.id = :userId
-            ORDER BY m.createdAt DESC
+            WHERE c.buyer.id = :userId
+              AND NOT EXISTS (
+                  SELECT 1
+                  FROM Message m2
+                  WHERE m2.conversation.id = c.id
+                    AND (
+                        m2.sentAt > m.sentAt
+                        OR (
+                            m2.sentAt = m.sentAt
+                            AND m2.clientSequence > m.clientSequence
+                        )
+                        OR (
+                            m2.sentAt = m.sentAt
+                            AND m2.clientSequence = m.clientSequence
+                            AND m2.id > m.id
+                        )
+                    )
+              )
+            ORDER BY m.sentAt DESC,
+                     m.clientSequence DESC,
+                     m.id DESC
             """)
-    List<ConversationWithLatestMessageDto> getLastMessageDTOByBuyerId(Integer userId, Pageable pageable);
+    List<ConversationMeta> getConversationsByBuyer(Integer userId, Pageable pageable);
 
     @Query("""
-            SELECT new com.example.restaurant.management.dto.ConversationWithLatestMessageDto(
-                c.id,m.content,m.createdAt,
+            SELECT new com.example.restaurant.management.dto.ConversationMeta(
+                c.id,
+                m.content,
+                m.sentAt,
                 CASE
                     WHEN m.sender.id = b.id THEN b.fullName
                     WHEN m.sender.id = sm.id THEN s.shopName
@@ -89,15 +111,61 @@ public interface ConversationRepository extends JpaRepository<Conversation, Inte
             JOIN s.manager sm
             JOIN c.messages m
             JOIN m.sender u
-            WHERE m.createdAt = (
-                SELECT MAX(m2.createdAt)
-                FROM Message m2
-                WHERE m2.conversation.id = c.id
-            )
-            AND s.id = :shopsId
-            ORDER BY m.createdAt DESC
+            WHERE s.id = :shopsId
+              AND NOT EXISTS (
+                  SELECT 1
+                  FROM Message m2
+                  WHERE m2.conversation.id = c.id
+                    AND (
+                        m2.sentAt > m.sentAt
+                        OR (
+                            m2.sentAt = m.sentAt
+                            AND m2.clientSequence > m.clientSequence
+                        )
+                        OR (
+                            m2.sentAt = m.sentAt
+                            AND m2.clientSequence = m.clientSequence
+                            AND m2.id > m.id
+                        )
+                    )
+              )
+            ORDER BY m.sentAt DESC,
+                     m.clientSequence DESC,
+                     m.id DESC
             """)
-    List<ConversationWithLatestMessageDto> getConversationsByShopsId(Integer shopsId, Pageable pageable);
+    List<ConversationMeta> getConversationsByShopManager(
+            Integer shopsId,
+            Pageable pageable
+    );
+
+
+
+    @Query("""
+            SELECT new com.example.restaurant.management.dto.ConversationSequenceDto(
+                m.conversation.id,
+                MAX(
+                    CASE
+                        WHEN m.sender.id = :userId
+                        THEN m.clientSequence
+                        ELSE NULL
+                    END
+                ),
+                MAX(
+                    CASE
+                        WHEN m.sender.id <> :userId
+                        THEN m.clientSequence
+                        ELSE NULL
+                    END
+                )
+            )
+            FROM Message m
+            WHERE m.conversation.id IN (:conversationIds)
+            GROUP BY m.conversation.id
+            """)
+    List<ConversationSequenceDto> getConversationSequences(
+            @Param("userId") Integer userId,
+            @Param("conversationIds") List<Integer> conversationIds
+    );
 }
 
 

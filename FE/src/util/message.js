@@ -1,12 +1,21 @@
 // chuẩn hóa tin nhắn,
 export const normalizeMessages = (rawMessage, myId) => {
-  // console.log(myId)
   return rawMessage
     .map((msg) => ({
       ...msg,
-      isMine: msg.senderId === myId, //đánh dấu tin nhắn của user theo id,
+      isMine: msg.senderId === myId,
     }))
-    .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)); //sắp xếp theo thứ tự thời gian
+    .sort((a, b) => {
+      const sentAt = new Date(a.sentAt) - new Date(b.sentAt);
+
+      if (sentAt !== 0) return sentAt;
+
+      if (a.clientSequence !== b.clientSequence) {
+        return a.clientSequence - b.clientSequence;
+      }
+
+      return a.id - b.id;
+    });
 };
 
 //nhóm tin nhắn theo ngày
@@ -33,25 +42,23 @@ export const groupMessagesByDate = (messages) => {
 
 // thêm tin nhắn vào state
 export const mergeGroupedMessages = (prev, incoming, mode = "append") => {
-  const merged = [...prev]; // copy array
+  const merged = [...prev];
 
-  incoming.forEach(({ createdAt, messages }) => {
+  const items = mode === "prepend" ? [...incoming].reverse() : incoming;
+
+  items.forEach(({ createdAt, messages }) => {
     if (!Array.isArray(messages)) return;
 
     const index = merged.findIndex((item) => item.createdAt === createdAt);
 
     if (index === -1) {
-      // chưa tồn tại date
       const newItem = {
         createdAt,
         messages: [...messages],
       };
 
-      mode === "prepend"
-        ? merged.unshift(newItem) // ngày cũ hơn → cho lên đầu
-        : merged.push(newItem); // ngày mới → cho xuống cuối
+      mode === "prepend" ? merged.unshift(newItem) : merged.push(newItem);
     } else {
-      // đã tồn tại date
       merged[index] = {
         ...merged[index],
         messages:

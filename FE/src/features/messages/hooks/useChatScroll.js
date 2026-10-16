@@ -22,9 +22,7 @@ export function useChatScroll(elRef, threshold = 20) {
       }
 
       setIsAtTop(scrollTop <= threshold);
-      setIsAtBottom(
-        scrollTop + clientHeight >= scrollHeight - threshold
-      );
+      setIsAtBottom(scrollTop + clientHeight >= scrollHeight - threshold);
     };
 
     // scroll event

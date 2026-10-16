@@ -14,7 +14,7 @@ import { useAuthStore } from "../Auth/useAuthStore";
 // chưa clear buffer khi merge message
 
 export const useConversationStore = create((set, get) => ({
-  conversationList: [],
+  conversationIds: [],
   conversationMap: {},
   isLoadingConversations: false,
   totalUnreadCount: 0,
@@ -28,14 +28,15 @@ export const useConversationStore = create((set, get) => ({
     try {
       const res = await api.get(`${endpoints.messages.conversation}?page=0`);
 
-      const list = res.data.data;
-      console.log(res.data)
+      const conversationList = res.data.data;
+
+      const ids = conversationList.map((c) => c.id);
 
       const map = {};
-      for (const c of list) {
+      for (const c of conversationList) {
         map[c.id] = c;
       }
-      set({ conversationList: list });
+      set({ conversationIds: ids });
       set({ conversationMap: map });
     } catch (error) {
       console.log(error);
@@ -50,14 +51,35 @@ export const useConversationStore = create((set, get) => ({
 
   sendMessage: async (newMessage) => {
     const state = get();
+    const conversationId = state.activeConversationId;
+    const conversation = state.conversationMap[conversationId];
+
+    const clientSequence = conversation.clientSequence.mySequence + 1;
     const msgBody = {
       receiverId: state.conversationMap[state.activeConversationId].partnerId,
       content: newMessage.trim(),
+      clientSequence:
+        state.conversationMap[state.activeConversationId].clientSequence
+          .mySequence + 1,
+      sentAt: new Date().toISOString(),
     };
-    // console.log(msgBody);
+
+    set((state) => ({
+      conversationMap: {
+        ...state.conversationMap,
+        [conversationId]: {
+          ...state.conversationMap[conversationId],
+          clientSequence: {
+            ...state.conversationMap[conversationId].clientSequence,
+            mySequence: clientSequence,
+          },
+        },
+      },
+    }));
+
+    console.log(msgBody);
     try {
       const res = await api.post(endpoints.messages.send, msgBody);
-      // console.log(res.data.data);
     } catch (error) {
       console.log(error);
     }
@@ -108,7 +130,7 @@ export const useConversationStore = create((set, get) => ({
       }));
     } catch (err) {
       console.error(err);
-
+    } finally {
       set((prev) => ({
         messagesByConversation: {
           ...prev.messagesByConversation,
@@ -126,7 +148,12 @@ export const useConversationStore = create((set, get) => ({
     if (!conversationId) return;
 
     const conversationData = state.messagesByConversation[conversationId];
-    if (!conversationData || !conversationData.hasMore) return;
+    if (
+      !conversationData ||
+      conversationData.isLoading ||
+      !conversationData.hasMore
+    )
+      return;
 
     const partnerId = state.conversationMap[conversationId]?.partnerId;
     if (!partnerId) return;
@@ -180,6 +207,16 @@ export const useConversationStore = create((set, get) => ({
       }));
     } catch (error) {
       console.log(error);
+    } finally {
+      set((prev) => ({
+        messagesByConversation: {
+          ...prev.messagesByConversation,
+          [conversationId]: {
+            ...prev.messagesByConversation[conversationId],
+            isLoading: false,
+          },
+        },
+      }));
     }
   },
 
@@ -299,9 +336,9 @@ export const useConversationStore = create((set, get) => ({
           [conversationId]: updatedConversation,
         },
 
-        conversationList: [
-          updatedConversation,
-          ...state.conversationList.filter((c) => c.id !== conversationId),
+        conversationIds: [
+          updatedConversation.id,
+          ...state.conversationIds.filter((id) => id !== conversationId),
         ],
 
         totalUnreadCount: isActive
@@ -344,7 +381,7 @@ export const useConversationStore = create((set, get) => ({
       // console.log(newConversation);
 
       return {
-        conversationList: [newConversation, ...state.conversationList],
+        conversationIds: [newConversation.id, ...state.conversationIds],
         conversationMap: {
           ...state.conversationMap,
           [conversationId]: newConversation,
@@ -354,63 +391,66 @@ export const useConversationStore = create((set, get) => ({
 
   markMessagesAsRead: async (conversationId, readUpToMsg) => {
     if (!readUpToMsg) return;
+    console.log("run:", readUpToMsg);
     const state = get();
     const conv = state.messagesByConversation[conversationId];
 
     if (!conv) return;
+    set((prev) => {
+      /* ===== Update conversationMap ===== */
+      const newConversationMap = { ...prev.conversationMap };
 
+      if (newConversationMap[conversationId]) {
+        newConversationMap[conversationId] = {
+          ...newConversationMap[conversationId],
+          // unreadCount: conversationUnreadCount,
+        };
+      }
+
+      /* ===== Update groupedMessages ===== */
+      const updatedGroupedMessages = prev.messagesByConversation[
+        conversationId
+      ].groupedMessages.map((group) => ({
+        ...group,
+        messages: group.messages.map((msg) => {
+          if (
+            !msg.isMine &&
+            msg.readAt == null &&
+            msg.clientSequence >= readUpToMsg.minClientSequence
+          ) {
+            return {
+              ...msg,
+              readAt: readUpToMsg.lastSeenAt,
+            };
+          }
+          return msg;
+        }),
+      }));
+
+      return {
+        // totalUnreadCount,
+        conversationMap: newConversationMap,
+
+        messagesByConversation: {
+          ...prev.messagesByConversation,
+          [conversationId]: {
+            ...prev.messagesByConversation[conversationId],
+            groupedMessages: updatedGroupedMessages,
+          },
+        },
+      };
+    });
+
+    const markReadMessage = { ...readUpToMsg, conversationId };
+    console.log(markReadMessage);
     try {
       const res = await api.patch(
         endpoints.messages.markUpMessages,
-        readUpToMsg,
+        markReadMessage,
       );
 
       const { conversationUnreadCount, totalUnreadCount } = res.data.data;
-
-      set((prev) => {
-        /* ===== Update conversationMap ===== */
-        const newConversationMap = { ...prev.conversationMap };
-
-        if (newConversationMap[conversationId]) {
-          newConversationMap[conversationId] = {
-            ...newConversationMap[conversationId],
-            unreadCount: conversationUnreadCount,
-          };
-        }
-
-        /* ===== Update groupedMessages ===== */
-        const updatedGroupedMessages = prev.messagesByConversation[
-          conversationId
-        ].groupedMessages.map((group) => ({
-          ...group,
-          messages: group.messages.map((msg) => {
-            if (
-              !msg.isMine &&
-              msg.readAt == null &&
-              msg.id >= readUpToMsg.lastSeenMessageId
-            ) {
-              return {
-                ...msg,
-                readAt: readUpToMsg.lastSeenAt,
-              };
-            }
-            return msg;
-          }),
-        }));
-
-        return {
-          totalUnreadCount,
-          conversationMap: newConversationMap,
-
-          messagesByConversation: {
-            ...prev.messagesByConversation,
-            [conversationId]: {
-              ...prev.messagesByConversation[conversationId],
-              groupedMessages: updatedGroupedMessages,
-            },
-          },
-        };
-      });
+      console.log(conversationUnreadCount, totalUnreadCount);
     } catch (error) {
       console.log(error);
     }

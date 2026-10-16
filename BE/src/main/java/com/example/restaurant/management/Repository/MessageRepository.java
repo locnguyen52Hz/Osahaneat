@@ -51,7 +51,7 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
     @Query("""
                 SELECT COUNT(m)
                 FROM Message m
-                JOIN m.conversation c
+                JOIN m.conversation c 
                 WHERE m.sender.id <> :shopManagerId
                   AND m.readAt IS NULL
                   AND c.shop.id = :shopId
@@ -106,15 +106,15 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
             SET m.readAt = :lastSeenAt
             WHERE m.conversation.id = :conversationId
                 AND m.sender.id <> :userId
-                AND m.clientSequence >= :lastSeenClientSequence
-                AND m.clientSequence <= :firstSeenClientSequence
+                AND m.clientSequence >= :minClientSequence
+                AND m.clientSequence <= :maxClientSequence
                 AND m.readAt IS NULL
             """)
     void markMessagesAsRead(
             @Param("userId") Integer userId,
             @Param("conversationId") Integer conversationId,
-            @Param("firstSeenClientSequence") Long firstSeenClientSequence,
-            @Param("lastSeenClientSequence") Long lastSeenClientSequence,
+            @Param("maxClientSequence") Long maxClientSequence,
+            @Param("minClientSequence") Long minClientSequence,
             @Param("lastSeenAt") Instant lastSeenAt
     );
 
@@ -140,7 +140,10 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
                     AND m.readAt IS NULL
                     AND c.shop.id = :shopId
             """)
-    UnreadCount getUnreadMessageStatsForShopManager(@Param("conversationId") Integer conversationId, @Param("shopManagerId") Integer shopManagerId, @Param("shopId") Integer shopId);
+    UnreadCount getUnreadMessageStatsForShopManager(
+            @Param("conversationId") Integer conversationId,
+            @Param("shopManagerId") Integer shopManagerId,
+            @Param("shopId") Integer shopId);
 
 
     @Query("""
@@ -164,5 +167,7 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
                 AND m.readAt IS NULL
                 AND c.buyer.id = :buyerId
             """)
-    UnreadCount getUnreadMessageStatsForBuyer(@Param("conversationId") Integer conversationId, @Param("buyerId") Integer buyerId);
+    UnreadCount getUnreadMessageStatsForBuyer(
+            @Param("conversationId") Integer conversationId,
+            @Param("buyerId") Integer buyerId);
 }

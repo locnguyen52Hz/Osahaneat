@@ -2,7 +2,7 @@ import MessageItem from "./MesageItem";
 
 import styles from "../../../assets/styles/ConversationDetails.module.css";
 
-const MessageGroup = ({ group, containerRef, onMessageVisible }) => {
+const MessageGroup = ({ group, observeMessage }) => {
   // console.log(group)
   return (
     <div className={styles.messageGroup}>
@@ -12,12 +12,7 @@ const MessageGroup = ({ group, containerRef, onMessageVisible }) => {
         <div className={styles.dash}></div>
       </div>
       {group.messages.map((msg) => (
-        <MessageItem
-          key={msg.id}
-          msg={msg}
-          containerRef={containerRef}
-          onMessageVisible={onMessageVisible}
-        />
+        <MessageItem key={msg.id} msg={msg} observeMessage={observeMessage} />
       ))}
     </div>
   );

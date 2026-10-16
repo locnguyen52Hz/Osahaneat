@@ -91,6 +91,7 @@ function ConversationDetails({ conversation }) {
       if (lastMarkedIdRef.current === cursor.lastSeenMessageId) return;
 
       markMessagesAsRead(conversation?.id, cursor);
+      console.log('run')
 
       lastMarkedIdRef.current = cursor.lastSeenMessageId;
     }, 500),

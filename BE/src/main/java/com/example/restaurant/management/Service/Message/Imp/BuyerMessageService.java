@@ -251,8 +251,8 @@ public class BuyerMessageService implements MessageService {
         messageRepository.markMessagesAsRead(
                 userId,
                 markReadMessage.getConversationId(),
-                markReadMessage.getFirstSeenClientSequence(),
-                markReadMessage.getLastSeenClientSequence(),
+                markReadMessage.getMaxClientSequence(),
+                markReadMessage.getMinClientSequence(),
                 markReadMessage.getLastSeenAt());
 
         return messageRepository.getUnreadMessageStatsForBuyer(markReadMessage.getConversationId(), userId);

@@ -4,14 +4,14 @@ import java.time.Instant;
 
 public class MarkReadMessage {
     Integer conversationId;
-    Long firstSeenClientSequence;
-    Long lastSeenClientSequence;
+    Long maxClientSequence;
+    Long minClientSequence;
     Instant lastSeenAt;
 
-    public MarkReadMessage(Integer conversationId, Long firstSeenClientSequence, Long lastSeenClientSequence, Instant lastSeenAt) {
+    public MarkReadMessage(Integer conversationId, Long maxClientSequence, Long minClientSequence, Instant lastSeenAt) {
         this.conversationId = conversationId;
-        this.firstSeenClientSequence = firstSeenClientSequence;
-        this.lastSeenClientSequence = lastSeenClientSequence;
+        this.maxClientSequence = maxClientSequence;
+        this.minClientSequence = minClientSequence;
         this.lastSeenAt = lastSeenAt;
     }
 
@@ -23,20 +23,20 @@ public class MarkReadMessage {
         this.conversationId = conversationId;
     }
 
-    public Long getFirstSeenClientSequence() {
-        return firstSeenClientSequence;
+    public Long getMaxClientSequence() {
+        return maxClientSequence;
     }
 
-    public void setFirstSeenClientSequence(Long firstSeenClientSequence) {
-        this.firstSeenClientSequence = firstSeenClientSequence;
+    public void setMaxClientSequence(Long maxClientSequence) {
+        this.maxClientSequence = maxClientSequence;
     }
 
-    public Long getLastSeenClientSequence() {
-        return lastSeenClientSequence;
+    public Long getMinClientSequence() {
+        return minClientSequence;
     }
 
-    public void setLastSeenClientSequence(Long lastSeenClientSequence) {
-        this.lastSeenClientSequence = lastSeenClientSequence;
+    public void setMinClientSequence(Long minClientSequence) {
+        this.minClientSequence = minClientSequence;
     }
 
     public Instant getLastSeenAt() {

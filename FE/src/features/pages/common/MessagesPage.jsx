@@ -5,7 +5,7 @@ import Conversation from "../../messages/components/Conversation";
 import ConversationDetails from "../../messages/components/ConversationDetails";
 
 function MessagesPage() {
-  const conversationList = useConversationStore((s) => s.conversationList);
+  const conversationIds = useConversationStore((s) => s.conversationIds);
   const messagesByConversation = useConversationStore(
     (s) => s.messagesByConversation,
   );
@@ -24,15 +24,8 @@ function MessagesPage() {
   const setActiveConversation = useConversationStore(
     (s) => s.setActiveConversation,
   );
-  console.log("messagesByConversation: ", messagesByConversation);
-  console.log("pendingMessagesByConversation: ", pendingMessagesByConversation);
-
   useEffect(() => {
     fetchConversations();
-    const sentAt = new Date().toISOString();
-
-    console.log(sentAt);
-    // 2026-09-29T11:51:13.902Z
   }, []);
 
   return (
@@ -41,14 +34,14 @@ function MessagesPage() {
       <div className={styles.container}>
         <div className={styles.child}>
           {!isLoadingConversations &&
-            conversationList.map((c) => {
-              const latest = conversationMap[c.id] || c;
+            conversationIds.map((id) => {
+              const conversation = conversationMap[id];
 
               return (
                 <Conversation
-                  key={c.id}
-                  conversation={latest}
-                  onClick={() => setActiveConversation(latest.id)}
+                  key={id}
+                  conversation={conversation}
+                  onClick={() => setActiveConversation(conversation.id)}
                 />
               );
             })}

@@ -23,13 +23,9 @@ function MessageItem({ msg, observeMessage }) {
         className={msg.isMine ? styles.mineContent : styles.partnerContent}
         ref={ref}
       >
-        {" "}
-        {msg.readAt}
-        <br />
-        {msg.clientSequence} - {msg.id}
+        {msg.id}
         <br />
         {msg.content}
-        <br />
       </p>
       <p
         className={`${styles.createdAt} ${
@@ -43,5 +39,3 @@ function MessageItem({ msg, observeMessage }) {
 }
 
 export default memo(MessageItem);
-
-

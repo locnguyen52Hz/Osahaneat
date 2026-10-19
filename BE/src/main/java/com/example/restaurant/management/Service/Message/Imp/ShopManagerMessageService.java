@@ -12,6 +12,7 @@ import com.example.restaurant.management.Repository.ConversationRepository;
 import com.example.restaurant.management.Repository.MessageRepository;
 import com.example.restaurant.management.Repository.ShopsRepository;
 import com.example.restaurant.management.Repository.UserRepository;
+import com.example.restaurant.management.Service.Message.CommonMessageService;
 import com.example.restaurant.management.Service.Message.MessageService;
 import com.example.restaurant.management.dto.*;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
@@ -44,55 +46,38 @@ public class ShopManagerMessageService implements MessageService {
     @Autowired
     ShopsRepository shopsRepository;
 
+    @Autowired
+    CommonMessageService commonMessageService;
+
     //    =========================================== SEND MESSAGE ===========================================
+    @Transactional
     @Override
     public MessageDto sendMessage(MessageRequest messageRequest, Integer senderId) {
-        User receiver = userRepository.findById(messageRequest.receiverId).orElseThrow(() -> new EntityNotFoundException("User not found"));
-
+        User buyer = userRepository.findById(messageRequest.receiverId).orElseThrow(()
+                -> new EntityNotFoundException("User not found"));
 
         Shop shop = shopsRepository.findShopsByManager_Id(senderId);
-        Conversation conversation = conversationRepository.getConversationByBuyerIdAndShopId(messageRequest.receiverId, shop.getId());
+        if (shop == null) {
+            throw new EntityNotFoundException("Shop not found");
+        }
+
+        Conversation conversation = conversationRepository.getConversationByBuyerIdAndShopId(buyer.getId(), shop.getId());
         if (conversation == null) {
             conversation = new Conversation();
-            conversation.setBuyer(receiver);
+            conversation.setBuyer(buyer);
             conversation.setShop(shop);
             conversation.setCreatedAt(Instant.now());
-            conversation.setLastMessageAt(Instant.now());
+            conversation.setLastMessageAt(messageRequest.sentAt);
             conversationRepository.save(conversation);
         }
-        Message message = new Message();
-        message.setConversation(conversation);
-        message.setContent(messageRequest.content);
-        message.setCreatedAt(Instant.now());
-        message.setSender(shop.getManager());
-//        message.setSentAt(messageRequest.sentAt);
-        message.setSentAt(Instant.now());
-
-        message.setClientSequence(messageRequest.clientSequence);
-
-        messageRepository.save(message);
-
-        conversation.setLastMessageAt(Instant.now());
-        conversationRepository.save(conversation);
-
-        MessageDto messageDTO = new MessageDto(
-                message.getId(),
-                message.getContent(),
-                message.getSender().getId(),
-                message.getSender().getFullName(),
-                message.getCreatedAt(),
-                message.getReadAt(),
-                message.getConversation().getId(),
-                message.getClientSequence(),
-                message.getSentAt()
-        );
+        MessageDto messageDto = commonMessageService.saveMessage(messageRequest, shop.getManager(), conversation);
 
 
-        simpMessagingTemplate.convertAndSendToUser(String.valueOf(receiver.getId()), "/queue/message", messageDTO);
-        simpMessagingTemplate.convertAndSendToUser(String.valueOf(message.getSender().getId()), "/queue/message", messageDTO);
+        simpMessagingTemplate.convertAndSendToUser(String.valueOf(buyer.getId()), "/queue/message", messageDto);
+        simpMessagingTemplate.convertAndSendToUser(String.valueOf(senderId), "/queue/message", messageDto);
 
 
-        return messageDTO;
+        return messageDto;
     }
 
 

@@ -1,119 +1,48 @@
 package com.example.restaurant.management.Service.Message;
 
 
-import com.example.restaurant.management.Payload.Request.GetOlderMessagesRequest;
-import com.example.restaurant.management.Payload.Request.MarkReadMessage;
+import com.example.restaurant.management.Entity.Conversation;
+import com.example.restaurant.management.Entity.Message;
+import com.example.restaurant.management.Entity.Shop;
+import com.example.restaurant.management.Entity.User;
 import com.example.restaurant.management.Payload.Request.MessageRequest;
-import com.example.restaurant.management.Security.UserSecurityContext;
-import com.example.restaurant.management.Service.Message.Imp.BuyerMessageService;
-import com.example.restaurant.management.Service.Message.Imp.ShopManagerMessageService;
-import com.example.restaurant.management.Service.UserSecurity.UserSecurityService;
-import com.example.restaurant.management.dto.ConversationMeta;
+import com.example.restaurant.management.Repository.ConversationRepository;
+import com.example.restaurant.management.Repository.MessageRepository;
 import com.example.restaurant.management.dto.MessageDto;
-import com.example.restaurant.management.dto.MessagePageResponseDto;
-import com.example.restaurant.management.dto.UnreadCount;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestHeader;
 
-import java.util.List;
+import java.time.Instant;
 
 @Service
 public class CommonMessageService {
 
-
     @Autowired
-    ShopManagerMessageService shopManagerChatService;
+    MessageRepository messageRepository;
 
-    @Autowired
-    BuyerMessageService buyerChatService;
+    public MessageDto saveMessage(MessageRequest request, User sender, Conversation conversation) {
 
-    @Autowired
-    UserSecurityService userSecurityService;
+        Message message = new Message();
+        message.setConversation(conversation);
+        message.setContent(request.content);
+        message.setCreatedAt(Instant.now());
+        message.setSender(sender);
+        message.setSentAt(request.sentAt);
+        message.setClientMessageId(request.clientMessageId);
+        message.setClientSequence(request.clientSequence);
+        messageRepository.save(message);
+        conversation.setLastMessageAt(request.sentAt);
 
-    public MessageDto sendMessage(@RequestHeader("Authorization") String authHeader, MessageRequest messageRequest) {
-
-        UserSecurityContext userSecurityContext = userSecurityService.getUserSecurityContext(authHeader);
-
-        return switch (userSecurityContext.role()) {
-            case ROLE_BUYER -> buyerChatService.sendMessage(messageRequest, userSecurityContext.userId());
-            case ROLE_SHOP_MANAGER -> shopManagerChatService.sendMessage(messageRequest, userSecurityContext.userId());
-            default -> throw new IllegalStateException("Unexpected value: " + userSecurityContext.role());
-        };
-
+        return new MessageDto(
+                message.getId(),
+                message.getContent(),
+                message.getSender().getId(),
+                message.getSender().getFullName(),
+                message.getCreatedAt(),
+                message.getReadAt(),
+                message.getConversation().getId(),
+                message.getClientSequence(),
+                message.getSentAt()
+                );
     }
-
-    public List<ConversationMeta> getConversations(@RequestHeader("Authorization") String authHeader, int page) {
-        UserSecurityContext userSecurityContext = userSecurityService.getUserSecurityContext(authHeader);
-
-        Pageable pageable = PageRequest.of(page, 10);
-        return switch (userSecurityContext.role()) {
-            case ROLE_BUYER -> buyerChatService.getConversations(userSecurityContext.userId(), pageable);
-            case ROLE_SHOP_MANAGER -> shopManagerChatService.getConversations(userSecurityContext.userId(), pageable);
-            default -> throw new IllegalStateException("Unexpected value: " + userSecurityContext.role());
-        };
-
-    }
-
-    public MessagePageResponseDto latestMessage(@RequestHeader("Authorization") String authHeader, Integer conversationId, Integer partnerId) {
-
-        UserSecurityContext userSecurityContext = userSecurityService.getUserSecurityContext(authHeader);
-
-        Pageable pageable = PageRequest.ofSize(5);
-
-        return switch (userSecurityContext.role()) {
-            case ROLE_BUYER ->
-                    buyerChatService.latestMessage(userSecurityContext.userId(), conversationId, partnerId, pageable);
-            case ROLE_SHOP_MANAGER ->
-                    shopManagerChatService.latestMessage(userSecurityContext.userId(), conversationId, partnerId, pageable);
-            default -> throw new IllegalStateException("Unexpected value: " + userSecurityContext.role());
-        };
-
-    }
-
-    public MessagePageResponseDto getOlderMessages(@RequestHeader("Authorization") String authHeader,
-                                                   GetOlderMessagesRequest getOlderMessagesRequest) {
-
-        UserSecurityContext userSecurityContext = userSecurityService.getUserSecurityContext(authHeader);
-
-        Pageable pageable = PageRequest.ofSize(5);
-
-        return switch (userSecurityContext.role()) {
-            case ROLE_BUYER ->
-                    buyerChatService.getOlderMessages(userSecurityContext.userId(), getOlderMessagesRequest, pageable);
-            case ROLE_SHOP_MANAGER ->
-                    shopManagerChatService.getOlderMessages(userSecurityContext.userId(), getOlderMessagesRequest, pageable);
-            default -> throw new IllegalStateException("Unexpected value: " + userSecurityContext.role());
-        };
-    }
-
-    public Integer unreadCountTotal(@RequestHeader("Authorization") String authHeader) {
-
-        UserSecurityContext userSecurityContext = userSecurityService.getUserSecurityContext(authHeader);
-
-        return switch (userSecurityContext.role()) {
-            case ROLE_BUYER -> buyerChatService.unreadCountTotal(userSecurityContext.userId());
-            case ROLE_SHOP_MANAGER -> shopManagerChatService.unreadCountTotal(userSecurityContext.userId());
-            default -> throw new IllegalStateException("Unexpected value: " + userSecurityContext.role());
-        };
-    }
-
-
-    @Transactional
-    public UnreadCount markReadMessages(@RequestHeader("Authorization") String authHeader, MarkReadMessage markReadMessage) {
-        UserSecurityContext userSecurityContext = userSecurityService.getUserSecurityContext(authHeader);
-
-
-        return switch (userSecurityContext.role()) {
-            case ROLE_BUYER -> buyerChatService.markUnreadMessages(userSecurityContext.userId(), markReadMessage);
-            case ROLE_SHOP_MANAGER ->
-                    shopManagerChatService.markUnreadMessages(userSecurityContext.userId(), markReadMessage);
-            default -> throw new IllegalStateException("Unexpected value: " + userSecurityContext.role());
-        };
-
-    }
-
 }

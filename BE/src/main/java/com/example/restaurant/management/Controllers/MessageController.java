@@ -5,7 +5,7 @@ import com.example.restaurant.management.Payload.Request.GetOlderMessagesRequest
 import com.example.restaurant.management.Payload.Request.MarkReadMessage;
 import com.example.restaurant.management.Payload.Request.MessageRequest;
 import com.example.restaurant.management.Payload.ResponseData;
-import com.example.restaurant.management.Service.Message.CommonMessageService;
+import com.example.restaurant.management.Service.Message.MessagesFacade;
 import com.example.restaurant.management.dto.ConversationMeta;
 import com.example.restaurant.management.dto.MessageDto;
 import com.example.restaurant.management.dto.MessagePageResponseDto;
@@ -24,13 +24,13 @@ import java.util.List;
 public class MessageController {
 
     @Autowired
-    CommonMessageService commonMessageService;
+    MessagesFacade messagesFacade;
 
     @PostMapping("/send")
     @PreAuthorize("hasAnyRole('ROLE_BUYER','ROLE_SHOP_MANAGER')")
     public ResponseEntity<?> sendMessage(@RequestHeader("Authorization") String authorization, @Valid @RequestBody MessageRequest messageRequest) {
         ResponseData responseData = new ResponseData();
-        MessageDto messageDTO = commonMessageService.sendMessage(authorization, messageRequest);
+        MessageDto messageDTO = messagesFacade.sendMessage(authorization, messageRequest);
         responseData.setData(messageDTO);
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
@@ -39,7 +39,7 @@ public class MessageController {
     @PreAuthorize("hasAnyRole('ROLE_BUYER','ROLE_SHOP_MANAGER')")
     public ResponseEntity<?> getLatestMessages(@RequestHeader("Authorization") String authorization, @RequestParam int page) {
         ResponseData responseData = new ResponseData();
-        List<ConversationMeta> conversations = commonMessageService.getConversations(authorization, page);
+        List<ConversationMeta> conversations = messagesFacade.getConversations(authorization, page);
         responseData.setData(conversations);
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
@@ -49,7 +49,7 @@ public class MessageController {
     public ResponseEntity<?> latestMessage(@RequestHeader("Authorization") String authorization, @RequestParam Integer conversationId,
                                            @RequestParam Integer partnerId) {
         ResponseData responseData = new ResponseData();
-        MessagePageResponseDto messageDTOS = commonMessageService.latestMessage(authorization, conversationId, partnerId);
+        MessagePageResponseDto messageDTOS = messagesFacade.latestMessage(authorization, conversationId, partnerId);
         responseData.setData(messageDTOS);
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
@@ -58,7 +58,7 @@ public class MessageController {
     @PreAuthorize("hasAnyRole('ROLE_BUYER','ROLE_SHOP_MANAGER')")
     public ResponseEntity<?> getOlderMessages(@RequestHeader("Authorization") String authorization, @RequestBody GetOlderMessagesRequest getOlderMessagesRequest) {
         ResponseData responseData = new ResponseData();
-        MessagePageResponseDto messageDTOS = commonMessageService.getOlderMessages(authorization, getOlderMessagesRequest);
+        MessagePageResponseDto messageDTOS = messagesFacade.getOlderMessages(authorization, getOlderMessagesRequest);
         responseData.setData(messageDTOS);
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
@@ -67,7 +67,7 @@ public class MessageController {
     @PreAuthorize("hasAnyRole('ROLE_BUYER','ROLE_SHOP_MANAGER')")
     public ResponseEntity<?> unreadCountTotal(@RequestHeader("Authorization") String authorization) {
         ResponseData responseData = new ResponseData();
-        Integer unreadCountTotal = commonMessageService.unreadCountTotal(authorization);
+        Integer unreadCountTotal = messagesFacade.unreadCountTotal(authorization);
         responseData.setData(unreadCountTotal);
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
@@ -76,7 +76,7 @@ public class MessageController {
     @PreAuthorize("hasAnyRole('ROLE_BUYER','ROLE_SHOP_MANAGER')")
     public ResponseEntity<?> markUpMessages(@RequestHeader("Authorization") String authorization, @RequestBody MarkReadMessage markReadMessage) {
         ResponseData responseData = new ResponseData();
-        UnreadCount unreadCount = commonMessageService.markReadMessages(authorization, markReadMessage);
+        UnreadCount unreadCount = messagesFacade.markReadMessages(authorization, markReadMessage);
         responseData.setData(unreadCount);
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }

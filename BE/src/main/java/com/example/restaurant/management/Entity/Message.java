@@ -7,7 +7,14 @@ import java.time.Instant;
 
 
 @Entity
-@Table(name = "messages")
+@Table(name = "messages",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_message_sender_client_message_id",
+                        columnNames = {"sender_id", "client_message_id"}
+                )
+        }
+)
 public class Message {
 
     @Id
@@ -33,6 +40,9 @@ public class Message {
 
     @Column(name = "sent_at", nullable = false)
     private Instant sentAt;
+
+    @Column(name = "client_message_id", nullable = false, length = 36)
+    private String clientMessageId;
 
     public Instant getSentAt() {
         return sentAt;
@@ -98,5 +108,13 @@ public class Message {
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getClientMessageId() {
+        return clientMessageId;
+    }
+
+    public void setClientMessageId(String clientMessageId) {
+        this.clientMessageId = clientMessageId;
     }
 }

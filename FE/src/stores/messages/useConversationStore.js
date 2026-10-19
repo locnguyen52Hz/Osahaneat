@@ -320,9 +320,7 @@ export const useConversationStore = create((set, get) => ({
         ...conversation,
         lastMessage: message.content,
         lastMessageAt: message.createdAt,
-        unreadCount: isActive
-          ? conversation.unreadCount
-          : conversation.unreadCount + 1,
+        unreadCount: conversation.unreadCount + 1,
         senderName: message.senderName,
         senderId: message.senderId,
       };
@@ -341,9 +339,7 @@ export const useConversationStore = create((set, get) => ({
           ...state.conversationIds.filter((id) => id !== conversationId),
         ],
 
-        totalUnreadCount: isActive
-          ? state.totalUnreadCount
-          : state.totalUnreadCount + 1,
+        totalUnreadCount: state.totalUnreadCount + 1,
       };
     });
   },
@@ -416,7 +412,8 @@ export const useConversationStore = create((set, get) => ({
           if (
             !msg.isMine &&
             msg.readAt == null &&
-            msg.clientSequence >= readUpToMsg.minClientSequence
+            msg.clientSequence >= readUpToMsg.minClientSequence &&
+            msg.clientSequence <= readUpToMsg.maxClientSequence
           ) {
             return {
               ...msg,
@@ -442,7 +439,7 @@ export const useConversationStore = create((set, get) => ({
     });
 
     const markReadMessage = { ...readUpToMsg, conversationId };
-    console.log(markReadMessage);
+
     try {
       const res = await api.patch(
         endpoints.messages.markUpMessages,
@@ -450,6 +447,20 @@ export const useConversationStore = create((set, get) => ({
       );
 
       const { conversationUnreadCount, totalUnreadCount } = res.data.data;
+      set((prev) => {
+        const newConversationMap = { ...prev.conversationMap };
+        if (newConversationMap[conversationId]) {
+          newConversationMap[conversationId] = {
+            ...newConversationMap[conversationId],
+            unreadCount: conversationUnreadCount,
+          };
+        }
+        return {
+          conversationMap: newConversationMap,
+          totalUnreadCount,
+        };
+      });
+
       console.log(conversationUnreadCount, totalUnreadCount);
     } catch (error) {
       console.log(error);

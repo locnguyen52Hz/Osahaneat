@@ -2,6 +2,7 @@ package com.example.restaurant.management.Payload.Request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.Length;
 
 import java.time.Instant;
 
@@ -14,6 +15,9 @@ public class MessageRequest {
     public Long clientSequence;
     @NotNull
     public Instant sentAt;
+    @NotBlank
+    @Length(min = 36, max = 36)
+    public String clientMessageId;
 
 
     public Integer getReceiverId() {
@@ -46,5 +50,13 @@ public class MessageRequest {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getClientMessageId() {
+        return clientMessageId;
+    }
+
+    public void setClientMessageId(String clientMessageId) {
+        this.clientMessageId = clientMessageId;
     }
 }

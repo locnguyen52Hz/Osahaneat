@@ -2,26 +2,38 @@ package com.example.restaurant.management.Payload.Request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.Instant;
 
 public class MessageRequest {
     @NotNull
-    public Integer receiverId;
+    public Integer partnerId;
+
     @NotBlank
+    @Length( max = 500)
     public String content;
+
     @NotNull
+    @Positive
     public Long clientSequence;
+
     @NotNull
     public Instant sentAt;
+
     @NotBlank
     @Length(min = 36, max = 36)
+    @Pattern(
+            regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+            message = "clientMessageId phải có định dạng UUID hợp lệ"
+    )
     public String clientMessageId;
 
 
-    public Integer getReceiverId() {
-        return receiverId;
+    public Integer getPartnerId() {
+        return partnerId;
     }
 
     public Long getClientSequence() {
@@ -40,8 +52,8 @@ public class MessageRequest {
         this.sentAt = sentAt;
     }
 
-    public void setReceiverId(Integer receiverId) {
-        this.receiverId = receiverId;
+    public void setPartnerId(Integer partnerId) {
+        this.partnerId = partnerId;
     }
 
     public String getContent() {

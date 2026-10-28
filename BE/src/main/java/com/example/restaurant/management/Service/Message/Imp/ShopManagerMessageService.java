@@ -2,7 +2,6 @@ package com.example.restaurant.management.Service.Message.Imp;
 
 
 import com.example.restaurant.management.Entity.Conversation;
-import com.example.restaurant.management.Entity.Message;
 import com.example.restaurant.management.Entity.Shop;
 import com.example.restaurant.management.Entity.User;
 import com.example.restaurant.management.Payload.Request.GetOlderMessagesRequest;
@@ -20,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
@@ -50,34 +48,20 @@ public class ShopManagerMessageService implements MessageService {
     CommonMessageService commonMessageService;
 
     //    =========================================== SEND MESSAGE ===========================================
-    @Transactional
-    @Override
-    public MessageDto sendMessage(MessageRequest messageRequest, Integer senderId) {
-        User buyer = userRepository.findById(messageRequest.receiverId).orElseThrow(()
-                -> new EntityNotFoundException("User not found"));
 
-        Shop shop = shopsRepository.findShopsByManager_Id(senderId);
+    @Override
+    public MessageDto sendMessage(MessageRequest messageRequest, Integer myId) {
+
+        User buyer = userRepository.findById(messageRequest.partnerId).orElseThrow(()
+                -> new EntityNotFoundException("User not found"));
+        Integer receiverId = buyer.getId();
+
+        Shop shop = shopsRepository.findShopsByManager_Id(myId);
+
         if (shop == null) {
             throw new EntityNotFoundException("Shop not found");
         }
-
-        Conversation conversation = conversationRepository.getConversationByBuyerIdAndShopId(buyer.getId(), shop.getId());
-        if (conversation == null) {
-            conversation = new Conversation();
-            conversation.setBuyer(buyer);
-            conversation.setShop(shop);
-            conversation.setCreatedAt(Instant.now());
-            conversation.setLastMessageAt(messageRequest.sentAt);
-            conversationRepository.save(conversation);
-        }
-        MessageDto messageDto = commonMessageService.saveMessage(messageRequest, shop.getManager(), conversation);
-
-
-        simpMessagingTemplate.convertAndSendToUser(String.valueOf(buyer.getId()), "/queue/message", messageDto);
-        simpMessagingTemplate.convertAndSendToUser(String.valueOf(senderId), "/queue/message", messageDto);
-
-
-        return messageDto;
+        return commonMessageService.sendMessageIdempotently(messageRequest, buyer, shop, receiverId);
     }
 
 
@@ -85,12 +69,14 @@ public class ShopManagerMessageService implements MessageService {
     @Override
     public List<ConversationMeta> getConversations(Integer id, Pageable pageable) {
         Shop shop = shopsRepository.findShopsByManager_Id(id);
-        List<ConversationMeta> conversationMetas = conversationRepository.getConversationsByShopManager(shop.getId(), pageable);
+        List<ConversationMeta> conversationMetas =
+                conversationRepository.getConversationsByShopManager(shop.getId(), pageable);
         if (conversationMetas.isEmpty()) {
             return conversationMetas;
         }
         List<Integer> conversationIds = conversationMetas.stream().map(ConversationMeta::getId).toList();
-        List<ConversationSequenceDto> dtoList = conversationRepository.getConversationSequences(id, conversationIds);
+        List<ConversationSequenceDto> dtoList =
+                conversationRepository.getConversationSequences(id, conversationIds);
         Map<Integer, ConversationSequenceDto> sequenceMap = dtoList.stream()
                 .collect(Collectors.toMap(
                         ConversationSequenceDto::getConversationId,

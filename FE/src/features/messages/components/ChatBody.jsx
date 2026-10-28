@@ -1,4 +1,10 @@
-import { forwardRef, useEffect, useLayoutEffect, useRef } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+} from "react";
 import MessageGroup from "./MessageGroup";
 import { useChatScroll } from "../hooks/useChatScroll";
 import LoadingSpinner from "../../../components/common/LoadingSpinner";
@@ -6,27 +12,6 @@ import styles from "../../../assets/styles/ConversationDetails.module.css";
 import { createScrollIdleHandler } from "../../../util/util";
 import { useConversationStore } from "../../../stores/messages/useConversationStore";
 
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-const mockMarkMessagesAsRead = async (
-  conversationId,
-  { minClientSequence, maxClientSequence },
-) => {
-  console.log("[API] Bắt đầu request:", {
-    minClientSequence,
-    maxClientSequence,
-    time: new Date().toLocaleTimeString(),
-  });
-
-  await delay(5000);
-
-  console.log("[API] Request thành công:", {
-    minClientSequence,
-    maxClientSequence,
-    time: new Date().toLocaleTimeString(),
-  });
-
-  return { success: true };
-};
 const ChatBody = forwardRef(({ messages, loading, conversationId }, ref) => {
   const markMessagesAsRead = useConversationStore((s) => s.markMessagesAsRead);
   const minClientSequenceRef = useRef(null);
@@ -202,11 +187,15 @@ const ChatBody = forwardRef(({ messages, loading, conversationId }, ref) => {
     return () => observerRef.current?.disconnect();
   }, []);
 
-  const observeMessage = (element) => {
-    if (element) {
-      observerRef.current?.observe(element);
+  const observeMessage = useCallback((element) => {
+    if (!element) return;
+
+    const observer = observerRef.current;
+
+    if (observer) {
+      observer.observe(element);
     }
-  };
+  }, []);
   return (
     <div ref={ref} className={styles.body}>
       <div className={styles.chatContent}>

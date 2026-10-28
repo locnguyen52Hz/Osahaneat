@@ -168,6 +168,44 @@
     }
 }
 
+
+
+.loadingDots {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-right: 15px;
+}
+
+.loadingDots span {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: #7c807f;
+    animation: wave 0.8s ease-in-out infinite;
+}
+
+.loadingDots span:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.loadingDots span:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+@keyframes wave {
+
+    0%,
+    60%,
+    100% {
+        transform: translateY(0);
+    }
+
+    30% {
+        transform: translateY(-7px);
+    }
+}
+
 /* ---------- SEND BUTTON ---------- */
 .sendBtn {
     width: 45px;

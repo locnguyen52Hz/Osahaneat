@@ -8,7 +8,7 @@ public class ResponseData {
     private int status;
     private String message;
     private Object data;
-    private String token;
+
     private boolean success;
     private List<FieldErrorMessage> errors;
 
@@ -36,13 +36,6 @@ public class ResponseData {
         this.data = data;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
 
     public boolean isSuccess() {
         return success;

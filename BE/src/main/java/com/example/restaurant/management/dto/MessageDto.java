@@ -12,6 +12,7 @@ public class MessageDto {
     private Long clientSequence;
     private Instant sentAt;
     private String senderName;
+    private String clientMessageId;
 
     public MessageDto(
             Integer id,
@@ -22,7 +23,8 @@ public class MessageDto {
             Instant readAt,
             Integer conversationId,
             Long clientSequence,
-            Instant sentAt
+            Instant sentAt,
+            String clientMessageId
     ) {
         this.id = id;
         this.content = content;
@@ -33,6 +35,7 @@ public class MessageDto {
         this.conversationId = conversationId;
         this.clientSequence = clientSequence;
         this.sentAt = sentAt;
+        this.clientMessageId = clientMessageId;
     }
 
     public MessageDto(Integer id,
@@ -43,7 +46,9 @@ public class MessageDto {
                       Integer senderId,
                       Instant readAt,
                       Long clientSequence,
-                      Instant sentAt) {
+                      Instant sentAt,
+                      String clientMessageId
+                      ) {
         this.id = id;
         this.content = content;
         this.senderName = senderName;
@@ -53,6 +58,15 @@ public class MessageDto {
         this.readAt = readAt;
         this.clientSequence = clientSequence;
         this.sentAt = sentAt;
+        this.clientMessageId = clientMessageId;
+    }
+
+    public String getClientMessageId() {
+        return clientMessageId;
+    }
+
+    public void setClientMessageId(String clientMessageId) {
+        this.clientMessageId = clientMessageId;
     }
 
     public Long getClientSequence() {

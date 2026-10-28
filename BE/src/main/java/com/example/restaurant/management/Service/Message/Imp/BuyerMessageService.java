@@ -1,7 +1,6 @@
 package com.example.restaurant.management.Service.Message.Imp;
 
 import com.example.restaurant.management.Entity.Conversation;
-import com.example.restaurant.management.Entity.Message;
 import com.example.restaurant.management.Entity.Shop;
 import com.example.restaurant.management.Entity.User;
 import com.example.restaurant.management.Payload.Request.GetOlderMessagesRequest;
@@ -44,42 +43,21 @@ public class BuyerMessageService implements MessageService {
     @Autowired
     SimpMessagingTemplate simpMessagingTemplate;
 
-
     @Autowired
     CommonMessageService commonMessageService;
 
     //    =========================================== SEND MESSAGE ===========================================
     @Override
-    public MessageDto sendMessage(MessageRequest messageRequest, Integer senderId) {
-        //tìm shop nhận tin nhắn
-        Shop shop = shopsRepository.findById(messageRequest.receiverId).orElseThrow(()
+    public MessageDto sendMessage(MessageRequest messageRequest, Integer myId) {
+
+        Shop shop = shopsRepository.findById(messageRequest.partnerId).orElseThrow(()
                 -> new EntityNotFoundException("Shop not found"));
 
-        User receiver = userRepository.findUserById(shop.getManager().getId());
+        Integer receiverId = shop.getManager().getId();
+        User buyer = userRepository.findUserById(myId);
 
-        //người gửi tin nhắn
-        User user = userRepository.findUserById(senderId);
+        return commonMessageService.sendMessageIdempotently(messageRequest, buyer, shop, receiverId);
 
-
-        //kiểm tra cuộc hội thoại đã tôn tại chưa, nếu chưa tạo hội thoại mới
-        Conversation conversation = conversationRepository.getConversationByBuyerIdAndShopId(senderId, shop.getId());
-        if (conversation == null) {
-            conversation = new Conversation();
-            conversation.setBuyer(user);
-            conversation.setShop(shop);
-            conversation.setCreatedAt(Instant.now());
-            conversation.setLastMessageAt(Instant.now());
-            conversation = conversationRepository.save(conversation);
-        }
-        MessageDto messageDTO = commonMessageService.saveMessage(messageRequest, user, conversation);
-
-
-        //gửi thông báo cho receiver
-        simpMessagingTemplate.convertAndSendToUser(String.valueOf(receiver.getId()), "/queue/message", messageDTO);
-        // gửi thông báo cho sender
-        simpMessagingTemplate.convertAndSendToUser(String.valueOf(senderId), "/queue/message", messageDTO);
-
-        return messageDTO;
     }
 
 

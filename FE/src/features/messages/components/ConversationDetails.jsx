@@ -6,6 +6,7 @@ import { createScrollIdleHandler } from "../../../util/util";
 import { useChatScroll } from "../hooks/useChatScroll";
 import ChatBody from "./ChatBody";
 import ChatInput from "./ChatInput";
+import { v4 } from "uuid";
 
 function ConversationDetails({ conversation }) {
   const chatBody = useRef(null);
@@ -17,7 +18,6 @@ function ConversationDetails({ conversation }) {
   const myId = useAuthStore((s) => s.myId);
 
   const [hasNewMessage, setHasNewMessage] = useState(false);
-
   const {
     messagesByConversation,
     activeConversationId,
@@ -25,8 +25,8 @@ function ConversationDetails({ conversation }) {
     fetchLatestMessages,
     loadMoreOldestMessage,
     markMessagesAsRead,
-    conversationMap,
     sendMessage,
+    conversationMap,
   } = useConversationStore();
 
   const lastMessageId = useConversationStore((s) => {
@@ -41,7 +41,8 @@ function ConversationDetails({ conversation }) {
 
     return lastMessage.id;
   });
-  // console.log(conversationMap);
+
+  console.log(v4());
 
   useEffect(() => {
     if (!lastMessageId || !canScroll) return;
@@ -91,7 +92,7 @@ function ConversationDetails({ conversation }) {
       if (lastMarkedIdRef.current === cursor.lastSeenMessageId) return;
 
       markMessagesAsRead(conversation?.id, cursor);
-      console.log('run')
+      console.log("run");
 
       lastMarkedIdRef.current = cursor.lastSeenMessageId;
     }, 500),

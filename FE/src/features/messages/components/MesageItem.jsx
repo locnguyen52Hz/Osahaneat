@@ -4,11 +4,9 @@ import { formatTime } from "../../../util/format";
 
 function MessageItem({ msg, observeMessage }) {
   const ref = useRef(null);
-
   useEffect(() => {
     observeMessage(ref.current);
   }, []);
-
   return (
     <div
       className={`${styles.message} ${
@@ -23,17 +21,26 @@ function MessageItem({ msg, observeMessage }) {
         className={msg.isMine ? styles.mineContent : styles.partnerContent}
         ref={ref}
       >
-        {msg.id}
+        {msg.clientMessageId}
         <br />
         {msg.content}
+        <br />
       </p>
-      <p
+      <div
         className={`${styles.createdAt} ${
           msg.isMine ? styles.mine : styles.partner
         } `}
       >
-        {formatTime(msg.createdAt)}
-      </p>
+        {msg.status === "sending" ? (
+          <div className={styles.loadingDots}>
+            <span />
+            <span />
+            <span />
+          </div>
+        ) : (
+          formatTime(msg.sentAt)
+        )}
+      </div>
     </div>
   );
 }

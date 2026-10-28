@@ -7,6 +7,7 @@ import {
   normalizeMessages,
 } from "../../util/message";
 import { useAuthStore } from "../Auth/useAuthStore";
+import { v4 } from "uuid";
 
 // thêm message realtime đã xong
 
@@ -54,34 +55,127 @@ export const useConversationStore = create((set, get) => ({
     const conversationId = state.activeConversationId;
     const conversation = state.conversationMap[conversationId];
 
-    const clientSequence = conversation.clientSequence.mySequence + 1;
+    if (!conversation || !newMessage.trim()) return;
+
+    const mySequence = conversation.clientSequence.mySequence;
+    const clientSequence = mySequence != null ? mySequence + 1 : 1;
+
     const msgBody = {
-      receiverId: state.conversationMap[state.activeConversationId].partnerId,
+      partnerId: conversation.partnerId,
       content: newMessage.trim(),
-      clientSequence:
-        state.conversationMap[state.activeConversationId].clientSequence
-          .mySequence + 1,
+      clientSequence,
       sentAt: new Date().toISOString(),
+      clientMessageId: v4(),
+    };
+    console.log(msgBody)
+
+    const myId = useAuthStore.getState().myId;
+
+    const optimisticMessage = {
+      ...msgBody,
+      id: `temp-${msgBody.clientMessageId}`,
+      senderId: myId,
+      isMine: true,
+      readAt: null,
+      createdAt: msgBody.sentAt,
+      status: "sending",
     };
 
-    set((state) => ({
-      conversationMap: {
-        ...state.conversationMap,
-        [conversationId]: {
-          ...state.conversationMap[conversationId],
-          clientSequence: {
-            ...state.conversationMap[conversationId].clientSequence,
-            mySequence: clientSequence,
+    // Thêm message tạm vào group cuối hoặc tạo group mới
+    set((state) => {
+      const conversationData = state.messagesByConversation[conversationId];
+
+      if (!conversationData) return {};
+
+      const groupedMessages = [...conversationData.groupedMessages];
+
+      const groupDate = new Date(
+        optimisticMessage.createdAt,
+      ).toLocaleDateString("vi-VN");
+
+      const lastIndex = groupedMessages.length - 1;
+      const lastGroup = groupedMessages[lastIndex];
+
+      if (lastGroup?.createdAt === groupDate) {
+        groupedMessages[lastIndex] = {
+          ...lastGroup,
+          messages: [...lastGroup.messages, optimisticMessage],
+        };
+      } else {
+        groupedMessages.push({
+          createdAt: groupDate,
+          messages: [optimisticMessage],
+        });
+      }
+
+      return {
+        conversationMap: {
+          ...state.conversationMap,
+          [conversationId]: {
+            ...state.conversationMap[conversationId],
+            clientSequence: {
+              ...state.conversationMap[conversationId].clientSequence,
+              mySequence: clientSequence,
+            },
           },
         },
-      },
-    }));
+        messagesByConversation: {
+          ...state.messagesByConversation,
+          [conversationId]: {
+            ...conversationData,
+            groupedMessages,
+          },
+        },
+      };
+    });
 
-    console.log(msgBody);
     try {
       const res = await api.post(endpoints.messages.send, msgBody);
+      const sentMessage = res.data.data;
+
+      set((state) => {
+        const conversationData = state.messagesByConversation[conversationId];
+
+        if (!conversationData) return {};
+
+        const groupedMessages = conversationData.groupedMessages.map(
+          (group) => {
+            const groupDate = new Date(
+              sentMessage.createdAt,
+            ).toLocaleDateString("vi-VN");
+
+            if (group.createdAt !== groupDate) return group;
+
+            return {
+              ...group,
+              messages: group.messages.map((msg) =>
+                msg.clientMessageId === msgBody.clientMessageId
+                  ? {
+                      ...sentMessage,
+                      isMine: true,
+                      status: "sent",
+                    }
+                  : msg,
+              ),
+            };
+          },
+        );
+
+        return {
+          messagesByConversation: {
+            ...state.messagesByConversation,
+            [conversationId]: {
+              ...conversationData,
+              groupedMessages,
+            },
+          },
+        };
+      });
     } catch (error) {
-      console.log(error);
+      console.error("Send message failed:", error);
+
+      // TODO: Cập nhật status của message tạm thành "failed"
+      // bằng clientMessageId.
     }
   },
 

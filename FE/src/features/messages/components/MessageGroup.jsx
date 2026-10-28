@@ -3,7 +3,6 @@ import MessageItem from "./MesageItem";
 import styles from "../../../assets/styles/ConversationDetails.module.css";
 
 const MessageGroup = ({ group, observeMessage }) => {
-  // console.log(group)
   return (
     <div className={styles.messageGroup}>
       <div className={styles.dateSeparator}>

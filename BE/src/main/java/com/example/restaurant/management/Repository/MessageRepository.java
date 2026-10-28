@@ -25,7 +25,8 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
                     m.sender.id,
                     m.readAt,
                     m.clientSequence,
-                    m.sentAt
+                    m.sentAt,
+                    m.clientMessageId
                 )
                 FROM Message m
                 WHERE m.conversation.id = :conversationId
@@ -37,6 +38,8 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
             @Param("conversationId") Integer conversationId,
             Pageable pageable
     );
+
+    Message findMessageByClientMessageIdAndSender_Id(String clientMessageId, Integer senderId);
 
     @Query("""
                 SELECT COUNT(m)
@@ -70,7 +73,8 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
                     m.readAt,
                     m.conversation.id,
                     m.clientSequence,
-                    m.sentAt
+                    m.sentAt,
+                    m.clientMessageId
                 )
                 FROM Message m
                 WHERE m.conversation.id = :conversationId

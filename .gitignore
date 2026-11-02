@@ -1,6 +1,6 @@
 # Environment / local configuration
 BE/src/main/resources/application.yml
-
+.env*.local
 # Backend
 BE/target/
 BE/uploads/

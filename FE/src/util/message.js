@@ -71,3 +71,4 @@ export const mergeGroupedMessages = (prev, incoming, mode = "append") => {
 
   return merged;
 };
+

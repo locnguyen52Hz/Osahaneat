@@ -19,7 +19,10 @@ const ChatInput = ({ onSend, hasNewMessage, onSeenNewMessage }) => {
     <div className={styles.footer}>
       {hasNewMessage && (
         <div className={styles.arrowDown}>
-         <i className="bi bi-envelope-arrow-down-fill" onClick={() =>onSeenNewMessage()}></i>
+          <i
+            className="bi bi-envelope-arrow-down-fill"
+            onClick={() => onSeenNewMessage()}
+          ></i>
         </div>
       )}
       <FloatingLabel
@@ -29,7 +32,11 @@ const ChatInput = ({ onSend, hasNewMessage, onSeenNewMessage }) => {
         value={value}
         onChange={(e) => setValue(e.target.value)}
       />
-      <div onClick={send} className={styles.sendBtn}>
+      <div
+        onClick={send}
+        className={`${styles.send} ${value.trim() ? styles.able : styles.notAble} `}
+        disabled = {!value.trim()}
+      >
         <i className="bi bi-send-fill"></i>
       </div>
     </div>

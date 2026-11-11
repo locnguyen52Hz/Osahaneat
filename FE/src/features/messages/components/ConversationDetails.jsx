@@ -27,6 +27,7 @@ function ConversationDetails({ conversation }) {
     markMessagesAsRead,
     sendMessage,
     conversationMap,
+    
   } = useConversationStore();
 
   const lastMessageId = useConversationStore((s) => {
@@ -42,7 +43,6 @@ function ConversationDetails({ conversation }) {
     return lastMessage.id;
   });
 
-  console.log(v4());
 
   useEffect(() => {
     if (!lastMessageId || !canScroll) return;

@@ -27,7 +27,7 @@ function MessagesPage() {
   useEffect(() => {
     fetchConversations();
   }, []);
-console.log(messagesByConversation)
+
   return (
     <>
       <p className={styles.title}>Messages</p>

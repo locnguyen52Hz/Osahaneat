@@ -35,6 +35,9 @@ api.interceptors.response.use(
   (response) => response,
 
   async (error) => {
+    if (!error.response) {
+      return Promise.reject(error);
+    }
     const originalRequest = error.config;
 
     if (error.response.status === 401 && !originalRequest.hasRetried) {

@@ -6,6 +6,9 @@
 }
 
 
+.retry {
+    cursor: pointer;
+}
 
 
 
@@ -32,7 +35,12 @@
     gap: 12px;
 }
 
-
+.content {
+    display: flex;
+    align-items: center;
+    column-gap: 8px;
+    justify-content: right;
+}
 
 
 
@@ -104,10 +112,17 @@
 }
 
 /* ---------- TIME ---------- */
-.createdAt {
+.metadata {
     margin-top: 4px;
     font-size: 11px;
     color: #858796;
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+}
+
+.error {
+    color: red;
 }
 
 /* ---------- FOOTER ---------- */
@@ -207,15 +222,24 @@
 }
 
 /* ---------- SEND BUTTON ---------- */
-.sendBtn {
+.able {
+    cursor: pointer;
+    background-color: #c60926;
+
+}
+
+.notAble {
+    background-color: #80757c;
+    cursor: not-allowed;
+}
+
+.send {
     width: 45px;
     height: 45px;
     border-radius: 50%;
-    background-color: #c60926;
     color: white;
     display: flex;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
     flex-shrink: 0;
 }
